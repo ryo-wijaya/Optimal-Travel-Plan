@@ -6,6 +6,9 @@
 package entity;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,10 +19,6 @@ import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- *
- * @author sucram
- */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account implements Serializable {
@@ -28,22 +27,36 @@ public abstract class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long accountId;
-    
+
     @Column(length = 32, nullable = false, unique = true)
     @Size(min = 8, max = 32)
     @NotNull
     private String username;
-    @Column(length = 32, nullable = false)
-    @Size(min = 8, max = 32)
+
+    @Column(columnDefinition = "CHAR(32) NOT NULL")
     @NotNull
     private String password;
 
+    @Column(columnDefinition = "CHAR(32) NOT NULL")
+    private String salt;
+
     public Account() {
+        this.salt = generateRandomString(32);
     }
 
     public Account(String username, String password) {
+        this();
         this.username = username;
-        this.password = password;
+        this.password = hashPassword(password);
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public String generateNewSalt() {
+        this.salt = generateRandomString(32);
+        return this.salt;
     }
 
     public String getUsername() {
@@ -59,7 +72,7 @@ public abstract class Account implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = hashPassword(password);
     }
 
     public Long getAccountId() {
@@ -95,4 +108,100 @@ public abstract class Account implements Serializable {
         return "entity.Account[ accountId=" + accountId + " ]";
     }
 
+    private String generateRandomString(int length) {
+        String password = "";
+
+        try {
+            SecureRandom wheel = SecureRandom.getInstance("SHA1PRNG");
+
+            char[] alphaNumberic = new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+
+            for (int i = 0; i < length; i++) {
+                int random = wheel.nextInt(alphaNumberic.length);
+                password += alphaNumberic[random];
+            }
+
+            return password;
+        } catch (NoSuchAlgorithmException ex) {
+            System.err.println("********** Exception: " + ex);
+            return null;
+        }
+    }
+
+    private String hashPassword(String password) {
+        if (password == null) {
+            return null;
+        }
+        return byteArrayToHexString(doMD5Hashing(password + this.salt));
+    }
+
+    private String byteArrayToHexString(byte[] bytes) {
+        int lo = 0;
+        int hi = 0;
+        String hexString = "";
+
+        for (int i = 0; i < bytes.length; i++) {
+            lo = bytes[i];
+            lo = lo & 0xff;
+            hi = lo >> 4;
+            lo = lo & 0xf;
+
+            hexString += numToString(hi);
+            hexString += numToString(lo);
+        }
+
+        return hexString;
+    }
+
+    private byte[] doMD5Hashing(String stringToHash) {
+        MessageDigest md = null;
+
+        try {
+            md = MessageDigest.getInstance("MD5");
+            return md.digest(stringToHash.getBytes());
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private String numToString(int num) {
+        switch (num) {
+            case 0:
+                return "0";
+            case 1:
+                return "1";
+            case 2:
+                return "2";
+            case 3:
+                return "3";
+            case 4:
+                return "4";
+            case 5:
+                return "5";
+            case 6:
+                return "6";
+            case 7:
+                return "7";
+            case 8:
+                return "8";
+            case 9:
+                return "9";
+            case 10:
+                return "a";
+            case 11:
+                return "b";
+            case 12:
+                return "c";
+            case 13:
+                return "d";
+            case 14:
+                return "e";
+            case 15:
+                return "f";
+            default:
+                return "";
+        }
+    }
 }

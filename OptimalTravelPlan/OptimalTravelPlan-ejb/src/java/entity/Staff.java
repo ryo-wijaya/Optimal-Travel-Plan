@@ -7,29 +7,28 @@ package entity;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import util.enumeration.EmployeeRole;
 
-/**
- *
- * @author sucram
- */
 @Entity
 public class Staff extends Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    private String name;
+    
+    private EmployeeRole employeeRole;
 
     public Staff() {
     }
 
-    public Staff(String username, String password) {
+    public Staff(String username, String password, String name, EmployeeRole employeeRole) {
         super(username, password);
+        this.name = name;
+        this.employeeRole = employeeRole;
     }
 
     public Long getStaffId() {
         return getAccountId();
-    }
-
-    public void setStaffId(Long staffId) {
-        setAccountId(staffId);
     }
 
     @Override
@@ -55,6 +54,22 @@ public class Staff extends Account implements Serializable {
     @Override
     public String toString() {
         return "entity.Staff[ id=" + getStaffId() + " ]";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public EmployeeRole getEmployeeRole() {
+        return employeeRole;
+    }
+
+    public void setEmployeeRole(EmployeeRole employeeRole) {
+        this.employeeRole = employeeRole;
     }
     
 }
