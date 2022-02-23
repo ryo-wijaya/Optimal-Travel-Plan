@@ -38,9 +38,6 @@ public class Service implements Serializable {
 
     @OneToMany(mappedBy = "service")
     private List<Booking> bookings;
-
-    @OneToMany(mappedBy = "service")
-    private List<Review> reviews;
     
     @ManyToMany(mappedBy = "services")
     private List<Tag> tags;
@@ -165,22 +162,6 @@ public class Service implements Serializable {
     @Override
     public String toString() {
         return "entity.Service[ id=" + serviceId + " ]";
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public void addReview(Review review) {
-        this.reviews.add(review);
-    }
-
-    public void removeReview(Review review) {
-        this.reviews.remove(review);
     }
 
     /**

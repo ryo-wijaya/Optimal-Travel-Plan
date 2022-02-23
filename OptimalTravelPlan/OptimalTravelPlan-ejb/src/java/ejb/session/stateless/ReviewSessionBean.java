@@ -5,14 +5,76 @@
  */
 package ejb.session.stateless;
 
+import entity.Booking;
+import entity.Review;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import util.exception.BookingNotFoundException;
+import util.exception.ConstraintViolationException;
+import util.exception.ReviewNotFoundException;
+import util.exception.UnknownPersistenceException;
 
 @Stateless
 public class ReviewSessionBean implements ReviewSessionBeanLocal {
 
+    @EJB
+    private BookingSessionBeanLocal bookingSessionBean;
+
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
+    
+    
 
+    public Review createNewReview(Long bookingId, Review review) throws BookingNotFoundException, UnknownPersistenceException, ConstraintViolationException{
+        try {
+            Booking booking = bookingSessionBean.retrieveBookingById(bookingId);
+            review.setBooking(booking);
+            em.persist(review);
+            booking.setReview(review);
+            em.flush();
+            return review;
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
+                if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
+                    throw new ConstraintViolationException();
+                } else {
+                    throw new UnknownPersistenceException(ex.getMessage());
+                }
+            } else {
+                throw new UnknownPersistenceException(ex.getMessage());
+            }
+        }
+    }
+    
+    public List<Review> retrieveAllReview() {
+        Query query = em.createQuery("SELECT r FROM Review r");
+        List<Review> reviewEntities = query.getResultList();
+        
+        for(Review reviewEntity:reviewEntities) {            
+            reviewEntity.getBooking();
+        }
+        return reviewEntities;
+    } 
+    
+    public Review retrieveReviewByReviewId(Long reviewId) throws ReviewNotFoundException {
+        Review review = em.find(Review.class, reviewId);
+        if(review != null) {
+            return review;
+        } else {
+            throw new ReviewNotFoundException("Review ID " + reviewId + " does not exist!");
+        }
+    }
+    
+    public void deleteReview(Long reviewId) {
+        Review review = em.find(Review.class, reviewId);
+        em.remove(review);
+    }
+    
+    //do one update for costomer (content + rating
+    //do one update for business business reply
 }

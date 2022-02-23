@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Review implements Serializable {
@@ -26,16 +26,15 @@ public class Review implements Serializable {
     
     private String businessReply;
     
-    @ManyToOne
-    private Service service;
+    @OneToOne(mappedBy = "review", optional = false)
+    private Booking booking;
 
     public Review() {
     }
 
-    public Review(Integer rating, String content, Service service) {
+    public Review(Integer rating, String content) {
         this.rating = rating;
         this.content = content;
-        this.service = service;
     }
 
     public Integer getRating() {
@@ -62,14 +61,6 @@ public class Review implements Serializable {
         this.businessReply = businessReply;
     }
 
-    public Service getService() {
-        return service;
-    }
-
-    public void setService(Service service) {
-        this.service = service;
-    }
-    
     public Long getReviewId() {
         return reviewId;
     }
@@ -97,6 +88,20 @@ public class Review implements Serializable {
     @Override
     public String toString() {
         return "entity.Review[ id=" + reviewId + " ]";
+    }
+
+    /**
+     * @return the booking
+     */
+    public Booking getBooking() {
+        return booking;
+    }
+
+    /**
+     * @param booking the booking to set
+     */
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
     
 }
