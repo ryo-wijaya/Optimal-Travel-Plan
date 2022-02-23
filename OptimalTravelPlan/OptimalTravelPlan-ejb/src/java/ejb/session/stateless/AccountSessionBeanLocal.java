@@ -5,7 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.Account;
 import javax.ejb.Local;
+import util.exception.AccountNotFoundException;
+import util.exception.UnknownPersistenceException;
+import util.exception.UsernameAlreadyExistException;
 
 /**
  *
@@ -13,5 +17,9 @@ import javax.ejb.Local;
  */
 @Local
 public interface AccountSessionBeanLocal {
+
+    public Long createNewAccount(Account newAccount) throws UsernameAlreadyExistException, UnknownPersistenceException;
+
+    public void toggleAccountStatus(Long accountId) throws AccountNotFoundException;
     
 }

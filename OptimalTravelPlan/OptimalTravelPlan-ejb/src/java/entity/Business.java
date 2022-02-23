@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -16,7 +17,7 @@ public class Business extends Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToMany(mappedBy = "business")
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY)
     private List<Service> services;
 
     private String companyName;
@@ -28,7 +29,6 @@ public class Business extends Account implements Serializable {
     private String headquarterAddress;
 
     public Business() {
-        this.services = new ArrayList<>();
     }
 
     public Business(String companyName, String companyWebsite, String companyNumber, String headquarterAddress, String username, String password) {

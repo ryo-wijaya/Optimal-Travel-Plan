@@ -39,15 +39,27 @@ public abstract class Account implements Serializable {
 
     @Column(columnDefinition = "CHAR(32) NOT NULL")
     private String salt;
+    
+    @Column(nullable = false)
+    private Boolean enabled;
 
     public Account() {
         this.salt = generateRandomString(32);
+        this.enabled = true;
     }
 
     public Account(String username, String password) {
         this();
         this.username = username;
         this.password = hashPassword(password);
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getSalt() {
@@ -155,7 +167,7 @@ public abstract class Account implements Serializable {
         return hexString;
     }
 
-    private byte[] doMD5Hashing(String stringToHash) {
+    public byte[] doMD5Hashing(String stringToHash) {
         MessageDigest md = null;
 
         try {

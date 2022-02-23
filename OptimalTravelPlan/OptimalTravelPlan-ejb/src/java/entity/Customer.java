@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -21,6 +22,9 @@ public class Customer extends Account implements Serializable {
 
     @OneToMany(mappedBy = "customer")
     private List<TravelItinerary> travelItineraries;
+    
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<PaymentAccount> paymentAccounts;
     
     private String name;
 
@@ -35,6 +39,7 @@ public class Customer extends Account implements Serializable {
     public Customer() {
         this.favouriteTags = new ArrayList<>();
         this.travelItineraries = new ArrayList<>();
+        this.paymentAccounts = new ArrayList<>();
     }
 
     public Customer(String name, String mobile, String passportNumber, String email, Boolean vaccinationStatus, String username, String password) {
@@ -54,6 +59,14 @@ public class Customer extends Account implements Serializable {
 
     public List<TravelItinerary> getTravelItineraries() {
         return travelItineraries;
+    }
+
+    public List<PaymentAccount> getPaymentAccounts() {
+        return paymentAccounts;
+    }
+
+    public void setPaymentAccounts(List<PaymentAccount> paymentAccounts) {
+        this.paymentAccounts = paymentAccounts;
     }
 
     public void setTravelItineraries(List<TravelItinerary> travelItineraries) {
