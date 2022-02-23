@@ -5,7 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.Tag;
+import java.util.List;
 import javax.ejb.Local;
+import util.exception.DeleteTagException;
+import util.exception.TagNotFoundException;
 
 /**
  *
@@ -13,5 +17,13 @@ import javax.ejb.Local;
  */
 @Local
 public interface TagSessionBeanLocal {
+
+    public List<Tag> retrieveAllTags();
+
+    public Tag createNewTag(Tag newTag);
+
+    public Tag retrieveTagByTagId(Long tagId) throws TagNotFoundException;
+
+    public void deleteTag(Long tagId) throws DeleteTagException;
     
 }

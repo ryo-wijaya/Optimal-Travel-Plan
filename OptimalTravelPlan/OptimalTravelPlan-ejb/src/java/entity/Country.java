@@ -6,10 +6,12 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Country implements Serializable {
@@ -20,6 +22,9 @@ public class Country implements Serializable {
     private Long countryId;
     
     private String name;
+    
+    @OneToMany(mappedBy = "country")
+    private List<Service> services;
 
     public Country() {
     }
@@ -67,6 +72,20 @@ public class Country implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the services
+     */
+    public List<Service> getServices() {
+        return services;
+    }
+
+    /**
+     * @param services the services to set
+     */
+    public void setServices(List<Service> services) {
+        this.services = services;
     }
     
 }

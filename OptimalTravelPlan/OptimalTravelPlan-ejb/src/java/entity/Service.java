@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -31,7 +32,8 @@ public class Service implements Serializable {
     @OneToMany
     private List<ServiceRate> rates;
 
-    @OneToOne
+    //changed this from OneToOne to ManyToOne
+    @ManyToOne
     private Country country;
 
     @OneToMany(mappedBy = "service")
@@ -39,6 +41,9 @@ public class Service implements Serializable {
 
     @OneToMany(mappedBy = "service")
     private List<Review> reviews;
+    
+    @ManyToMany(mappedBy = "services")
+    private List<Tag> tags;
 
     private ServiceType serviceType;
 
@@ -176,6 +181,20 @@ public class Service implements Serializable {
 
     public void removeReview(Review review) {
         this.reviews.remove(review);
+    }
+
+    /**
+     * @return the tags
+     */
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
 }
