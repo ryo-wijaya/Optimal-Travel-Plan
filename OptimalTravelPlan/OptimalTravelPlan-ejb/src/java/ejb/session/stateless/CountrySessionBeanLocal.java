@@ -5,7 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.Country;
+import java.util.List;
 import javax.ejb.Local;
+import util.exception.CountryNotFoundException;
+import util.exception.DeleteCountryException;
 
 /**
  *
@@ -13,5 +17,13 @@ import javax.ejb.Local;
  */
 @Local
 public interface CountrySessionBeanLocal {
+
+    public Country createNewTag(Country newCountry);
+
+    public List<Country> retrieveAllCountries();
+
+    public Country retrieveCountryByCountryId(Long countryId) throws CountryNotFoundException;
+
+    public void deleteCountry(Long countryId) throws DeleteCountryException;
     
 }
