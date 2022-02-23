@@ -49,6 +49,7 @@ public class Booking implements Serializable {
     }
 
     public Booking(Date startDate, Date endDate, TravelItinerary travelItinerary, Service service) {
+        this();
         this.startDate = startDate;
         this.endDate = endDate;
         this.travelItinerary = travelItinerary;

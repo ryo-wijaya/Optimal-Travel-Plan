@@ -24,6 +24,8 @@ public class SupportRequest implements Serializable {
     private Long supportRequestId;
 
     private String requestDetails;
+    
+    private Boolean resolved;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date requestCreationDate;
@@ -32,9 +34,11 @@ public class SupportRequest implements Serializable {
     private Booking booking;
 
     public SupportRequest() {
+        this.resolved = false;
     }
 
     public SupportRequest(String requestDetails, Date requestCreationDate, Booking booking) {
+        this();
         this.requestDetails = requestDetails;
         this.requestCreationDate = requestCreationDate;
         this.booking = booking;
@@ -46,6 +50,14 @@ public class SupportRequest implements Serializable {
 
     public String getRequestDetails() {
         return requestDetails;
+    }
+
+    public Boolean getResolved() {
+        return resolved;
+    }
+
+    public void setResolved(Boolean resolved) {
+        this.resolved = resolved;
     }
 
     public void setRequestDetails(String requestDetails) {

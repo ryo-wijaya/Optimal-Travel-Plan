@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Booking;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.BookingNotFoundException;
 
@@ -17,5 +18,7 @@ import util.exception.BookingNotFoundException;
 public interface BookingSessionBeanLocal {
 
     public Booking retrieveBookingById(Long bookingId) throws BookingNotFoundException;
+
+    public List<Booking> retrieveAllBookings();
     
 }
