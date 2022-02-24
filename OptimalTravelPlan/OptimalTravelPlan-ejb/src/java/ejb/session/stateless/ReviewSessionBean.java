@@ -82,6 +82,19 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
         return query.getResultList();
     }
     
+    @Override
+    public void updateReview(Review review) throws ReviewNotFoundException {
+        if (review != null && review.getReviewId()!= null) {
+            Review reviewToUpdate = this.retrieveReviewByReviewId(review.getReviewId());
+
+            reviewToUpdate.setRating(review.getRating());
+            reviewToUpdate.setContent(review.getContent());
+            reviewToUpdate.setBusinessReply(review.getBusinessReply());
+            
+        } else {
+            throw new ReviewNotFoundException("Review ID not provided for review to be updated");
+        }
+    }
     //do one update for costomer (content + rating
     //do one update for business business reply
 }

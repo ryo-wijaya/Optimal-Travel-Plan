@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Local;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
+import util.exception.ReviewNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -22,5 +23,7 @@ public interface ReviewSessionBeanLocal {
     public Review createNewReview(Long bookingId, Review review) throws BookingNotFoundException, UnknownPersistenceException, ConstraintViolationException;
 
     public List<Review> retrieveReviewsByServiceId(Long serviceId);
+
+    public void updateReview(Review review) throws ReviewNotFoundException;
     
 }
