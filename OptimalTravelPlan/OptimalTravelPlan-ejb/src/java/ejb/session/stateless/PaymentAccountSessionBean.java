@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Customer;
 import entity.PaymentAccount;
+import entity.PaymentTransaction;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -21,6 +22,9 @@ import util.exception.PaymentAccountNotFoundException;
  */
 @Stateless
 public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal {
+
+    @EJB
+    private TransactionSessionBeanLocal transactionSessionBean;
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBean;
@@ -55,6 +59,10 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
             if (c.getPaymentAccounts().contains(paymentAccountToDelete)) {
                 throw new DeletePaymentAccountException("Payment Account ID " + paymentAccountId + " is associated with existing customers and cannot be deleted!");
             }
+        }
+        List<PaymentTransaction> paymentTransactions = transactionSessionBean.retrieveAllPaymentTransaction();
+        for(PaymentTransaction p : paymentTransactions){
+            p.setPaymentAccount(null);
         }
         em.remove(paymentAccountToDelete);
     }
