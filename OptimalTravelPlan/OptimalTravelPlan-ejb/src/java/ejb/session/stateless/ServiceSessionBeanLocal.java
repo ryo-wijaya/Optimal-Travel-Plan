@@ -22,7 +22,7 @@ import util.exception.UpdateServiceException;
 @Local
 public interface ServiceSessionBeanLocal {
 
-    public Long createNewService(Service newService, Long businessId, List<Long> tagIds, List<Long> rateIds, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, CreateNewServiceException;
+    public Long createNewService(Service newService, Long businessId, List<Long> tagIds, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, CreateNewServiceException;
 
     public Service retrieveServiceById(Long serviceId) throws ServiceNotFoundException;
 

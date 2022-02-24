@@ -42,21 +42,17 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
     private EntityManager em;
 
     @Override
-    public Long createNewService(Service newService, Long businessId, List<Long> tagIds, List<Long> rateIds, Long countryId) throws UnknownPersistenceException, ConstraintViolationException,
+    public Long createNewService(Service newService, Long businessId, List<Long> tagIds, Long countryId) throws UnknownPersistenceException, ConstraintViolationException,
             CreateNewServiceException {
         try {
             List<Tag> tagsToAssociate = new ArrayList<>();
-            List<ServiceRate> ratesToAssociate = new ArrayList<>();
 
             for (Long tagId : tagIds) {
                 tagsToAssociate.add(tagSessionBeanLocal.retrieveTagByTagId(tagId));
             }
-            for (Long rateId : rateIds) {
-                ratesToAssociate.add(serviceRateSessionBeanLocal.retrieveServiceRateById(rateId));
-            }
 
-            //A Service must have at least 1 tag and 1 service rate
-            if (tagsToAssociate.isEmpty() || ratesToAssociate.isEmpty()) {
+            //A Service must have at least 1 tag
+            if (tagsToAssociate.isEmpty()) {
                 throw new CreateNewServiceException();
             }
 
@@ -64,7 +60,6 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             newService.setCountry(countrySessionBeanLocal.retrieveCountryByCountryId(countryId));
             em.persist(newService);
             newService.getTags().addAll(tagsToAssociate);
-            newService.getRates().addAll(ratesToAssociate);
             em.flush();
             return newService.getServiceId();
 
@@ -78,7 +73,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
-        } catch (CountryNotFoundException | ServiceRateNotFoundException | TagNotFoundException ex) {
+        } catch (CountryNotFoundException | TagNotFoundException ex) {
             throw new CreateNewServiceException("Issue with provided businessId, TagIds, RateIds, or CountryIds!");
         }
     }
