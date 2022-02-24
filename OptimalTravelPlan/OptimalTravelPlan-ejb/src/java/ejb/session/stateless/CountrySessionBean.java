@@ -21,7 +21,7 @@ public class CountrySessionBean implements CountrySessionBeanLocal {
     private EntityManager em;
     
     @Override
-    public Country createNewTag(Country newCountry) {
+    public Country createNewCountry(Country newCountry) {
         em.persist(newCountry);
         em.flush();
         return newCountry;

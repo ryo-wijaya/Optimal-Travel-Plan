@@ -17,13 +17,14 @@ public class Customer extends Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToMany
+    //All customer associations are eargerly fetched to ensure client makes fewer server requests.
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Tag> favouriteTags;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<TravelItinerary> travelItineraries;
     
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     private List<PaymentAccount> paymentAccounts;
     
     private String name;

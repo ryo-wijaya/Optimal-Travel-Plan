@@ -29,7 +29,7 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
     private EntityManager em;
     
     
-
+    @Override
     public Review createNewReview(Long bookingId, Review review) throws BookingNotFoundException, UnknownPersistenceException, ConstraintViolationException{
         try {
             Booking booking = bookingSessionBean.retrieveBookingById(bookingId);
@@ -75,6 +75,24 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
         em.remove(review);
     }
     
-    //do one update for costomer (content + rating
-    //do one update for business business reply
+    @Override
+    public List<Review> retrieveReviewsByServiceId(Long serviceId) {
+        Query query = em.createQuery("SELECT r FROM Review r JOIN r.booking b JOIN b.service s WHERE s.serviceId = :serviceId");
+        query.setParameter("serviceId", serviceId);
+        return query.getResultList();
+    }
+    
+    @Override
+    public void updateReview(Review review) throws ReviewNotFoundException {
+        if (review != null && review.getReviewId()!= null) {
+            Review reviewToUpdate = this.retrieveReviewByReviewId(review.getReviewId());
+
+            reviewToUpdate.setRating(review.getRating());
+            reviewToUpdate.setContent(review.getContent());
+            reviewToUpdate.setBusinessReply(review.getBusinessReply());
+            
+        } else {
+            throw new ReviewNotFoundException("Review ID not provided for review to be updated");
+        }
+    }
 }

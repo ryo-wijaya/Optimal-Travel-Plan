@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Account;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
+import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameAlreadyExistException;
 
@@ -21,5 +22,7 @@ public interface AccountSessionBeanLocal {
     public Long createNewAccount(Account newAccount) throws UsernameAlreadyExistException, UnknownPersistenceException;
 
     public void toggleAccountStatus(Long accountId) throws AccountNotFoundException;
+
+    public Account login(String username, String password) throws InvalidLoginCredentialException;
     
 }

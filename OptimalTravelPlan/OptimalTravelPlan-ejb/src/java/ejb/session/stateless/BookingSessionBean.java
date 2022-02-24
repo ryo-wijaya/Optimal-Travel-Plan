@@ -26,11 +26,7 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     public Booking retrieveBookingById(Long bookingId) throws BookingNotFoundException {
         Booking booking = em.find(Booking.class, bookingId);
         if (booking != null) {
-            booking.getTravelItinerary(); //lazy loading
-            booking.getPaymentTransaction();
-            booking.getSupportRequest();
-            booking.getReview();
-            booking.getService();
+            //remove loading since by default (one to one / many to one) are EARGER fetch
             return booking;
         } else {
             throw new BookingNotFoundException();
@@ -40,14 +36,14 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     @Override
     public List<Booking> retrieveAllBookings() {
         Query query = em.createQuery("SELECT b FROM Booking b");
-        List<Booking> bookings = query.getResultList();
-        for (Booking booking : bookings) { //lazy loading
-            booking.getTravelItinerary(); 
-            booking.getPaymentTransaction();
-            booking.getSupportRequest();
-            booking.getReview();
-            booking.getService();
-        }
-        return bookings;
+        return query.getResultList();
+        //remove loading since by default (one to one / many to one) are EARGER fetch
+    }
+    
+    @Override
+    public List<Booking> retrieveBookingsByServiceId(Long serviceId) {
+        Query query = em.createQuery("SELECT b FROM Service s JOIN s.bookings b WHERE s.serviceId = :serviceId");
+        query.setParameter("serviceId", serviceId);
+        return query.getResultList();
     }
 }

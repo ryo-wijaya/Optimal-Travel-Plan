@@ -97,6 +97,9 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
                 customerToUpdate.setName(customer.getName());
                 customerToUpdate.setMobile(customer.getMobile());
                 customerToUpdate.setEmail(customer.getEmail());
+                customerToUpdate.setPaymentAccounts(customer.getPaymentAccounts());
+                customerToUpdate.setVaccinationStatus(customer.getVaccinationStatus());
+                customerToUpdate.setPassportNumber(customer.getPassportNumber());
             } else {
                 throw new UpdateCustomerException("Username of customer record to be updated does not match the existing record");
             }
