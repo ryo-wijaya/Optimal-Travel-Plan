@@ -95,4 +95,6 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
             throw new ReviewNotFoundException("Review ID not provided for review to be updated");
         }
     }
+    //do one update for costomer (content + rating
+    //do one update for business business reply
 }
