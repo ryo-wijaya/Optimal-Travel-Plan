@@ -25,8 +25,6 @@ public interface StaffSessionBeanLocal {
 
     public Staff retrieveStaffByUsername(String username) throws AccountNotFoundException;
 
-    public Staff doStaffLogin(String username, String password) throws InvalidLoginCredentialsException;
-
     public void updateStaff(Staff staff) throws AccountNotFoundException, UpdateStaffException;
     
 }

@@ -45,13 +45,17 @@ public class Service implements Serializable {
     private Boolean requireVaccination;
 
     private String address;
+    
+    private Boolean active;
 
     public Service() {
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
+        this.active = true;
     }
 
     public Service(Business business, Country country, ServiceType serviceType, Boolean requireVaccination, String address) {
+        this();
         this.business = business;
         this.country = country;
         this.serviceType = serviceType;
@@ -59,6 +63,14 @@ public class Service implements Serializable {
         this.address = address;
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Long getServiceId() {

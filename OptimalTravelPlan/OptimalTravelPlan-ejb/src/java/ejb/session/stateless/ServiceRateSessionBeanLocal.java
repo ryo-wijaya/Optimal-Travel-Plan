@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.ServiceRate;
 import javax.ejb.Local;
+import util.exception.ServiceRateNotFoundException;
 
 /**
  *
@@ -13,5 +15,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface ServiceRateSessionBeanLocal {
+
+    public ServiceRate retrieveServiceRateById(Long serviceRateId) throws ServiceRateNotFoundException;
     
 }

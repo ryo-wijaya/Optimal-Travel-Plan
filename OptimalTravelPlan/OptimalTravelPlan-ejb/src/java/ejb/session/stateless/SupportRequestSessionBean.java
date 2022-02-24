@@ -41,8 +41,8 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
                 throw new CreateSupportRequestException();
             }
 
-            em.persist(newSupportRequest);
             newSupportRequest.setBooking(booking);
+            em.persist(newSupportRequest);
             booking.setSupportRequest(newSupportRequest);
             em.flush();
             return newSupportRequest.getSupportRequestId();

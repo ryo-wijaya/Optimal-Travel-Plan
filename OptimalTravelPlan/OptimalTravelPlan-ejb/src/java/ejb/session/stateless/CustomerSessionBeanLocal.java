@@ -25,8 +25,6 @@ public interface CustomerSessionBeanLocal {
 
     public Customer retrieveCustomerByUsername(String username) throws AccountNotFoundException;
 
-    public Customer doCustomerLogin(String username, String password) throws InvalidLoginCredentialsException;
-
     public void updateCustomer(Customer customer) throws AccountNotFoundException, UpdateCustomerException;
     
 }

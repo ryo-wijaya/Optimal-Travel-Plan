@@ -14,7 +14,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
-import util.exception.InvalidLoginCredentialsException;
 import util.exception.UpdateBusinessException;
 
 /**
@@ -61,23 +60,8 @@ public class BusinessSessionBean implements BusinessSessionBeanLocal {
             throw new AccountNotFoundException("Username has no match!");
         }
     }
-
-    @Override
-    public Business doBusinessLogin(String username, String password) throws InvalidLoginCredentialsException {
-        try {
-            Business business = retrieveBusinessByUsername(username);
-            String passwordHash = new String(business.doMD5Hashing(password + business.getSalt()));
-
-            if (passwordHash.equals(business.getPassword())) {
-                business.getServices().size(); //lazy loading
-                return business;
-            } else {
-                throw new InvalidLoginCredentialsException();
-            }
-        } catch (AccountNotFoundException ex) {
-            throw new InvalidLoginCredentialsException();
-        }
-    }
+    
+    //Deleted business login
 
     @Override
     public void updateBusiness(Business business) throws AccountNotFoundException, UpdateBusinessException {

@@ -14,7 +14,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
-import util.exception.InvalidLoginCredentialsException;
 import util.exception.UpdateStaffException;
 
 /**
@@ -55,21 +54,7 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
         }
     }
 
-    @Override
-    public Staff doStaffLogin(String username, String password) throws InvalidLoginCredentialsException {
-        try {
-            Staff staff = retrieveStaffByUsername(username);
-            String passwordHash = new String(staff.doMD5Hashing(password + staff.getSalt()));
-
-            if (passwordHash.equals(staff.getPassword())) {
-                return staff;
-            } else {
-                throw new InvalidLoginCredentialsException();
-            }
-        } catch (AccountNotFoundException ex) {
-            throw new InvalidLoginCredentialsException();
-        }
-    }
+    //Deleted staff login
 
     @Override
     public void updateStaff(Staff staff) throws AccountNotFoundException, UpdateStaffException {

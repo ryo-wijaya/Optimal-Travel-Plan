@@ -25,8 +25,6 @@ public interface BusinessSessionBeanLocal {
 
     public Business retrieveBusinessByUsername(String username) throws AccountNotFoundException;
 
-    public Business doBusinessLogin(String username, String password) throws InvalidLoginCredentialsException;
-
     public void updateBusiness(Business business) throws AccountNotFoundException, UpdateBusinessException;
     
 }

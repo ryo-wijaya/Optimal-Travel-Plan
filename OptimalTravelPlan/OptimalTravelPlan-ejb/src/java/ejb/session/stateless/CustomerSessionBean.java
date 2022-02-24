@@ -14,7 +14,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
-import util.exception.InvalidLoginCredentialsException;
 import util.exception.UpdateCustomerException;
 
 /**
@@ -32,21 +31,17 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
         Query query = em.createQuery("SELECT c FROM Customer c");
 
         List<Customer> customers = query.getResultList();
-        for (Customer c : customers) { //lazy loading
-            c.getTravelItineraries().size();
-            c.getFavouriteTags().size();
-            c.getPaymentAccounts().size();
-        }
+        
+        //changed to eager loading
+        
         return customers;
     }
 
     @Override
     public Customer retrieveCustomerById(Long customerId) throws AccountNotFoundException {
         Customer customer = em.find(Customer.class, customerId);
-        if (customer != null) {//lazy loading
-            customer.getTravelItineraries().size();
-            customer.getFavouriteTags().size();
-            customer.getPaymentAccounts().size();
+        if (customer != null) {
+            //changed to eager loading
             return customer;
         } else {
             throw new AccountNotFoundException();
@@ -60,33 +55,14 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
 
         try {
             Customer customer = (Customer) query.getSingleResult();
-            customer.getTravelItineraries().size();//lazy loading
-            customer.getFavouriteTags().size();
-            customer.getPaymentAccounts().size();
+            //changed to eager loading
             return customer;
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new AccountNotFoundException("Username has no match!");
         }
     }
 
-    @Override
-    public Customer doCustomerLogin(String username, String password) throws InvalidLoginCredentialsException {
-        try {
-            Customer customer = retrieveCustomerByUsername(username);
-            String passwordHash = new String(customer.doMD5Hashing(password + customer.getSalt()));
-
-            if (passwordHash.equals(customer.getPassword())) {
-                customer.getTravelItineraries().size();//lazy loading
-                customer.getFavouriteTags().size();
-                customer.getPaymentAccounts().size();
-                return customer;
-            } else {
-                throw new InvalidLoginCredentialsException();
-            }
-        } catch (AccountNotFoundException ex) {
-            throw new InvalidLoginCredentialsException();
-        }
-    }
+    //Deleted customer login
 
     @Override
     public void updateCustomer(Customer customer) throws AccountNotFoundException, UpdateCustomerException {
