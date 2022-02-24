@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +29,7 @@ public class TravelItinerary implements Serializable {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany(mappedBy = "travelItinerary")
+    @OneToMany(mappedBy = "travelItinerary", fetch = FetchType.LAZY)
     private List<Booking> bookings;
 
     @Temporal(TemporalType.TIMESTAMP)

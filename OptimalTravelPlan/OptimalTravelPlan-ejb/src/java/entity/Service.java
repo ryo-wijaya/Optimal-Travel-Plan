@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import util.enumeration.ServiceType;
 
 @Entity
@@ -32,7 +31,6 @@ public class Service implements Serializable {
     @OneToMany
     private List<ServiceRate> rates;
 
-    //changed this from OneToOne to ManyToOne
     @ManyToOne
     private Country country;
 

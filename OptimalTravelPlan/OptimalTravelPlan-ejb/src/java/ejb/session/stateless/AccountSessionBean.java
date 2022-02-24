@@ -6,11 +6,16 @@
 package ejb.session.stateless;
 
 import entity.Account;
+import entity.Business;
+import entity.Customer;
+import entity.Staff;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
+import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameAlreadyExistException;
 
@@ -43,7 +48,7 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             }
         }
     }
-    
+
     private Account retrieveAccountById(Long accountId) throws AccountNotFoundException {
         Account account = em.find(Account.class, accountId);
         if (account != null) {
@@ -52,16 +57,41 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             throw new AccountNotFoundException();
         }
     }
-    
+
     @Override
     public void toggleAccountStatus(Long accountId) throws AccountNotFoundException {
         Account account = retrieveAccountById(accountId);
-        
-        if (account != null && account.getAccountId() != null) {    
-            Boolean newStatus = account.getEnabled() ? false : true;
+
+        if (account != null && account.getAccountId() != null) {
+            Boolean newStatus = account.getEnabled() ? false : true; // not redundant
             account.setEnabled(newStatus);
         } else {
             throw new AccountNotFoundException("ID not provided for account status to be updated");
         }
+    }
+
+    @Override
+    public Account login(String username, String password) throws InvalidLoginCredentialException {
+
+        Query query = em.createQuery("SELECT a FROM Account a WHERE a.username = :inUsername");
+        query.setParameter("inUsername", username);
+        Account acc;
+        try {
+            acc = (Account) query.getSingleResult();
+        } catch (Exception e){
+            throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+        }
+        if (acc.testPassword(password)) {
+            if (acc instanceof Customer || acc instanceof Staff) {
+                //Customer associations are always eargerly fetched to to ensure client make less server requests.
+                //Staffs do not have associations
+                return acc;
+            } else if (acc instanceof Business) {
+                Business business = (Business) acc;
+                business.getServices();
+                return business;
+            }
+        }
+        throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
     }
 }

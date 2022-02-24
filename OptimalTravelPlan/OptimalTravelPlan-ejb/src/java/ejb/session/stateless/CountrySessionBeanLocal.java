@@ -18,12 +18,12 @@ import util.exception.DeleteCountryException;
 @Local
 public interface CountrySessionBeanLocal {
 
-    public Country createNewTag(Country newCountry);
-
     public List<Country> retrieveAllCountries();
 
     public Country retrieveCountryByCountryId(Long countryId) throws CountryNotFoundException;
 
     public void deleteCountry(Long countryId) throws DeleteCountryException;
+
+    public Country createNewCountry(Country newCountry);
     
 }

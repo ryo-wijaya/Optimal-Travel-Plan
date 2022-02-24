@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +24,7 @@ public class Tag implements Serializable {
     
     private String name;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Service> services;
 
     public Tag() {

@@ -86,6 +86,10 @@ public abstract class Account implements Serializable {
     public void setPassword(String password) {
         this.password = hashPassword(password);
     }
+    
+    public Boolean testPassword(String rawPassword) {
+        return this.password == hashPassword(rawPassword);
+    }
 
     public Long getAccountId() {
         return accountId;
