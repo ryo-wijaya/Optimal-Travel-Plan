@@ -37,11 +37,12 @@ public class ServiceRateSessionBean implements ServiceRateSessionBeanLocal {
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
 
+    @Override
     public Long createNewServiceRate(ServiceRate newServiceRate, Long serviceId) throws UnknownPersistenceException, ConstraintViolationException, CreateNewServiceRateException {
         try {
             Service service = serviceSessionBeanLocal.retrieveServiceById(serviceId);
-            service.getRates().add(newServiceRate);
             em.persist(newServiceRate);
+            service.getRates().add(newServiceRate);
             em.flush();
             return newServiceRate.getServiceRateId();
 
@@ -70,19 +71,16 @@ public class ServiceRateSessionBean implements ServiceRateSessionBeanLocal {
         }
     }
 
-    // Since Service to ServiceRate is 0..*
-    // might wanna revamp this actually
-    public void deleteServiceRate(Long serviceRateId) throws ServiceRateNotFoundException, DeleteServiceRateException {
+    // deleted deleteServiceRate()
+
+    @Override
+    public void toggleServiceRateActivation(Long serviceRateId) throws ServiceRateNotFoundException {
         ServiceRate serviceRate = this.retrieveServiceRateById(serviceRateId);
-        Query query = em.createQuery("SELECT s FROM Service s WHERE :rateToDelete MEMBER OF s.rates");
-        query.setParameter("rateToDelete", serviceRate);
-        try {
-            Service service = (Service) query.getSingleResult();
-            service.getRates().remove(serviceRate);
-            em.remove(serviceRate);
-        } catch (NoResultException | NonUniqueResultException ex) {
-            throw new DeleteServiceRateException("No serviceRate ID found!");
+        if (serviceRate != null && serviceRate.getServiceRateId() != null) {
+            Boolean newStatus = serviceRate.getEnabled() ? false : true;
+            serviceRate.setEnabled(newStatus);
+        } else {
+            throw new ServiceRateNotFoundException("ID not provided for serviceRate status to be updated");
         }
     }
 }
-

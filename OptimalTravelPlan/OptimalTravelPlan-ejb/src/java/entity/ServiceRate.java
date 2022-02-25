@@ -39,9 +39,11 @@ public class ServiceRate implements Serializable {
     private Boolean enabled;
 
     public ServiceRate() {
+        enabled = true;
     }
 
     public ServiceRate(Date startDate, Date endDate, BigDecimal price, RateType rateType, Boolean requireVaccination, Boolean enabled) {
+        this();
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
@@ -78,7 +80,7 @@ public class ServiceRate implements Serializable {
     public String toString() {
         return "entity.ServiceRate[ id=" + serviceRateId + " ]";
     }
-
+    
     public Date getStartDate() {
         return startDate;
     }

@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Country;
 import entity.Service;
 import entity.ServiceRate;
 import entity.Tag;
@@ -56,9 +57,15 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
                 throw new CreateNewServiceException();
             }
 
-            //This method is written assuming that Service to Tag and Service to Country is Unidirectional
-            newService.setCountry(countrySessionBeanLocal.retrieveCountryByCountryId(countryId));
+            Country countryToAssociate = countrySessionBeanLocal.retrieveCountryByCountryId(countryId);
+            newService.setCountry(countryToAssociate);
             em.persist(newService);
+            
+            for (Tag tag : tagsToAssociate) {
+                tag.getServices().add(newService);
+            }
+            
+            countryToAssociate.getServices().add(newService);
             newService.getTags().addAll(tagsToAssociate);
             em.flush();
             return newService.getServiceId();
