@@ -35,16 +35,19 @@ public class ServiceRate implements Serializable {
     private RateType rateType;
     
     private Boolean requireVaccination;
+    
+    private Boolean enabled;
 
     public ServiceRate() {
     }
 
-    public ServiceRate(Date startDate, Date endDate, BigDecimal price, RateType rateType, Boolean requireVaccination) {
+    public ServiceRate(Date startDate, Date endDate, BigDecimal price, RateType rateType, Boolean requireVaccination, Boolean enabled) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
         this.rateType = rateType;
         this.requireVaccination = requireVaccination;
+        this.enabled = enabled;
     }
 
     public Long getServiceRateId() {
@@ -137,5 +140,13 @@ public class ServiceRate implements Serializable {
 
     public void setRequireVaccination(Boolean requireVaccination) {
         this.requireVaccination = requireVaccination;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }
