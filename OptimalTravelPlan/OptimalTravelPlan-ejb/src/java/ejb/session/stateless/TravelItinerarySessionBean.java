@@ -8,8 +8,10 @@ package ejb.session.stateless;
 import entity.Booking;
 import entity.Customer;
 import entity.Service;
+import entity.ServiceRate;
 import entity.Tag;
 import entity.TravelItinerary;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -99,4 +101,4 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
         throw new UnsupportedOperationException();
     }
-}
+} 
