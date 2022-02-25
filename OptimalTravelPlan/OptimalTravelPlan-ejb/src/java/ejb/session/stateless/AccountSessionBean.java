@@ -16,6 +16,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.AccountDisabledException;
 import util.exception.AccountNotFoundException;
+import util.exception.ChangePasswordException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameAlreadyExistException;
@@ -96,5 +97,16 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             }
         }
         throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+    }
+    
+    @Override
+    public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException {
+        Account account = this.retrieveAccountById(accountId);
+        
+        if (account.testPassword(oldPassword) && (newPassword.length() > 6 && newPassword.length() <= 16)) {
+            account.setPassword(account.hashPassword(newPassword));
+        } else {
+            throw new ChangePasswordException("Password does not match!");
+        }
     }
 }

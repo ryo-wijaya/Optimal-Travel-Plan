@@ -25,6 +25,9 @@ import util.exception.UnknownPersistenceException;
 public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal {
 
     @EJB
+    private EmailSessionBeanLocal emailSessionBeanLocal;
+
+    @EJB
     private BookingSessionBeanLocal bookingSessionBeanLocal;
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
@@ -72,7 +75,7 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
             throw new SupportRequestNotFoundException();
         }
     }
-    
+
     @Override
     public List<SupportRequest> retrieveAllSupportRequests() {
         Query query = em.createQuery("SELECT sr FROM SupportRequest sr");
@@ -82,7 +85,7 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
         }
         return supportRequests;
     }
-    
+
     @Override
     public List<SupportRequest> retrieveAllUnresolvedSupportRequests() {
         Query query = em.createQuery("SELECT sr FROM SupportRequest sr WHERE sr.resolved = false");
@@ -92,14 +95,20 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
         }
         return supportRequests;
     }
-    
+
     @Override
     public void resolveSupportRequest(Long supportRequestId) throws SupportRequestNotFoundException, ResolveSupportRequestException {
         SupportRequest supportRequest = this.retrieveSupportRequestById(supportRequestId);
-        if (!supportRequest.getResolved()) {
-            supportRequest.setResolved(Boolean.TRUE);
-        } else {
-            throw new ResolveSupportRequestException("Support request is already resolved!");
+        try {
+            if (!supportRequest.getResolved()) {
+                supportRequest.setResolved(Boolean.TRUE);
+                emailSessionBeanLocal.emailCheckoutNotificationAsync("Support Request " + supportRequest.getSupportRequestId() + " from Booking ID " + 
+                        supportRequest.getBooking().getBookingId() + " is resolved.", supportRequest.getBooking().getTravelItinerary().getCustomer().getEmail());
+            } else {
+                throw new ResolveSupportRequestException("Support request is already resolved!");
+            }
+        } catch (InterruptedException ex) {
+            throw new ResolveSupportRequestException("SupportRequest resolved, email sending failed");
         }
     }
 }

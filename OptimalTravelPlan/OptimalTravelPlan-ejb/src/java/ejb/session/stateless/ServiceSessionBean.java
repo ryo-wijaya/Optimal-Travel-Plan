@@ -22,7 +22,6 @@ import util.exception.ConstraintViolationException;
 import util.exception.CountryNotFoundException;
 import util.exception.CreateNewServiceException;
 import util.exception.ServiceNotFoundException;
-import util.exception.ServiceRateNotFoundException;
 import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateServiceException;

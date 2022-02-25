@@ -9,6 +9,7 @@ import entity.Account;
 import javax.ejb.Local;
 import util.exception.AccountDisabledException;
 import util.exception.AccountNotFoundException;
+import util.exception.ChangePasswordException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameAlreadyExistException;
@@ -25,5 +26,7 @@ public interface AccountSessionBeanLocal {
     public void toggleAccountStatus(Long accountId) throws AccountNotFoundException;
 
     public Account login(String username, String password) throws InvalidLoginCredentialException, AccountDisabledException;
+
+    public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException;
     
 }
