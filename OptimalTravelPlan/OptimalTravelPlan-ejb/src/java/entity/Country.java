@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class Country implements Serializable {
 
     public Country(String name) {
         this.name = name;
+        this.services = new ArrayList<>();
     }
 
     public Long getCountryId() {
