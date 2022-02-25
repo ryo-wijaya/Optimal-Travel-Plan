@@ -191,7 +191,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                     endDate.setTime(endDate.getTime() + 3600000l);
                     Booking newBooking = new Booking(startDate, endDate, ti, lunch);
                     ti.addBooking(newBooking);
-                    bookingSessionBeanLocal.createNewBooking(newBooking);
+                    bookingSessionBeanLocal.createBooking(newBooking);
                     hadLunch = true;
                     break;
                 } else if (formatter.after(end)) {
@@ -229,7 +229,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                     endDate.setTime(endDate.getTime() + 3600000l);
                     Booking newBooking = new Booking(startDate, endDate, ti, dinner);
                     ti.addBooking(newBooking);
-                    bookingSessionBeanLocal.createNewBooking(newBooking);
+                    bookingSessionBeanLocal.createBooking(newBooking);
                     hadDinner = true;
                     break;
                 } else if (formatter.after(end)) {
@@ -260,6 +260,21 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             formatter.set(Calendar.HOUR_OF_DAY, 9);
         }
     }
-
+    @Override
+    public BigDecimal calculateTotalItineraryPrice (TravelItinerary travelItinerary) {
+        BigDecimal totalPrice = new BigDecimal(0);
+        if (travelItinerary.getBookings() != null) {
+            for (Booking booking : travelItinerary.getBookings()) {
+                Service service = booking.getService();
+                ServiceRate lowestRate = service.getRates().get(0);
+                for (ServiceRate currentRate : service.getRates()) {
+                    if (currentRate.getStartDate().compareTo(booking.getStartDate()) >= 0 && currentRate.getEndDate().compareTo(booking.getEndDate()) <= 0 && currentRate.compareTo(lowestRate) <= 0) {
+                        lowestRate = currentRate;
+                    }   
+                }
+                totalPrice = totalPrice.add(lowestRate.getPrice());
+            }        
+        }
+        return totalPrice;
+    }
 }
-} 

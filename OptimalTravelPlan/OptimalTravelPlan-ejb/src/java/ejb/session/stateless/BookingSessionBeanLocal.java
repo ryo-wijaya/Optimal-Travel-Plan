@@ -10,6 +10,9 @@ import java.util.List;
 import javax.ejb.Local;
 import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
+import util.exception.ConstraintViolationException;
+import util.exception.CreateNewBookingException;
+import util.exception.UnknownPersistenceException;
 
 /**
  *
@@ -25,5 +28,7 @@ public interface BookingSessionBeanLocal {
     public List<Booking> retrieveBookingsByServiceId(Long serviceId);
 
     public void deleteBookingById(Long bookingId) throws BookingNotFoundException, BookingAlreadyConfirmedException;
+
+    public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException;
     
 }

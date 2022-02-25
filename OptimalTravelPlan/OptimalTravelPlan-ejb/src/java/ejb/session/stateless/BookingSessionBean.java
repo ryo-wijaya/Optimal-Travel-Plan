@@ -41,6 +41,7 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
 
+    @Override
     public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         try {
             Service service = serviceSessionBeanLocal.retrieveServiceById(serviceId);
