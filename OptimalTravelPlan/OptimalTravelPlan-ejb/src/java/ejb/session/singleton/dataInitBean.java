@@ -15,7 +15,9 @@ import entity.Service;
 import entity.ServiceRate;
 import entity.Staff;
 import entity.Tag;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,10 +28,13 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.enumeration.ChargeType;
 import util.enumeration.EmployeeRole;
+import util.enumeration.RateType;
 import util.enumeration.ServiceType;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewServiceException;
+import util.exception.CreateNewServiceRateException;
 import util.exception.UnknownPersistenceException;
 
 @Singleton
@@ -56,7 +61,7 @@ public class dataInitBean {
     }
     
     @PostConstruct
-    public void postConstruct(){
+    public void postConstruct() throws CreateNewServiceRateException{
         if(em.createQuery("SELECT s FROM Staff s").getResultList().size() < 1){
             //default manager
             Staff manager = new Staff("manager", "password", "admin1", EmployeeRole.ADMINISTRATOR);
@@ -96,13 +101,35 @@ public class dataInitBean {
             List<Long> tagList1 = new ArrayList<>();
             tagList1.add(familyTag.getTagId());
             
+            List<Long> tagList2 = new ArrayList<>();
+            tagList1.add(natureTag.getTagId());
+            
+            List<Long> tagList3 = new ArrayList<>();
+            tagList1.add(cultureTag.getTagId());
+            
+            List<Long> tagList4 = new ArrayList<>();
+            tagList1.add(nightTag.getTagId());
+            
+            List<Long> tagList5 = new ArrayList<>();
+            
             Country singapore = countrySessionBeanLocal.createNewCountry(new Country("Singapore"));
             Country japan = countrySessionBeanLocal.createNewCountry(new Country("Japan"));
             Country Taiwan = countrySessionBeanLocal.createNewCountry(new Country("Taiwan"));
             
             try {
                 Long service1 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.HOTEL, Boolean.TRUE, "address1"), business1.getBusinessId(), tagList1, singapore.getCountryId());
+                Long ServiceRate1 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(500), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service1);
                 
+                Long service2 = serviceSessionBeanLocal.createNewService(new Service(business2, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address2"), business2.getBusinessId(), tagList2, singapore.getCountryId());
+                
+                
+                Long service3 = serviceSessionBeanLocal.createNewService(new Service(business3, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address3"), business3.getBusinessId(), tagList3, singapore.getCountryId());
+                
+                
+                Long service4 = serviceSessionBeanLocal.createNewService(new Service(business4, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address4"), business4.getBusinessId(), tagList4, singapore.getCountryId());
+                
+                
+                Long service5 = serviceSessionBeanLocal.createNewService(new Service(business5, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address5"), business5.getBusinessId(), tagList5, singapore.getCountryId());
             } catch (UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException ex) {
                 Logger.getLogger(dataInitBean.class.getName()).log(Level.SEVERE, null, ex);
             }
