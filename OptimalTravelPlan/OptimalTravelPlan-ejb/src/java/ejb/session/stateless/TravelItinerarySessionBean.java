@@ -89,14 +89,14 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         Date endDate = travelItinerary.getEndDate();
         List<Booking> currBooking = travelItinerary.getBookings();
 
-
         Query query = em.createQuery("SELECT s,COUNT(s) FROM Tag t JOIN t.services s WHERE t IN :tags GROUP BY s ORDER BY COUNT(s)"); // OR
         query.setParameter("tags", tags);
         List<Object[]> result = query.getResultList();
-        
-        System.out.print();
-        
-        
+
+        for (Object[] arr : result) {
+            System.out.print("arr[0] = " + arr[0] + " arr[1] = " + arr[1]);
+        }
+
         throw new UnsupportedOperationException();
     }
 }
