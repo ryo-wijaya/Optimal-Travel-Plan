@@ -7,25 +7,15 @@ package ejb.session.stateless;
 
 import entity.Service;
 import entity.ServiceRate;
-import entity.Tag;
-import java.util.ArrayList;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 import util.exception.ConstraintViolationException;
-import util.exception.CountryNotFoundException;
-import util.exception.CreateNewServiceException;
 import util.exception.CreateNewServiceRateException;
-import util.exception.DeleteServiceRateException;
 import util.exception.ServiceNotFoundException;
 import util.exception.ServiceRateNotFoundException;
-import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 @Stateless
