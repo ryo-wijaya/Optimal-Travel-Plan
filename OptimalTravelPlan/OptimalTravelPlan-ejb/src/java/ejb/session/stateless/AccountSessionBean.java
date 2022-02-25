@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AccountDisabledException;
 import util.exception.AccountNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
@@ -34,12 +35,11 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
         try {
             em.persist(newAccount);
             em.flush();
-
             return newAccount.getAccountId();
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
                 if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new UsernameAlreadyExistException();
+                    throw new UsernameAlreadyExistException("Username already exists!");
                 } else {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }
@@ -71,7 +71,7 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
     }
 
     @Override
-    public Account login(String username, String password) throws InvalidLoginCredentialException {
+    public Account login(String username, String password) throws InvalidLoginCredentialException, AccountDisabledException {
 
         Query query = em.createQuery("SELECT a FROM Account a WHERE a.username = :inUsername");
         query.setParameter("inUsername", username);
@@ -82,6 +82,9 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
         }
         if (acc.testPassword(password)) {
+            if (!acc.getEnabled()) {
+                throw new AccountDisabledException("Account has been disabled! Please contact administrator!");
+            }
             if (acc instanceof Customer || acc instanceof Staff) {
                 //Customer associations are always eargerly fetched to to ensure client make less server requests.
                 //Staffs do not have associations

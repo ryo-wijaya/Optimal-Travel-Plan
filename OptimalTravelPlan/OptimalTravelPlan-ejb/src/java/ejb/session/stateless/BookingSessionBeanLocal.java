@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Booking;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 
 /**
@@ -22,5 +23,7 @@ public interface BookingSessionBeanLocal {
     public List<Booking> retrieveAllBookings();
 
     public List<Booking> retrieveBookingsByServiceId(Long serviceId);
+
+    public void deleteBookingById(Long bookingId) throws BookingNotFoundException, BookingAlreadyConfirmedException;
     
 }

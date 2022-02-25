@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,10 +37,10 @@ public class Booking implements Serializable {
     @OneToOne
     private PaymentTransaction paymentTransaction;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private SupportRequest supportRequest;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Review review;
 
     @ManyToOne

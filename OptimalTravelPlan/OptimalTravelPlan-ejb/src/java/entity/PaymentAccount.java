@@ -31,15 +31,18 @@ public class PaymentAccount implements Serializable {
     private String ccv;
 
     private PaymentType paymentType;
+    
+    private Boolean enabled;
 
     public PaymentAccount() {
     }
 
-    public PaymentAccount(String accountNumber, Date cardExpirationDate, String ccv, PaymentType paymentType) {
+    public PaymentAccount(String accountNumber, Date cardExpirationDate, String ccv, PaymentType paymentType, Boolean enabled) {
         this.accountNumber = accountNumber;
         this.cardExpirationDate = cardExpirationDate;
         this.ccv = ccv;
         this.paymentType = paymentType;
+        this.enabled = enabled;
     }
 
     public Long getPaymenetAccountId() {
@@ -101,6 +104,14 @@ public class PaymentAccount implements Serializable {
 
     public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

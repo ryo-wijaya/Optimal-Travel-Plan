@@ -76,6 +76,7 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
             paymentAccountToUpdate.setCardExpirationDate(paymentAccount.getCardExpirationDate());
             paymentAccountToUpdate.setCcv(paymentAccount.getCcv());
             paymentAccountToUpdate.setPaymentType(paymentAccount.getPaymentType());
+            paymentAccountToUpdate.setEnabled(paymentAccount.getEnabled());
             
         } else {
             throw new PaymentAccountNotFoundException("Payment Account ID not provided for payment account to be updated");
