@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Booking;
 import entity.Review;
+import entity.Service;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -30,14 +31,21 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
     
     
     @Override
-    public Review createNewReview(Long bookingId, Review review) throws BookingNotFoundException, UnknownPersistenceException, ConstraintViolationException{
+    public Review createNewReview(Long bookingId, Review review) throws BookingNotFoundException, UnknownPersistenceException, ConstraintViolationException {
         try {
             Booking booking = bookingSessionBean.retrieveBookingById(bookingId);
             review.setBooking(booking);
             em.persist(review);
             booking.setReview(review);
             em.flush();
+            
+            //cumulating ratings
+            Service service = booking.getService();
+            Integer serviceOldRatingNum = service.getTotalNumOfRatings();
+            service.setRating(((service.getRating() * serviceOldRatingNum) + review.getRating()) / (serviceOldRatingNum + 1));
+            service.setTotalNumOfRatings(serviceOldRatingNum + 1);
             return review;
+            
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
                 if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
@@ -51,6 +59,7 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
         }
     }
     
+    @Override
     public List<Review> retrieveAllReview() {
         Query query = em.createQuery("SELECT r FROM Review r");
         List<Review> reviewEntities = query.getResultList();
@@ -61,6 +70,7 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
         return reviewEntities;
     } 
     
+    @Override
     public Review retrieveReviewByReviewId(Long reviewId) throws ReviewNotFoundException {
         Review review = em.find(Review.class, reviewId);
         if(review != null) {
@@ -70,8 +80,10 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
         }
     }
     
-    public void deleteReview(Long reviewId) {
-        Review review = em.find(Review.class, reviewId);
+    @Override
+    public void deleteReview(Long reviewId) throws ReviewNotFoundException {
+        Review review = this.retrieveReviewByReviewId(reviewId);
+        review.getBooking().setReview(null);
         em.remove(review);
     }
     
