@@ -6,7 +6,9 @@
 package ejb.session.stateless;
 
 import entity.Customer;
+import entity.Tag;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -14,6 +16,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
+import util.exception.TagNotFoundException;
 import util.exception.UpdateCustomerException;
 
 /**
@@ -22,6 +25,9 @@ import util.exception.UpdateCustomerException;
  */
 @Stateless
 public class CustomerSessionBean implements CustomerSessionBeanLocal {
+
+    @EJB
+    private TagSessionBeanLocal tagSessionBeanLocal;
 
     @PersistenceContext(unitName = "EasyInstruments-ejbPU")
     private EntityManager em;
@@ -60,6 +66,13 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new AccountNotFoundException("Username has no match!");
         }
+    }
+    
+    @Override
+    public void associateTagToCustomer(Long customerId, Long tagId) throws AccountNotFoundException, TagNotFoundException {
+        Customer customer = this.retrieveCustomerById(customerId);
+        Tag tag = tagSessionBeanLocal.retrieveTagByTagId(tagId);
+        customer.getFavouriteTags().add(tag);
     }
 
     //Deleted customer login

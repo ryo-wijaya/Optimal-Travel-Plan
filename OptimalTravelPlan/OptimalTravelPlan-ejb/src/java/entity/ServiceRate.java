@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import util.enumeration.ChargeType;
 import util.enumeration.RateType;
 
 @Entity
@@ -37,12 +38,14 @@ public class ServiceRate implements Serializable {
     private Boolean requireVaccination;
     
     private Boolean enabled;
+    
+    private ChargeType chargeType;
 
     public ServiceRate() {
         enabled = true;
     }
 
-    public ServiceRate(Date startDate, Date endDate, BigDecimal price, RateType rateType, Boolean requireVaccination, Boolean enabled) {
+    public ServiceRate(Date startDate, Date endDate, BigDecimal price, RateType rateType, Boolean requireVaccination, Boolean enabled, ChargeType chargeType) {
         this();
         this.startDate = startDate;
         this.endDate = endDate;
@@ -50,6 +53,7 @@ public class ServiceRate implements Serializable {
         this.rateType = rateType;
         this.requireVaccination = requireVaccination;
         this.enabled = enabled;
+        this.chargeType = chargeType;
     }
 
     public Long getServiceRateId() {
@@ -150,5 +154,19 @@ public class ServiceRate implements Serializable {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * @return the chargeType
+     */
+    public ChargeType getChargeType() {
+        return chargeType;
+    }
+
+    /**
+     * @param chargeType the chargeType to set
+     */
+    public void setChargeType(ChargeType chargeType) {
+        this.chargeType = chargeType;
     }
 }

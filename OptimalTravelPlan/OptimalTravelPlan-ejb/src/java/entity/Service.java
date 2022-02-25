@@ -47,11 +47,17 @@ public class Service implements Serializable {
     private String address;
     
     private Boolean active;
+    
+    private Integer rating;
+    
+    private Integer totalNumOfRatings;
 
     public Service() {
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
         this.active = true;
+        this.rating = 0;
+        this.totalNumOfRatings = 0;
     }
 
     public Service(Business business, Country country, ServiceType serviceType, Boolean requireVaccination, String address) {
@@ -63,6 +69,22 @@ public class Service implements Serializable {
         this.address = address;
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+    
+    public Integer getTotalNumOfRatings() {
+        return totalNumOfRatings;
+    }
+
+    public void setTotalNumOfRatings(Integer totalNumOfRatings) {
+        this.totalNumOfRatings = totalNumOfRatings;
     }
 
     public Boolean getActive() {
