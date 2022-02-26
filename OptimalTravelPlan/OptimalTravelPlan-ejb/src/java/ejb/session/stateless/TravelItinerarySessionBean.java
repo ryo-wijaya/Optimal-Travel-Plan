@@ -97,7 +97,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         }
     }
 
-    //Country not added. Ensure there are always one hotel/F&B/Entertainment
+    //Country not added. Ensure there are always one hotel/F&B/Entertainment in each country else prepare for errors!
     @Override
     public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         travelItinerary = em.find(TravelItinerary.class, travelItinerary.getTravelItineraryId());
@@ -114,6 +114,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         query.setParameter("entertainment", ServiceType.ENTERTAINMENT);
         List<Object[]> result = query.getResultList();
         List<Service> services = new ArrayList<>();
+        
         for (Object[] arr : result) {
             System.out.print("arr[0] = " + arr[0] + " arr[1] = " + arr[1]);
             services.add((Service) arr[0]);
