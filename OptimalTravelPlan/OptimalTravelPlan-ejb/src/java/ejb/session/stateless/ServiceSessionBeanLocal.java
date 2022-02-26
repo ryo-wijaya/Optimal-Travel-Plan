@@ -33,5 +33,7 @@ public interface ServiceSessionBeanLocal {
     public void updateService(Service newService) throws ServiceNotFoundException, UpdateServiceException, AccountNotFoundException;
 
     public void toggleServiceActivation(Long serviceId) throws ServiceNotFoundException;
+
+    public List<Service> retrieveAllServiceByCountry(Long countryId);
     
 }

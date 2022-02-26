@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Booking;
+import entity.Country;
 import entity.Customer;
 import entity.Service;
 import entity.ServiceRate;
@@ -51,13 +52,14 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     private static final Long HALF_HOUR_IN_MILLISECONDS = 1800000L;
 
     @Override
-    public Long createNewTravelItinerary(TravelItinerary travelItinerary, Long customerId) throws UnknownPersistenceException, ConstraintViolationException, AccountNotFoundException {
+    public Long createNewTravelItinerary(TravelItinerary travelItinerary, Long customerId, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, AccountNotFoundException {
         try {
             Customer customer = em.find(Customer.class, customerId);
-            if (customer == null) {
-                throw new AccountNotFoundException("Customer not found!");
+            Country country = em.find(Country.class, countryId);
+            if (customer == null || country == null) {
+                throw new AccountNotFoundException("Customer or Country not found!");
             }
-
+            travelItinerary.setCountry(country);
             travelItinerary.setCustomer(customer);
             em.persist(travelItinerary);
             customer.getTravelItineraries().add(travelItinerary);
@@ -97,7 +99,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         }
     }
 
-    //Country not added. Ensure there are always one hotel/F&B/Entertainment in each country else prepare for errors!
+    //Ensure there are always one hotel/F&B/Entertainment in each country else prepare for errors!
     @Override
     public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         travelItinerary = em.find(TravelItinerary.class, travelItinerary.getTravelItineraryId());
@@ -109,12 +111,13 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         endDate.setTime(travelItinerary.getEndDate());
         List<Booking> currBooking = new ArrayList<Booking>(travelItinerary.getBookings());
 
-        Query query = em.createQuery("SELECT s,COUNT(s) FROM Tag t JOIN t.services s WHERE t IN :tags AND s.serviceType == :entertainment GROUP BY s ORDER BY COUNT(s) ASC"); // OR
+        Query query = em.createQuery("SELECT s,COUNT(s) FROM Tag t JOIN t.services s WHERE t IN :tags AND s.country == :country AND s.serviceType == :entertainment GROUP BY s ORDER BY COUNT(s) ASC"); // OR
         query.setParameter("tags", tags);
+        query.setParameter("country", travelItinerary.getCountry());
         query.setParameter("entertainment", ServiceType.ENTERTAINMENT);
         List<Object[]> result = query.getResultList();
         List<Service> services = new ArrayList<>();
-        
+
         for (Object[] arr : result) {
             System.out.print("arr[0] = " + arr[0] + " arr[1] = " + arr[1]);
             services.add((Service) arr[0]);
@@ -124,12 +127,14 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             services = serviceSessionBeanLocal.retrieveAllActiveServices();
         }
 
-        Query query2 = em.createQuery("SELECT s FROM Service s WHERE s.serviceType == :hotel");
+        Query query2 = em.createQuery("SELECT s FROM Service s WHERE s.country == :country AND s.serviceType == :hotel");
         query2.setParameter("hotel", ServiceType.HOTEL);
+        query2.setParameter("country", travelItinerary.getCountry());
         List<Service> hotels = query2.getResultList();
 
-        Query query3 = em.createQuery("SELECT s FROM Service s WHERE s.serviceType == :FnB ORDER BY s.rating DESC");
+        Query query3 = em.createQuery("SELECT s FROM Service s WHERE s.country == :country AND s.serviceType == :FnB ORDER BY s.rating DESC");
         query3.setParameter("FnB", ServiceType.FOOD_AND_BEVERAGE);
+        query3.setParameter("country", travelItinerary.getCountry());
         List<Service> FnB = query3.getResultList();
 
         moveToDaylight(startDate);
@@ -183,7 +188,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                 bookingSessionBeanLocal.createBooking(newBooking, entertainment.getServiceId(), travelItinerary.getTravelItineraryId());
                 entertainmentPointer.add(Calendar.HOUR_OF_DAY, 3);
             } else {
-                Calendar midnight =  (Calendar) entertainmentPointer.clone();
+                Calendar midnight = (Calendar) entertainmentPointer.clone();
                 midnight.set(Calendar.HOUR_OF_DAY, 22);
                 if (!sameDay.get(0).getEndDate().after(midnight.getTime())) {
                     entertainmentPointer.setTimeInMillis(sameDay.remove(0).getEndDate().getTime() + HOUR_IN_MILLISECONDS);

@@ -126,6 +126,15 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
         }
         return services;
     }
+    
+    @Override
+    public List<Service> retrieveAllServiceByCountry(Long countryId) {
+        Country country = em.find(Country.class, countryId);
+        Query query = em.createQuery("SELECT s FROM Service s WHERE s.country = :country");
+        query.setParameter("country", country);
+        
+        return query.getResultList();
+    }
 
     @Override
     public void updateService(Service newService) throws ServiceNotFoundException, UpdateServiceException, AccountNotFoundException {

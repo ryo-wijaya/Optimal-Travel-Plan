@@ -37,14 +37,18 @@ public class TravelItinerary implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
+    
+    @ManyToOne
+    private Country country;
 
     public TravelItinerary() {
     }
 
-    public TravelItinerary(Customer customer, Date startDate, Date endDate) {
+    public TravelItinerary(Customer customer, Date startDate, Date endDate, Country country) {
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.country = country;
     }
 
     public Long getTravelItineraryId() {
@@ -114,6 +118,14 @@ public class TravelItinerary implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
 }

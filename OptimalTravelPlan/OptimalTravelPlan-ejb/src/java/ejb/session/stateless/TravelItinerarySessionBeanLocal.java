@@ -23,8 +23,8 @@ import util.exception.UnknownPersistenceException;
 @Local
 public interface TravelItinerarySessionBeanLocal {
 
-    public Long createNewTravelItinerary(TravelItinerary travelItinerary, Long customerId) throws UnknownPersistenceException, ConstraintViolationException, AccountNotFoundException;
-
+    public Long createNewTravelItinerary(TravelItinerary travelItinerary, Long customerId, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, AccountNotFoundException;
+    
     public TravelItinerary retrieveTravelItineraryById(Long travelItineraryId) throws TravelItineraryNotFoundException;
 
     public void deleteTravelItinerary(Long travelItineraryId) throws TravelItineraryNotFoundException, BookingNotFoundException, BookingAlreadyConfirmedException;
@@ -32,5 +32,6 @@ public interface TravelItinerarySessionBeanLocal {
     public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException ;
 
     public BigDecimal calculateTotalItineraryPrice(TravelItinerary travelItinerary);
-    
+
+
 }
