@@ -118,7 +118,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             System.out.print("arr[0] = " + arr[0] + " arr[1] = " + arr[1]);
             services.add((Service) arr[0]);
         }
-        
+
         if (services.size() < 5) {
             services = serviceSessionBeanLocal.retrieveAllActiveServices();
         }
@@ -171,18 +171,24 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             return a.getStartDate().compareTo(b.getStartDate());
         });
 
-        while (entertainmentPointer.get(Calendar.HOUR_OF_DAY) <= 19) {
+        while (entertainmentPointer.get(Calendar.HOUR_OF_DAY) <= 20) {
             if (sameDay.size() < 1 || entertainmentPointer.getTimeInMillis() + 3 * HOUR_IN_MILLISECONDS <= sameDay.get(0).getStartDate().getTime()) {
                 Service entertainment = services.remove(0);
                 services.add(entertainment);
                 Calendar startDate = (Calendar) entertainmentPointer.clone();
                 Calendar endDate = (Calendar) entertainmentPointer.clone();
-                endDate.add(Calendar.HOUR_OF_DAY,2);
+                endDate.add(Calendar.HOUR_OF_DAY, 2);
                 Booking newBooking = new Booking(startDate.getTime(), endDate.getTime(), travelItinerary, entertainment);
-                bookingSessionBeanLocal.createBooking(newBooking, entertainment.getServiceId(),travelItinerary.getTravelItineraryId());
-                entertainmentPointer.add(Calendar.HOUR_OF_DAY,3);
+                bookingSessionBeanLocal.createBooking(newBooking, entertainment.getServiceId(), travelItinerary.getTravelItineraryId());
+                entertainmentPointer.add(Calendar.HOUR_OF_DAY, 3);
             } else {
-                entertainmentPointer.setTimeInMillis(sameDay.remove(0).getEndDate().getTime() + HOUR_IN_MILLISECONDS);
+                Calendar midnight =  (Calendar) entertainmentPointer.clone();
+                midnight.set(Calendar.HOUR_OF_DAY, 22);
+                if (!sameDay.get(0).getEndDate().after(midnight.getTime())) {
+                    entertainmentPointer.setTimeInMillis(sameDay.remove(0).getEndDate().getTime() + HOUR_IN_MILLISECONDS);
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -344,9 +350,9 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                 Calendar dinnerS = Calendar.getInstance();
                 dinnerS.setTime(day.getTime());
                 dinnerS.set(Calendar.HOUR_OF_DAY, 17);
-                Calendar lunchE = (Calendar) dinnerS.clone();
-                lunchE.add(Calendar.HOUR_OF_DAY, 1);
-                Booking newBooking = new Booking(dinnerS.getTime(), lunchE.getTime(), ti, dinner);
+                Calendar dinnerE = (Calendar) dinnerS.clone();
+                dinnerE.add(Calendar.HOUR_OF_DAY, 1);
+                Booking newBooking = new Booking(dinnerS.getTime(), dinnerE.getTime(), ti, dinner);
                 bookingSessionBeanLocal.createBooking(newBooking, dinner.getServiceId(), ti.getTravelItineraryId());
                 hadDinner = true;
             } else {
