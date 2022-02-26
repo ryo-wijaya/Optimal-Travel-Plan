@@ -12,6 +12,7 @@ import util.exception.AccountNotFoundException;
 import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
+import util.exception.CreateNewBookingException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -28,7 +29,7 @@ public interface TravelItinerarySessionBeanLocal {
 
     public void deleteTravelItinerary(Long travelItineraryId) throws TravelItineraryNotFoundException, BookingNotFoundException, BookingAlreadyConfirmedException;
 
-    public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary);
+    public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException ;
 
     public BigDecimal calculateTotalItineraryPrice(TravelItinerary travelItinerary);
     
