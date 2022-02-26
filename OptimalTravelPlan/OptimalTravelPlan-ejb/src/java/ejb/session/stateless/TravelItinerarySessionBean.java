@@ -34,6 +34,9 @@ import util.exception.UnknownPersistenceException;
 @Stateless
 public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLocal {
 
+    @EJB(name = "ServiceSessionBeanLocal")
+    private ServiceSessionBeanLocal serviceSessionBeanLocal;
+
     @EJB(name = "BookingSessionBeanLocal")
     private BookingSessionBeanLocal bookingSessionBeanLocal;
 
@@ -94,7 +97,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         }
     }
 
-    //Country
+    //Country not added. Ensure there are always one hotel/F&B/Entertainment
     @Override
     public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         travelItinerary = em.find(TravelItinerary.class, travelItinerary.getTravelItineraryId());
@@ -114,6 +117,10 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         for (Object[] arr : result) {
             System.out.print("arr[0] = " + arr[0] + " arr[1] = " + arr[1]);
             services.add((Service) arr[0]);
+        }
+        
+        if (services.size() < 5) {
+            services = serviceSessionBeanLocal.retrieveAllActiveServices();
         }
 
         Query query2 = em.createQuery("SELECT s FROM Service s WHERE s.serviceType == :hotel");
