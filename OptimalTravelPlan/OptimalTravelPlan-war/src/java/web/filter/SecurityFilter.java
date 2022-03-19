@@ -5,10 +5,14 @@
  */
 package web.filter;
 
+import entity.Account;
+import entity.Business;
+import entity.Staff;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,6 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -30,6 +37,8 @@ public class SecurityFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
+    
+    private static final String CONTEXT_ROOT = "/OptimalTravelPlan-war";
 
     public SecurityFilter() {
     }
@@ -96,35 +105,45 @@ public class SecurityFilter implements Filter {
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        if (debug) {
-            log("SecurityFilter:doFilter()");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++doFilter() Triggered++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        HttpSession httpSession = httpServletRequest.getSession(true);
+        String requestServletPath = httpServletRequest.getServletPath();
+
+        if (httpSession.getAttribute("isLogin") == null) {
+            httpSession.setAttribute("isLogin", false);
         }
+        Boolean isLogin = (Boolean) httpSession.getAttribute("isLogin");
 
-        doBeforeProcessing(request, response);
-
-        Throwable problem = null;
-        try {
+        if (!excludeLoginCheck(requestServletPath)) {
+            if (isLogin) {
+                
+                // Checking accessRight
+                Account loggedInAccount = (Account) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
+                
+                if (loggedInAccount instanceof Staff) {
+                    if (this.adminAccessOnly(requestServletPath)) {
+                        chain.doFilter(request, response);
+                    } else {
+                        httpServletResponse.sendRedirect(CONTEXT_ROOT + "/errorPage.xhtml");
+                    }
+                } else if (loggedInAccount instanceof Business) {
+                    if (this.businessAccessOnly(requestServletPath)) {
+                        chain.doFilter(request, response);
+                    } else {
+                        httpServletResponse.sendRedirect(CONTEXT_ROOT + "/errorPage.xhtml");
+                    }
+                }
+                
+                
+                chain.doFilter(request, response);
+            } else {
+                httpServletResponse.sendRedirect(CONTEXT_ROOT + "/errorPage.xhtml");
+            }
+        } else {
             chain.doFilter(request, response);
-        } catch (Throwable t) {
-            // If an exception is thrown somewhere down the filter chain,
-            // we still want to execute our after processing, and then
-            // rethrow the problem after that.
-            problem = t;
-            t.printStackTrace();
-        }
-
-        doAfterProcessing(request, response);
-
-        // If there was a problem, we want to rethrow it if it is
-        // a known type, otherwise log it.
-        if (problem != null) {
-            if (problem instanceof ServletException) {
-                throw (ServletException) problem;
-            }
-            if (problem instanceof IOException) {
-                throw (IOException) problem;
-            }
-            sendProcessingError(problem, response);
         }
     }
 
@@ -223,5 +242,32 @@ public class SecurityFilter implements Filter {
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
     }
-
+    
+    private Boolean excludeLoginCheck(String path) {
+        if (path.equals("/index.xhtml")
+                || path.equals("/errorPage.xhtml")
+                || path.equals("/login.xhtml")
+                || path.equals("/register.xhtml")
+                || path.startsWith("/javax.faces.resource")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private Boolean businessAccessOnly(String path) {
+        if (path.equals("/businessMain.xhtml")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private Boolean adminAccessOnly(String path) {
+        if (path.equals("/adminMain.xhtml")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -7,7 +7,7 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <ui:define name="content">
-               <style>
+        <style>
             .tabStyle{
                 text-align: center;
                 background: #ccffff;
@@ -21,11 +21,11 @@
         </style>
 
 
-            <p:panel styleClass="panelStyle">
+        <p:panel styleClass="panelStyle">
             <h:form id="formLogin">
-                
+
                 <p:growl id="loginGrowl"/>
-                
+
                 <p:tabView effect="fade" styleClass="tabStyle">
                     <p:tab title="Admin Login">
 
@@ -39,22 +39,39 @@
 
                     </p:tab>
                     <p:tab title="Business Login">
-                        
+
                         <h:panelGrid columns="2">
                             <p:outputLabel for="username2"><b>Username:</b></p:outputLabel>
-                            <p:inputText id="username2" value="#{loginPageManagedBean.username}" required="true" requiredMessage="Username is required" />
+                            <p:inputText id="username2" value="#{loginPageManagedBean.username}" />
 
                             <p:outputLabel for="password2"><b>Password:</b></p:outputLabel>
-                            <p:password id="password2" value="#{loginPageManagedBean.password}" required="true" requiredMessage="password is required" />
+                            <p:password id="password2" value="#{loginPageManagedBean.password}" />
                         </h:panelGrid>
-                        
+
+                        <br></br>
+                        <p:commandLink style="font-size: 12; text-align: center" value="Did you forget your password?" oncomplete="PF('forgetPassword').show()" />
                     </p:tab>
                 </p:tabView>
-                
+
                 <br></br>
-                <p:commandButton id="loginButton" value="Login" actionListener="#{loginPageManagedBean.login}" update="@form"/>
+
+                <h:panelGroup style="display: block; text-align: center; width: 100%">
+                    <p:commandButton id="loginButton" value="Login" actionListener="#{loginPageManagedBean.login}" update="@form"/>
+                </h:panelGroup>
             </h:form>
         </p:panel>
+        
+        <p:dialog header="Please input your email address for password recovery" widgetVar="forgetPassword" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel style="text-align:center;">
+                    <p:panelGrid  columns="2">
+                        <p:outputLabel for="recoverEmail"><b>Recovery Email:</b></p:outputLabel>
+                        <p:inputText id="recoverEmail" value="#{loginPageManagedBean.recoveryEmail}" />
+                    </p:panelGrid>
+
+                    <br></br>
+                    <p:commandButton id="sendRecoveryEmail" value="Send Email" actionListener="#{loginPageManagedBean.sendRecoveryEmail}" />
+                </p:outputPanel>
+            </p:dialog>
     </ui:define>
 
 </ui:composition>

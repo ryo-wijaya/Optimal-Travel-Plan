@@ -31,6 +31,7 @@ public class LoginPageManagedBean {
 
     private String username;
     private String password;
+    private String recoveryEmail;
     private FacesContext fc;
 
     /**
@@ -45,28 +46,37 @@ public class LoginPageManagedBean {
             Account loginAccount = accountSessionBeanLocal.login(username, password);
             fc.getExternalContext().getSessionMap().put("isLogin", true);
             fc.getExternalContext().getSessionMap().put("loggedInAccount", loginAccount);
-            
+
             // So the growl on the next page can access the message
             fc.getExternalContext().getFlash().setKeepMessages(true);
-            
+
             if (loginAccount instanceof Staff) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Successful!", null));
                 fc.getExternalContext().redirect("adminMain.xhtml");
-                
+
             } else if (loginAccount instanceof Business) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Successful!", null));
                 fc.getExternalContext().redirect("businessMain.xhtml");
-                
+
             } else {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid AccessRight for this portal!", null));
                 fc.getExternalContext().redirect("error.xhtml");
             }
-            
+
         } catch (InvalidLoginCredentialException ex) {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid Credentials Provided!", null));
         } catch (AccountDisabledException ex) {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Account has been disabled!", null));
         }
+    }
+
+    public void logout() throws IOException {
+        fc.getExternalContext().invalidateSession();
+        fc.getExternalContext().redirect("index.xhtml");
+    }
+
+    public void sendRecoveryEmail() {
+        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Recovery Email Sent!", null));
     }
 
     public String getUsername() {
@@ -83,6 +93,14 @@ public class LoginPageManagedBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRecoveryEmail() {
+        return recoveryEmail;
+    }
+
+    public void setRecoveryEmail(String recoveryEmail) {
+        this.recoveryEmail = recoveryEmail;
     }
 
 }
