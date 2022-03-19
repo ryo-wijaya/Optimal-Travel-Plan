@@ -2,10 +2,59 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./template/businessTemplate.xhtml">
+                template="./template/businessTemplate.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <ui:define name="content">
-        content
+               <style>
+            .tabStyle{
+                text-align: center;
+                background: #ccffff;
+            }
+            .panelStyle {
+                border: #006699 solid 5px;
+                width:400px;
+                margin: 5% auto 10%;
+                background: #99ffff;
+            }
+        </style>
+
+
+            <p:panel styleClass="panelStyle">
+            <h:form id="formLogin">
+                
+                <p:growl id="loginGrowl"/>
+                
+                <p:tabView effect="fade" styleClass="tabStyle">
+                    <p:tab title="Admin Login">
+
+                        <h:panelGrid columns="2">
+                            <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
+                            <p:inputText id="username" value="#{loginPageManagedBean.username}" required="true" requiredMessage="Username is required" />
+
+                            <p:outputLabel for="password"><b>Password:</b></p:outputLabel>
+                            <p:password id="password" value="#{loginPageManagedBean.password}" required="true" requiredMessage="password is required" />
+                        </h:panelGrid>
+
+                    </p:tab>
+                    <p:tab title="Business Login">
+                        
+                        <h:panelGrid columns="2">
+                            <p:outputLabel for="username2"><b>Username:</b></p:outputLabel>
+                            <p:inputText id="username2" value="#{loginPageManagedBean.username}" required="true" requiredMessage="Username is required" />
+
+                            <p:outputLabel for="password2"><b>Password:</b></p:outputLabel>
+                            <p:password id="password2" value="#{loginPageManagedBean.password}" required="true" requiredMessage="password is required" />
+                        </h:panelGrid>
+                        
+                    </p:tab>
+                </p:tabView>
+                
+                <br></br>
+                <p:commandButton id="loginButton" value="Login" actionListener="#{loginPageManagedBean.login}" update="@form"/>
+            </h:form>
+        </p:panel>
     </ui:define>
 
 </ui:composition>
