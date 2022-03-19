@@ -55,6 +55,7 @@ public class Service implements Serializable {
     public Service() {
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
+        this.tags = new ArrayList<>();
         this.active = true;
         this.rating = 0;
         this.totalNumOfRatings = 0;
@@ -67,8 +68,6 @@ public class Service implements Serializable {
         this.serviceType = serviceType;
         this.requireVaccination = requireVaccination;
         this.address = address;
-        this.rates = new ArrayList<>();
-        this.bookings = new ArrayList<>();
     }
 
     public Integer getRating() {

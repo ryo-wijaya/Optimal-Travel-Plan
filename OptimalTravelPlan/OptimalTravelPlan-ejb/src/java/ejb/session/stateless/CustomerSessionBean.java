@@ -29,7 +29,7 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
 
-    @PersistenceContext(unitName = "EasyInstruments-ejbPU")
+    @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
 
     @Override
