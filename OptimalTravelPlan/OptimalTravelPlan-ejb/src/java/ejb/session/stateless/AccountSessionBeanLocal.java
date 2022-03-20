@@ -11,6 +11,7 @@ import util.exception.AccountDisabledException;
 import util.exception.AccountNotFoundException;
 import util.exception.ChangePasswordException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.PasswordNotAcceptedException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameAlreadyExistException;
 
@@ -27,6 +28,6 @@ public interface AccountSessionBeanLocal {
 
     public Account login(String username, String password) throws InvalidLoginCredentialException, AccountDisabledException;
 
-    public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException;
+    public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException, PasswordNotAcceptedException;
     
 }

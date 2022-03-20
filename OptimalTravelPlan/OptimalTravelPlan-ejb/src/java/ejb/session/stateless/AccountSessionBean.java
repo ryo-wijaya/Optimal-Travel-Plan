@@ -18,6 +18,7 @@ import util.exception.AccountDisabledException;
 import util.exception.AccountNotFoundException;
 import util.exception.ChangePasswordException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.PasswordNotAcceptedException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameAlreadyExistException;
 
@@ -79,7 +80,8 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
         Account acc;
         try {
             acc = (Account) query.getSingleResult();
-        } catch (Exception e){
+
+        } catch (Exception e) {
             throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
         }
         if (acc.testPassword(password)) {
@@ -87,24 +89,22 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
                 throw new AccountDisabledException("Account has been disabled! Please contact administrator!");
             }
             if (acc instanceof Customer || acc instanceof Staff) {
-                //Customer associations are always eargerly fetched to to ensure client make less server requests.
-                //Staffs do not have associations
                 return acc;
             } else if (acc instanceof Business) {
                 Business business = (Business) acc;
-                business.getServices();
+                business.getServices().size();
                 return business;
             }
         }
         throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
     }
-    
+
     @Override
-    public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException {
+    public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException, PasswordNotAcceptedException {
         Account account = this.retrieveAccountById(accountId);
-        
-        if (account.testPassword(oldPassword) && (newPassword.length() > 6 && newPassword.length() <= 16)) {
-            account.setPassword(account.hashPassword(newPassword));
+
+        if (account.testPassword(oldPassword)) {
+            account.setPassword(newPassword);
         } else {
             throw new ChangePasswordException("Password does not match!");
         }

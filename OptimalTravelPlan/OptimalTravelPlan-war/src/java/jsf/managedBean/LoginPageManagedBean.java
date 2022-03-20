@@ -15,6 +15,7 @@ import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import util.exception.AccountDisabledException;
 import util.exception.InvalidLoginCredentialException;
 
@@ -31,6 +32,10 @@ public class LoginPageManagedBean {
 
     private String username;
     private String password;
+
+    private String username2;
+    private String password2;
+
     private String recoveryEmail;
     private FacesContext fc;
 
@@ -41,9 +46,17 @@ public class LoginPageManagedBean {
         fc = FacesContext.getCurrentInstance();
     }
 
-    public void login() throws IOException {
+    public void login(ActionEvent event) throws IOException {
         try {
-            Account loginAccount = accountSessionBeanLocal.login(username, password);
+            Account loginAccount;
+            if (!username.isEmpty() && !password.isEmpty()) {
+                System.out.println("User & pass = " + username + " " + password);
+                loginAccount = accountSessionBeanLocal.login(username, password);
+            } else {
+                System.out.println("User & pass = " + username2 + " " + password2);
+                loginAccount = accountSessionBeanLocal.login(username2, password2);
+            }
+
             fc.getExternalContext().getSessionMap().put("isLogin", true);
             fc.getExternalContext().getSessionMap().put("loggedInAccount", loginAccount);
 
@@ -65,6 +78,7 @@ public class LoginPageManagedBean {
 
         } catch (InvalidLoginCredentialException ex) {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid Credentials Provided!", null));
+            System.out.println("Exception details : " + ex.getMessage());
         } catch (AccountDisabledException ex) {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Account has been disabled!", null));
         }
@@ -101,6 +115,22 @@ public class LoginPageManagedBean {
 
     public void setRecoveryEmail(String recoveryEmail) {
         this.recoveryEmail = recoveryEmail;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public void setUsername2(String username2) {
+        this.username2 = username2;
+    }
+
+    public String getPassword2() {
+        return password2;
+    }
+
+    public void setPassword2(String password2) {
+        this.password2 = password2;
     }
 
 }

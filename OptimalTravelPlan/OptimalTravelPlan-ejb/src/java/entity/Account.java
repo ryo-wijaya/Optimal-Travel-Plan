@@ -18,6 +18,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import util.exception.PasswordNotAcceptedException;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -48,10 +49,10 @@ public abstract class Account implements Serializable {
         this.enabled = true;
     }
 
-    public Account(String username, String password) {
+    public Account(String username, String password) throws PasswordNotAcceptedException {
         this();
         this.username = username;
-        this.password = hashPassword(password);
+        setPassword(password);
     }
 
     public Boolean getEnabled() {
@@ -83,12 +84,15 @@ public abstract class Account implements Serializable {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(String password) throws PasswordNotAcceptedException {
+        if (this.password.length() < 8){
+            throw new PasswordNotAcceptedException("Password length must be at least 8 characters!");
+        }
         this.password = hashPassword(password);
     }
     
     public Boolean testPassword(String rawPassword) {
-        return this.password == hashPassword(rawPassword);
+        return this.password.equals(hashPassword(rawPassword));
     }
 
     public Long getAccountId() {
