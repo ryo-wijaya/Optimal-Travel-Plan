@@ -5,11 +5,11 @@
                 xmlns:p="http://primefaces.org/ui"> 
 
     <h:graphicImage library="images" name="OTP_Logo-Cropped.jpg" width="auto" height="100%" />&nbsp;
-    <h3 align="centre">Welcome to Optimal Travel Plans!</h3>
-
-    <h:panelGroup rendered="#{sessionScope.isLogin == true}">
-        <h:form>
-            <p:growl id="messages" showDetail="true"/>
+    <h3 style="float: top; padding: 20px;">Welcome to Optimal Travel Plans!</h3>
+    
+    <h:form>
+        <h:panelGroup style="float: right">
+            <h:outputText value="You are login as #{sessionScope.loggedInAccount.username}." />&nbsp;
             <p:menubar>
                 <p:submenu label="Account action" icon="pi pi-bars">
                     <p:menuitem value="View/Update account details" 
@@ -22,13 +22,13 @@
                                 icon="pi pi-external-link"/>
                 </p:submenu>
             </p:menubar>
-        </h:form>
-    </h:panelGroup>
-
-
+        </h:panelGroup>
+    </h:form>
+    
     <h:form id="formUpdateAccount">
         <p:dialog id="dialogUpdateAccount" widgetVar="dialogUpdateAccount" header="Update Account" closable="true">
             <p:messages id="messagesUpdateAccount" redisplay="false" />
+            <h:outputText value="test"/>
             <p:panelGrid rendered="#{loginManagedBean.admin != null}">
 
                 <p:row>
@@ -103,7 +103,7 @@
                         <h:outputLabel for="password" value="Password: " />
                     </p:column>
                     <p:column>
-                        <p:password id="password" value="#{loginManagedBean.password}" required="false" feedback="true" redisplay="true"/>
+                        <p:password id="password" value="#{loginManagedBean.password2}" required="false" feedback="true" redisplay="true"/>
                     </p:column>
                 </p:row>
 
@@ -163,7 +163,6 @@
                 </p:row>
 
             </p:panelGrid>
-
         </p:dialog>
     </h:form>
 

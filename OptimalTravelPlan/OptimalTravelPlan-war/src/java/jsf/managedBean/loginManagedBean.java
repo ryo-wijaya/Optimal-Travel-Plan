@@ -12,6 +12,9 @@ import entity.Business;
 import entity.Staff;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.application.FacesMessage;
@@ -38,33 +41,43 @@ public class loginManagedBean implements Serializable {
     private Staff admin;
 
     private String password;
+    private String password2;
 
     public loginManagedBean() {
-
     }
 
-    public void logout(ActionEvent event) throws IOException {
+    @PostConstruct
+    public void post() {
+        Boolean loggedIn = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("isLogin");
+        if(loggedIn){
+            try {
+                updateAccount();
+            } catch (IOException ex) {
+                Logger.getLogger(loginManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void logout() throws IOException {
         ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
         FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/login.xhtml");
     }
 
-    public void updateAccount(ActionEvent event) throws IOException {
-        Account user = (Account) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("currentUser");
+    public void updateAccount() throws IOException {
+        Account user = (Account) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
         password = "";
         if (user instanceof Business) {
             business = (Business) user;
         } else if (user instanceof Staff) {
             admin = (Staff) user;
-        } else {
-            logout(null);
         }
     }
 
     public void doUpdateAction(ActionEvent event) throws IOException {
         try {
             if (business != null) {
-                if (!password.isEmpty()) {
-                    business.setPassword(password);
+                if (!password2.isEmpty()) {
+                    business.setPassword(password2);
                 }
                 businessSessionBeanLocal.updateBusiness(business);
             } else if (admin != null) {
@@ -102,6 +115,14 @@ public class loginManagedBean implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassword2() {
+        return password2;
+    }
+
+    public void setPassword2(String password2) {
+        this.password2 = password2;
     }
 
 }
