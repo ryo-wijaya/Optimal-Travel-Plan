@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
 import util.exception.InvalidLoginCredentialsException;
+import util.exception.PasswordNotAcceptedException;
 import util.exception.UpdateStaffException;
 
 /**
@@ -26,5 +27,4 @@ public interface StaffSessionBeanLocal {
     public Staff retrieveStaffByUsername(String username) throws AccountNotFoundException;
 
     public void updateStaff(Staff staff) throws AccountNotFoundException, UpdateStaffException;
-    
 }

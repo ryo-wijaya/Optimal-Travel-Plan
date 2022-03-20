@@ -76,24 +76,28 @@ public class SecurityFilter implements Filter {
                 if (loggedInAccount instanceof Staff) {
                     if (this.adminAccessOnly(requestServletPath)) {
                         chain.doFilter(request, response);
+                        return;
                     } else {
                         httpServletResponse.sendRedirect(CONTEXT_ROOT + "/errorPage.xhtml");
                     }
                 } else if (loggedInAccount instanceof Business) {
                     if (this.businessAccessOnly(requestServletPath)) {
                         chain.doFilter(request, response);
+                        return;
                     } else {
                         httpServletResponse.sendRedirect(CONTEXT_ROOT + "/errorPage.xhtml");
+                        return;
                     }
                 }
-                
-                
                 chain.doFilter(request, response);
+                return;
             } else {
                 httpServletResponse.sendRedirect(CONTEXT_ROOT + "/errorPage.xhtml");
+                return;
             }
         } else {
             chain.doFilter(request, response);
+            return;
         }
     }
 

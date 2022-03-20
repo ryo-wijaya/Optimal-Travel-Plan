@@ -10,6 +10,7 @@ import entity.Account;
 import entity.Business;
 import entity.Staff;
 import java.io.IOException;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -45,10 +46,20 @@ public class LoginPageManagedBean {
     public LoginPageManagedBean() {
         fc = FacesContext.getCurrentInstance();
     }
+    
+    @PostConstruct
+    public void post(){
+        this.password = "";
+        this.password2 = "";
+        this.username = "";
+        this.username2 = "";
+    }
 
     public void login(ActionEvent event) throws IOException {
         try {
             Account loginAccount;
+            
+            System.out.println("User & pass = " + username.isEmpty() + " " + password.isEmpty());
             if (!username.isEmpty() && !password.isEmpty()) {
                 System.out.println("User & pass = " + username + " " + password);
                 loginAccount = accountSessionBeanLocal.login(username, password);

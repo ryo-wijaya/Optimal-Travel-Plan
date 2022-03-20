@@ -10,44 +10,56 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet name="./css/default.css"/>
         <h:outputStylesheet name="./css/cssLayout.css"/>
+        <style type="text/css">
+            .ui-layout-north {
+                z-index:20 !important;
+                overflow:visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow:visible !important;
+            }
+        </style>
         <title>Admin Template</title>
     </h:head>
 
     <h:body>
 
         <p:layout fullPage="true">
-            <p:layoutUnit position="north" size="120">                            
+            <p:layoutUnit position="north" size="120" resizable="true" closable="false" collapsible="true">                            
                 <ui:insert name="top">
                     <ui:include src="/header.xhtml" />
                 </ui:insert>
             </p:layoutUnit>
-            
-            <p:layoutUnit size="240" position="west">
+
+            <p:layoutUnit size="240" position="west" resizable="true" closable="false" collapsible="true">
                 <ui:insert name="left">
                     <div>
                         <h5>Admin Menu</h5>
-                        <p:menu toggleable="true">
-                            <p:submenu label="Countries">
-                                <p:menuitem value="Add country" action="#{function}" ajax="false" icon="pi pi-plus"/>
-                                <p:menuitem value="View country list" action="#{function}" ajax="false" icon="pi pi-list"/>
-                            </p:submenu>
+                        <h:form>
+                            <p:menu toggleable="true">
+                                <p:submenu label="Countries">
+                                    <p:menuitem value="Add country" action="#{function}" ajax="false" icon="pi pi-plus"/>
+                                    <p:menuitem value="View country list" action="#{function}" ajax="false" icon="pi pi-list"/>
+                                </p:submenu>
 
-                            <p:submenu label="Tags">
-                                <p:menuitem value="Add new tag" action="#{function}" ajax="false" icon="pi pi-plus"/>
-                                <p:menuitem value="View tags list" action="#{function}" ajax="false" icon="pi pi-list"/>
-                            </p:submenu>
+                                <p:submenu label="Tags">
+                                    <p:menuitem value="Add new tag" action="#{function}" ajax="false" icon="pi pi-plus"/>
+                                    <p:menuitem value="View tags list" action="#{function}" ajax="false" icon="pi pi-list"/>
+                                </p:submenu>
 
-                            <p:submenu label="Accounts">
-                                <p:menuitem value="Create new account" action="#{function}" ajax="false" icon="pi pi-plus"/>
-                                <p:menuitem value="View accounts list" action="#{function}" ajax="false" icon="pi pi-list"/>
-                            </p:submenu>
+                                <p:submenu label="Accounts">
+                                    <p:menuitem value="Create new account" action="#{function}" ajax="false" icon="pi pi-plus"/>
+                                    <p:menuitem value="View accounts list" action="#{function}" ajax="false" icon="pi pi-list"/>
+                                </p:submenu>
 
-                            <p:submenu label="Issues and services">
-                                <p:menuitem value="View Support Tickets" action="#{function}" ajax="false" icon="pi pi-list"/>
-                                <p:menuitem value="Add Non-Business Service" action="#{function}" ajax="false" icon="pi pi-plus"/>
-                                <p:menuitem value="View All Services" action="#{function}" ajax="false" icon="pi pi-list"/>
-                            </p:submenu> 
-                        </p:menu>
+                                <p:submenu label="Issues and services">
+                                    <p:menuitem value="View Support Tickets" action="#{function}" ajax="false" icon="pi pi-list"/>
+                                    <p:menuitem value="Add Non-Business Service" action="#{function}" ajax="false" icon="pi pi-plus"/>
+                                    <p:menuitem value="View All Services" action="#{function}" ajax="false" icon="pi pi-list"/>
+                                </p:submenu> 
+                            </p:menu>
+                        </h:form>
                     </div>
                 </ui:insert>        
             </p:layoutUnit>

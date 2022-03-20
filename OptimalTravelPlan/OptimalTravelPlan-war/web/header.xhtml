@@ -4,31 +4,32 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"> 
 
-    <h:graphicImage library="images" name="OTP_Logo-Cropped.jpg" width="auto" height="100%" />&nbsp;
-    <h3 style="float: top; padding: 20px;">Welcome to Optimal Travel Plans!</h3>
-    
+    <h:graphicImage library="images" name="OTP_Logo-Cropped.jpg" width="150px" height="95px" />&nbsp;
+    <h3 style="padding: 10px; display:inline; width:600px; height: 40px; position: relative;">Welcome to Optimal Travel Plans!</h3>
+
     <h:form>
-        <h:panelGroup style="float: right">
-            <h:outputText value="You are login as #{sessionScope.loggedInAccount.username}." />&nbsp;
+        <h:panelGroup style="right:10px ; top:30px; position: absolute; width:400px; height: 45px;" rendered="#{sessionScope.isLogin == true}">
+            <h:outputText value="You are login as #{sessionScope.loggedInAccount.username}" />
             <p:menubar>
                 <p:submenu label="Account action" icon="pi pi-bars">
                     <p:menuitem value="View/Update account details" 
-                                action="#{loginManagedBean.updateAccount}" 
+                                actionListener="#{loginManagedBean.updateAccount}"
                                 update="formUpdateAccount" 
-                                oncomplete="PF('dialogUpdateAccount').show()"
-                                icon="pi pi-refresh"
-                                />
+                                ajax="true"
+                                oncomplete="PF('dialogUpdateAccount').show();"
+                                icon="pi pi-refresh">
+
+                    </p:menuitem>
                     <p:menuitem value="Logout" action="#{loginManagedBean.logout}" 
                                 icon="pi pi-external-link"/>
                 </p:submenu>
             </p:menubar>
         </h:panelGroup>
     </h:form>
-    
+
     <h:form id="formUpdateAccount">
         <p:dialog id="dialogUpdateAccount" widgetVar="dialogUpdateAccount" header="Update Account" closable="true">
             <p:messages id="messagesUpdateAccount" redisplay="false" />
-            <h:outputText value="test"/>
             <p:panelGrid rendered="#{loginManagedBean.admin != null}">
 
                 <p:row>
@@ -61,6 +62,15 @@
                     </p:column>
                     <p:column>
                         <p:password id="adminPassword" value="#{loginManagedBean.password}" required="false" feedback="true" redisplay="true"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <h:outputLabel for="oldPassword" value="Old Password: " />
+                    </p:column>
+                    <p:column>
+                        <p:password id="oldPassword" value="#{loginManagedBean.oldPassword}" required="false" feedback="true" redisplay="true"/>
                     </p:column>
                 </p:row>
 
@@ -109,6 +119,15 @@
 
                 <p:row>
                     <p:column>
+                        <h:outputLabel for="oldPassword2" value="Old Password: " />
+                    </p:column>
+                    <p:column>
+                        <p:password id="oldPassword2" value="#{loginManagedBean.oldPassword2}" required="false" feedback="true" redisplay="true"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
                         <h:outputLabel for="companyName" value="Company name: " />
                     </p:column>
                     <p:column>
@@ -134,7 +153,7 @@
 
                 <p:row>
                     <p:column>
-                        <h:outputLabel for="companyNumber" value="Username: " />
+                        <h:outputLabel for="companyNumber" value="Company Contact: " />
                     </p:column>
                     <p:column>
                         <p:inputText id="companyNumber" value="#{loginManagedBean.business.companyNumber}" placeholder="#{loginManagedBean.business.companyNumber}" required="true" requiredMessage="Company Number is required"/>
@@ -146,7 +165,7 @@
 
                 <p:row>
                     <p:column>
-                        <h:outputLabel for="headquarterAddress" value="Username: " />
+                        <h:outputLabel for="headquarterAddress" value="Headquarter Address: " />
                     </p:column>
                     <p:column>
                         <p:inputText id="headquarterAddress" value="#{loginManagedBean.business.headquarterAddress}" placeholder="#{loginManagedBean.business.headquarterAddress}" required="true" requiredMessage="Headquarter Address is required"/>

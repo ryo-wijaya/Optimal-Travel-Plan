@@ -34,22 +34,6 @@
                   "
                   value="Register new Business" outcome="register.xhtml" />
 
-
-        <h:form>
-            <h:panelGroup>
-                <p:growl id="messages" showDetail="true"/>
-                <p:menubar>
-                    <p:submenu label="Account action" icon="pi pi-bars">
-                        <p:menuitem value="View/Update account details" 
-                                    action="#{loginManagedBean.updateAccount}"
-                                    icon="pi pi-refresh"
-                                    />
-                        <p:menuitem value="Logout" action="#{loginManagedBean.logout}" 
-                                    icon="pi pi-external-link"/>
-                    </p:submenu>
-                </p:menubar>
-            </h:panelGroup>
-        </h:form>
     </h:body>
 </html>
 

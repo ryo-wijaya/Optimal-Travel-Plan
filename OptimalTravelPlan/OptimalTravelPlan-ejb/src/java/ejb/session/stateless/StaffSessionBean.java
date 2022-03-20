@@ -60,15 +60,14 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
     public void updateStaff(Staff staff) throws AccountNotFoundException, UpdateStaffException {
         if (staff != null && staff.getStaffId() != null) {
             Staff staffToUpdate = this.retrieveStaffById(staff.getStaffId());
-
-            if (staffToUpdate.getUsername().equals(staff.getUsername())) {
-                staffToUpdate.setName(staff.getName());
-                staffToUpdate.setEmployeeRole(staff.getEmployeeRole());
-            } else {
-                throw new UpdateStaffException("Username of staff record to be updated does not match the existing record");
-            }
+            staffToUpdate.setName(staff.getName());
+            staffToUpdate.setEmployeeRole(staff.getEmployeeRole());
+            staffToUpdate.setUsername(staff.getUsername());
+            em.flush();
         } else {
             throw new AccountNotFoundException("Staff ID not provided for staff to be updated");
         }
     }
+    
+
 }
