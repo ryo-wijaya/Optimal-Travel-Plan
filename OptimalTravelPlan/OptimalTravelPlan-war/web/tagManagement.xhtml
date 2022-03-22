@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./template/adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="content">
+        <div>
+            <h3>Tag Management</h3>
+
+            <h:form id="formAllTags">
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllTags" widgetVar="dataTableAllTags" value="#{tagManagementManagedBean.tags}" var="tag" rowKey="#{tag.tagId}" rowIndexVar="row"
+                             filteredValue="#{tagManagementManagedBean.filteredTags}"
+                             rows="10" paginator="true" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                             rowsPerPageTemplate="10,20,50">
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <p:commandButton value="Create New Tag" title="Create New Tag" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewTag').show()"
+                                             style="float: left;" />
+                            <p:commandButton value="View all latest Tags" title="View all latest Tags" 
+                                             type="button" icon="pi pi-refresh" actionListener="#{tagManagementManagedBean.refreshTagsList}" 
+                                             update="formAllTags" rendered="#{tagManagementManagedBean.filteredTags.size() == tagManagementManagedBean.tags.size()}" />
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllTags').filter()" style="width:300px" placeholder="Enter value"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="Tag ID" sortBy="#{tag.tagId}" filterBy="#{tag.tagId}" filterMatchMode="contains">
+                        <h:outputText value="#{tag.tagId}" />
+                    </p:column>
+                    <p:column headerText="Tag name" sortBy="#{tag.name}" filterBy="#{tag.name}" filterMatchMode="contains">
+                        <h:outputText value="#{tag.name}" />
+                    </p:column>
+                    <p:column headerText="Number of services" sortBy="#{tag.services.size()}" filterBy="#{tag.services.size()}" filterMatchMode="contains">
+                        <h:outputText value="#{tag.services.size()}" />
+                        <p:commandButton actionListener="#{tagManagementManagedBean.viewTagServices}" icon="pi pi-search-plus" title="View" value="View services"
+                                         rendered="#{tag.services.size() != 0}" style="float: right;">
+                            <f:attribute name="tagToViewServices" value="#{tag}" />
+                        </p:commandButton>
+                    </p:column>                            
+                    <p:column headerText="Action" >
+                        <p:commandButton actionListener="#{tagManagementManagedBean.doUpdateTag}" update="formUpdateTag dataTableAllTags" oncomplete="PF('dialogUpdateTag').show()" 
+                                         value="Update Tag Name" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="tagToUpdate" value="#{tag}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{tagManagementManagedBean.deleteTag}" update="formAllTags"
+                                         rendered="#{tag.services.size() eq 0}" value="Delete Unused Tag">
+                            <f:attribute name="tagToDelete" value="#{tag}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{tag.name} (Tag ID: #{tag.tagId})?" icon="ui-icon-alert"  />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+
+            <h:form id="formCreateNewTag">
+                <p:dialog id="dialogCreateNewTag" widgetVar="dialogCreateNewTag" header="Create New Tag" closable="true">
+                    <p:messages id="messagesCreateNewTag" redisplay="false" />
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Tag Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{tagManagementManagedBean.newTag.name}" placeholder="Movie" required="true" requiredMessage="Tag Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Tag" update="@form formAllTags:dataTableAllTags" actionListener="#{tagManagementManagedBean.createNewTag}" 
+                                                  oncomplete="PF('dialogCreateNewTag').show();" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="formUpdateTag">
+                <p:dialog id="dialogUpdateTag" widgetVar="dialogUpdateTag" header="Update Tag" closable="true">
+                    <p:messages id="messagesUpdateTag" redisplay="false" />
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Tag ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{tagManagementManagedBean.tagToUpdate.tagId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Tag Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{tagManagementManagedBean.tagToUpdate.name}" placeholder="Movie" required="true" requiredMessage="Tag Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Tag" update="@form formAllTags:dataTableAllTags" actionListener="#{tagManagementManagedBean.updateTag}" oncomplete="PF('dialogUpdateTag').show();" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+
+        </div>
+    </ui:define>
+</ui:composition>

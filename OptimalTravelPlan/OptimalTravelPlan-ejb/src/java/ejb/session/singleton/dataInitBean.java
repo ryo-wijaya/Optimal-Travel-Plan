@@ -36,6 +36,7 @@ import util.enumeration.ServiceType;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewServiceException;
 import util.exception.CreateNewServiceRateException;
+import util.exception.TagAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 
 @Singleton
@@ -64,64 +65,57 @@ public class dataInitBean {
     @PostConstruct
     public void postConstruct() {
         if (em.createQuery("SELECT s FROM Staff s").getResultList().size() < 1) {
-            //default manager
-            Staff manager = new Staff("manager1", "password", "admin1", EmployeeRole.ADMINISTRATOR);
-            em.persist(manager);
-            em.flush();
-
-            Staff customerService = new Staff("staff123", "password", "staff1", EmployeeRole.CUSTOMER_SERVICE);
-            em.persist(customerService);
-            em.flush();
-
-            Business business1 = new Business("company1", "www.company1.com", "0000001", "address1", "company1", "password");
-            em.persist(business1);
-            em.flush();
-
-            Business business2 = new Business("company2", "www.company2.com", "0000002", "address2", "company2", "password");
-            em.persist(business2);
-            em.flush();
-
-            Business business3 = new Business("company3", "www.company3.com", "0000003", "address3", "company3", "password");
-            em.persist(business3);
-            em.flush();
-
-            Business business4 = new Business("company4", "www.company4.com", "0000004", "address4", "company4", "password");
-            em.persist(business4);
-            em.flush();
-
-            Business business5 = new Business("company5", "www.company5.com", "0000005", "address5", "company5", "password");
-            em.persist(business5);
-            em.flush();
-
-            Customer customer1 = new Customer("customer1", "123456789", "000000001", "customer1@email.com", Boolean.TRUE, "customer1", "password");
-            em.persist(customer1);
-            em.flush();
-
-            //Create data here
-            Tag familyTag = tagSessionBeanLocal.createNewTag(new Tag("family"));
-            Tag natureTag = tagSessionBeanLocal.createNewTag(new Tag("nature"));
-            Tag cultureTag = tagSessionBeanLocal.createNewTag(new Tag("culture"));
-            Tag nightTag = tagSessionBeanLocal.createNewTag(new Tag("night"));
-
-            List<Long> tagList1 = new ArrayList<>();
-            tagList1.add(familyTag.getTagId());
-
-            List<Long> tagList2 = new ArrayList<>();
-            tagList1.add(natureTag.getTagId());
-
-            List<Long> tagList3 = new ArrayList<>();
-            tagList1.add(cultureTag.getTagId());
-
-            List<Long> tagList4 = new ArrayList<>();
-            tagList1.add(nightTag.getTagId());
-
-            List<Long> tagList5 = new ArrayList<>();
-
-            Country singapore = countrySessionBeanLocal.createNewCountry(new Country("Singapore"));
-            Country japan = countrySessionBeanLocal.createNewCountry(new Country("Japan"));
-            Country Taiwan = countrySessionBeanLocal.createNewCountry(new Country("Taiwan"));
-
             try {
+                //default manager
+                Staff manager = new Staff("manager1", "password", "admin1", EmployeeRole.ADMINISTRATOR);
+                em.persist(manager);
+
+                Staff customerService = new Staff("staff123", "password", "staff1", EmployeeRole.CUSTOMER_SERVICE);
+                em.persist(customerService);
+
+                Business business1 = new Business("company1", "www.company1.com", "0000001", "address1", "company1", "password");
+                em.persist(business1);
+
+                Business business2 = new Business("company2", "www.company2.com", "0000002", "address2", "company2", "password");
+                em.persist(business2);
+
+                Business business3 = new Business("company3", "www.company3.com", "0000003", "address3", "company3", "password");
+                em.persist(business3);
+
+                Business business4 = new Business("company4", "www.company4.com", "0000004", "address4", "company4", "password");
+                em.persist(business4);
+
+                Business business5 = new Business("company5", "www.company5.com", "0000005", "address5", "company5", "password");
+                em.persist(business5);
+
+                Customer customer1 = new Customer("customer1", "123456789", "000000001", "customer1@email.com", Boolean.TRUE, "customer1", "password");
+                em.persist(customer1);
+
+                //Create data here
+                Tag familyTag = tagSessionBeanLocal.createNewTag(new Tag("family"));
+                Tag natureTag = tagSessionBeanLocal.createNewTag(new Tag("nature"));
+                Tag cultureTag = tagSessionBeanLocal.createNewTag(new Tag("culture"));
+                Tag nightTag = tagSessionBeanLocal.createNewTag(new Tag("night"));
+                Tag testTag = tagSessionBeanLocal.createNewTag(new Tag("empty test tag"));
+
+                List<Long> tagList1 = new ArrayList<>();
+                tagList1.add(familyTag.getTagId());
+
+                List<Long> tagList2 = new ArrayList<>();
+                tagList1.add(natureTag.getTagId());
+
+                List<Long> tagList3 = new ArrayList<>();
+                tagList1.add(cultureTag.getTagId());
+
+                List<Long> tagList4 = new ArrayList<>();
+                tagList1.add(nightTag.getTagId());
+
+                List<Long> tagList5 = new ArrayList<>();
+
+                Country singapore = countrySessionBeanLocal.createNewCountry(new Country("Singapore"));
+                Country japan = countrySessionBeanLocal.createNewCountry(new Country("Japan"));
+                Country Taiwan = countrySessionBeanLocal.createNewCountry(new Country("Taiwan"));
+
                 Long service1 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.HOTEL, Boolean.TRUE, "address1"), business1.getBusinessId(), tagList1, singapore.getCountryId());
                 Long ServiceRate1 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(500.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service1);
 
@@ -137,6 +131,8 @@ public class dataInitBean {
 
             } catch (UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException ex) {
                 System.out.println(ex.getMessage());
+            } catch (TagAlreadyExistException ex) {
+                Logger.getLogger(dataInitBean.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             em.flush();

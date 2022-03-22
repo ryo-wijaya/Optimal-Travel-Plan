@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -37,7 +36,7 @@ public class SecurityFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
-    
+
     private static final String CONTEXT_ROOT = "/OptimalTravelPlan-war";
 
     public SecurityFilter() {
@@ -58,7 +57,7 @@ public class SecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++doFilter() Triggered++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         HttpSession httpSession = httpServletRequest.getSession(true);
@@ -72,7 +71,7 @@ public class SecurityFilter implements Filter {
         if (!excludeLoginCheck(requestServletPath)) {
             if (isLogin) {
                 Account loggedInAccount = (Account) httpSession.getAttribute("loggedInAccount");
-                
+
                 if (loggedInAccount instanceof Staff) {
                     if (this.adminAccessOnly(requestServletPath)) {
                         chain.doFilter(request, response);
@@ -196,7 +195,7 @@ public class SecurityFilter implements Filter {
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
     }
-    
+
     private Boolean excludeLoginCheck(String path) {
         if (path.equals("/index.xhtml")
                 || path.equals("/errorPage.xhtml")
@@ -208,20 +207,24 @@ public class SecurityFilter implements Filter {
             return false;
         }
     }
-    
+
     private Boolean businessAccessOnly(String path) {
-        if (path.equals("/businessMain.xhtml")) {
+        return true;
+
+        /*    if (path.equals("/businessMain.xhtml")) {
             return true;
         } else {
             return false;
-        }
+        }*/
     }
-    
+
     private Boolean adminAccessOnly(String path) {
-        if (path.equals("/adminMain.xhtml")) {
+        return true;
+
+        /*      if (path.equals("/adminMain.xhtml")) {
             return true;
         } else {
             return false;
-        }
+        }*/
     }
 }
