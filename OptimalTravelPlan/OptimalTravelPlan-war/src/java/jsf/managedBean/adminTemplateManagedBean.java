@@ -26,7 +26,8 @@ public class adminTemplateManagedBean {
     }
 
     public void redirectToAddCountryManagement() throws IOException {
-        
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewCountry", true);
+        redirectToCountryManagement();
     }
 
     public void redirectToTagManagement() throws IOException {
@@ -42,8 +43,9 @@ public class adminTemplateManagedBean {
         FacesContext.getCurrentInstance().getExternalContext().redirect("accountManagaement.xhtml");
     }
 
-    public void redirectToAddAccountManagement() {
-
+    public void redirectToAddAccountManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewAccount", true);
+        redirectToAccountManagement();
     }
 
     public void redirectToSupportManagement() {
@@ -54,7 +56,8 @@ public class adminTemplateManagedBean {
         FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagaement.xhtml");
     }
 
-    public void redirectToAddServiceManagement() {
-
+    public void redirectToAddServiceManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewService", true);
+        redirectToServiceManagement();
     }
 }
