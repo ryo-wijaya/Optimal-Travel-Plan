@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./template/businessTemplate.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="center">
+        <style>
+            .panelStyle {
+                border: #006699 solid 5px;
+                width:400px;
+                margin: 5% auto 10%;
+                background: #99ffff;
+            }
+        </style>
+
+
+        <p:panel styleClass="panelStyle">
+            <h:form id="formLogin">
+
+                <p:growl id="registerGrowl"/>
+
+
+                <h:panelGrid columns="2">
+                    <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
+                    <p:inputText id="username" value="#{loginPageManagedBean.username}" />
+
+                    <p:outputLabel for="password"><b>Password:</b></p:outputLabel>
+                    <p:password id="password" value="#{loginPageManagedBean.password}" />
+                </h:panelGrid>
+
+
+
+                <br></br>
+
+                <h:panelGroup style="display: block; text-align: center; width: 100%">
+                    <p:commandButton id="loginButton" value="Login" actionListener="#{loginPageManagedBean.login}" update="@form"/>
+                </h:panelGroup>
+            </h:form>
+        </p:panel>
+
+    </ui:define>
+
+</ui:composition>
