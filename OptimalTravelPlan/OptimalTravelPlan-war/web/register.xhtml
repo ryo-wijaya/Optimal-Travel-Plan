@@ -19,30 +19,37 @@
 
 
         <p:panel styleClass="panelStyle">
+            <f:facet name="header">
+                <p:outputPanel style="text-align: left;">
+                    <p:button value="Back" title="Back" outcome="index.xhtml"/>
+                </p:outputPanel>
+            </f:facet>
+            
             <h:form id="formLogin">
 
                 <p:growl id="registerGrowl"/>
 
+                <p:panelGrid columns="2">
 
-                <h:panelGrid columns="2">
+
                     <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
                     <p:inputText id="username" value="#{registerPageManagedBean.username}" />
 
                     <p:outputLabel for="password"><b>Password:</b></p:outputLabel>
-                    <p:password id="password" value="#{registerPageManagedBean.password}" />
-                    
+                    <p:inputText id="password" value="#{registerPageManagedBean.password}" />
+
                     <p:outputLabel for="companyName"><b>Company Name:</b></p:outputLabel>
-                    <p:password id="companyName" value="#{registerPageManagedBean.companyName}" />
-                    
+                    <p:inputText id="companyName" value="#{registerPageManagedBean.companyName}" />
+
                     <p:outputLabel for="companySite"><b>Company Website:</b></p:outputLabel>
-                    <p:password id="companySite" value="#{registerPageManagedBean.companyWebsite}" />
-                    
+                    <p:inputText id="companySite" value="#{registerPageManagedBean.companyWebsite}" />
+
                     <p:outputLabel for="companyNo"><b>Company Number:</b></p:outputLabel>
-                    <p:password id="companyNo" value="#{registerPageManagedBean.companyNumber}" />
-                    
+                    <p:inputText id="companyNo" value="#{registerPageManagedBean.companyNumber}" />
+
                     <p:outputLabel for="companyAddress"><b>Company Address:</b></p:outputLabel>
-                    <p:password id="companyAddress" value="#{registerPageManagedBean.companyAddress}" />
-                </h:panelGrid>
+                    <p:inputText id="companyAddress" value="#{registerPageManagedBean.companyAddress}" />
+                </p:panelGrid>
 
                 <br></br>
 
