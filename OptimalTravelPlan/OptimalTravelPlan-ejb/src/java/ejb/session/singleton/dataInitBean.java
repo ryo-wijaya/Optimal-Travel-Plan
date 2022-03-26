@@ -5,10 +5,13 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.CountrySessionBeanLocal;
 import ejb.session.stateless.ServiceRateSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
+import ejb.session.stateless.TravelItinerarySessionBeanLocal;
+import entity.Booking;
 import entity.Business;
 import entity.Country;
 import entity.Customer;
@@ -16,6 +19,7 @@ import entity.Service;
 import entity.ServiceRate;
 import entity.Staff;
 import entity.Tag;
+import entity.TravelItinerary;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,10 +35,13 @@ import util.enumeration.ChargeType;
 import util.enumeration.EmployeeRole;
 import util.enumeration.RateType;
 import util.enumeration.ServiceType;
+import util.exception.AccountNotFoundException;
 import util.exception.ConstraintViolationException;
+import util.exception.CreateNewBookingException;
 import util.exception.CreateNewServiceException;
 import util.exception.CreateNewServiceRateException;
 import util.exception.PasswordNotAcceptedException;
+import util.exception.ServiceNotFoundException;
 import util.exception.TagAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -42,6 +49,12 @@ import util.exception.UnknownPersistenceException;
 @LocalBean
 @Startup
 public class dataInitBean {
+
+    @EJB
+    private TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal;
+
+    @EJB
+    private BookingSessionBeanLocal bookingSessionBeanLocal;
 
     @EJB
     private ServiceRateSessionBeanLocal serviceRateSessionBeanLocal;
@@ -54,6 +67,10 @@ public class dataInitBean {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
+    
+    
+    
+    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -158,8 +175,22 @@ public class dataInitBean {
                 Long service5 = serviceSessionBeanLocal.createNewService(new Service(business5, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address5", "Gong Cha"), business5.getBusinessId(), tagList5, singapore.getCountryId());
                 Long ServiceRate5 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service5);
                 em.flush();
+                
+                Date startDate = new Date();
+                Date endDate = new Date();
+                TravelItinerary travelItinerary1 = new TravelItinerary(customer1, startDate, endDate, singapore);
+                Long travel1 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary1, customer1.getAccountId(), singapore.getCountryId());
+                em.flush();
+                
+                
+                
+                Booking booking1 = new Booking(startDate, endDate, null, null);
+                Long book1 = bookingSessionBeanLocal.createBooking(booking1, service3, travel1);
+                em.flush();
+               
 
-            } catch (TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
+
+            } catch (CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
                 System.out.println(ex.getMessage());
             }
 
