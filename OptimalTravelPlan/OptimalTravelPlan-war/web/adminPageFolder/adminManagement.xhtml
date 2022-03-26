@@ -2,10 +2,145 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../template/adminTemplate.xhtml">
+                template="../template/adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <ui:define name="content">
-        content
+        <div>
+            <h3>
+                Admin Management
+            </h3>
+            <h:form>
+                <p:menubar>
+                    <p:submenu label="File" icon="ui-icon-document">
+                        <p:menuitem value="Create New Admin" onclick="PF('dialogCreateNewAdmin').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+            </h:form>
+            
+            <h:form id="formAllAdmins">
+            
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllAdmins" widgetVar="dataTableAllAdmins" value="#{adminManagementManagedBean.admins}" var="admin" rowKey="#{admin.adminId}" rowIndexVar="row"
+                             filteredValue="#{adminManagementManagedBean.filteredAdmins}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllAdmins').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Admin ID" sortBy="#{admin.adminId}" filterBy="#{admin.adminId}" filterMatchMode="contains">
+                        <h:outputText value="#{admin.adminId}" />
+                    </p:column>                            
+
+                    <p:column headerText="Name" sortBy="#{admin.name}" filterBy="#{admin.name}" filterMatchMode="contains">
+                        <h:outputText value="#{admin.name}" />
+                    </p:column>
+
+                    <p:column headerText="Action" >
+                        <p:commandButton actionListener="#{adminManagementManagedBean.doUpdateAdmin}" update="formUpdateAdmin" oncomplete="PF('dialogUpdateAdmin').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="adminEntityToUpdate" value="#{admin}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{adminManagementManagedBean.deleteAdmin}" update="formAllAdmins:dataTableAllAdmins formAllAdmins:messages">
+                            <f:attribute name="adminEntityToDelete" value="#{admin}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{admin.name} ?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+            
+            <h:form id="formCreateNewAdmin">
+
+                <p:dialog id="dialogCreateNewAdmin" widgetVar="dialogCreateNewAdmin" header="Create New Admin" closable="true">
+
+                    <p:messages id="messagesCreateNewAdmin" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{adminManagementManagedBean.newAdmin.name}" placeholder="Admin 1" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Admin" update="@form formAllAdmins:dataTableAllAdmins" actionListener="#{adminManagementManagedBean.createNewAdmin}" oncomplete="PF('dialogCreateNewAdmin').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+            <h:form id="formUpdateAdmin">
+
+                <p:dialog id="dialogUpdateAdmin" widgetVar="dialogUpdateAdmin" header="Update Admin" closable="true">
+
+                    <p:messages id="messagesUpdateAdmin" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Admin ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{AdminManagementManagedBean.selectedAdminToUpdate.adminId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{adminManagementManagedBean.selectedAdminToUpdate.name}" placeholder="Admin 1" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Admin" update="@form formAllAdmins:dataTableAllAdmins" actionListener="#{adminManagementManagedBean.updateAdmin}" oncomplete="PF('dialogUpdateAdmin').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+        </div>
     </ui:define>
 
 </ui:composition>

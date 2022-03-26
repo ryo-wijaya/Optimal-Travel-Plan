@@ -55,6 +55,7 @@ public class Service implements Serializable {
     private Integer totalNumOfRatings;
 
     public Service() {
+        this.requireVaccination = false;
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
         this.tags = new ArrayList<>();
@@ -218,6 +219,10 @@ public class Service implements Serializable {
      */
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
     }
 
 }

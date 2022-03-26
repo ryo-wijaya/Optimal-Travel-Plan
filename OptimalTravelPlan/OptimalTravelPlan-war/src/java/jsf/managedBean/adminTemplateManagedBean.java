@@ -21,12 +21,13 @@ public class adminTemplateManagedBean {
     public adminTemplateManagedBean() {
     }
 
-    public void redirectToCountryManagement() {
-
+    public void redirectToCountryManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("countryManagement.xhtml");
     }
 
-    public void redirectToAddCountryManagement() {
-
+    public void redirectToAddCountryManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewCountry", true);
+        redirectToCountryManagement();
     }
 
     public void redirectToTagManagement() throws IOException {
@@ -39,22 +40,24 @@ public class adminTemplateManagedBean {
     }
 
     public void redirectToAccountManagement() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("accountManagaement.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("accountManagement.xhtml");
     }
 
-    public void redirectToAddAccountManagement() {
-
+    public void redirectToAddAccountManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewAccount", true);
+        redirectToAccountManagement();
     }
 
-    public void redirectToSupportManagement() {
-
+    public void redirectToSupportManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("adminSupportManagement.xhtml");
     }
 
-    public void redirectToServiceManagement() {
-
+    public void redirectToServiceManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagement.xhtml");
     }
 
-    public void redirectToAddServiceManagement() {
-
+    public void redirectToAddServiceManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewService", true);
+        redirectToServiceManagement();
     }
 }

@@ -14,6 +14,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
+import util.exception.DeleteStaffException;
 import util.exception.UpdateStaffException;
 
 /**
@@ -25,6 +26,7 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
+    private AccountSessionBeanLocal accountSessionBeanLocal;
 
     @Override
     public List<Staff> retrieveAllStaff() {
@@ -69,5 +71,10 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
         }
     }
     
-
+@Override
+    public void deleteStaff(Long staffId) throws AccountNotFoundException, DeleteStaffException{
+        Staff staffToDelete = em.find(Staff.class, staffId);
+        accountSessionBeanLocal.toggleAccountStatus(staffToDelete.getAccountId());
+    }
+    
 }

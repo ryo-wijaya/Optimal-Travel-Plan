@@ -62,7 +62,6 @@ public class ServiceRateSessionBean implements ServiceRateSessionBeanLocal {
     }
 
     // deleted deleteServiceRate()
-
     @Override
     public void toggleServiceRateActivation(Long serviceRateId) throws ServiceRateNotFoundException {
         ServiceRate serviceRate = this.retrieveServiceRateById(serviceRateId);
