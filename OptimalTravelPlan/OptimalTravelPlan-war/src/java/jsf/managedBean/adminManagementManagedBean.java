@@ -34,6 +34,9 @@ import util.exception.UsernameAlreadyExistException;
 public class adminManagementManagedBean implements Serializable {
 
     @EJB
+    private AccountSessionBeanLocal accountSessionBeanLocal;
+
+    @EJB
     private StaffSessionBeanLocal StaffSessionBeanLocal;
 
     private List<Staff> Staffs;
@@ -57,7 +60,7 @@ public class adminManagementManagedBean implements Serializable {
     }
     
     public void createNewStaff(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Staff c = StaffSessionBeanLocal.retrieveStaffById(AccountSessionBeanLocal.createNewAccount(getNewStaff()));
+        Staff c = StaffSessionBeanLocal.retrieveStaffById(accountSessionBeanLocal.createNewAccount(getNewStaff()));
         getStaffs().add(c);
         setNewStaff(new Staff());
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Staff created successfully (Staff: " + c.getName() + ")", null));

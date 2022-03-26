@@ -35,7 +35,9 @@ public class businessManagementManagedBean implements Serializable {
 
     @EJB
     private BusinessSessionBeanLocal businessSessionBeanLocal;
-
+    @EJB
+    private AccountSessionBeanLocal accountSessionBeanLocal;
+    
     private List<Business> businesses;
     private List<Business> filteredBusinesses;
     
@@ -57,10 +59,10 @@ public class businessManagementManagedBean implements Serializable {
     }
     
     public void createNewBusiness(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Business c = BusinessSessionBeanLocal.retrieveBusinessById(AccountSessionBeanLocal.createNewAccount(getNewBusiness()));
+        Business c = businessSessionBeanLocal.retrieveBusinessById(accountSessionBeanLocal.createNewAccount(getNewBusiness()));
         getBusinesses().add(c);
         setNewBusiness(new Business());
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Business created successfully (Business: " + c.getName() + ")", null));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Business created successfully (Business: " + c.getCompanyName() + ")", null));
     }
     
     public void doUpdateBusiness(ActionEvent event) {
@@ -78,7 +80,7 @@ public class businessManagementManagedBean implements Serializable {
             businessSessionBeanLocal.deleteBusiness(businessToDelete.getBusinessId());
             getBusinesses().remove(businessToDelete);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business deleted successfully", null));
-        } catch (DeleteBusinessException ex) {
+        } catch (DeleteBusinessException | AccountNotFoundException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }
     }

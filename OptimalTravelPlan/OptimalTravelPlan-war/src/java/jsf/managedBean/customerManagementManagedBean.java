@@ -35,50 +35,51 @@ public class customerManagementManagedBean implements Serializable {
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
+    @EJB
+    private AccountSessionBeanLocal accountSessionBeanLocal;
 
     private List<Customer> customers;
     private List<Customer> filteredCustomers;
-    
+
     private Customer newCustomer;
-    
+
     private Customer selectedCustomerToUpdate;
-    
-    
+
     /**
      * Creates a new instance of customerManagementManagedBean
      */
     public customerManagementManagedBean() {
         newCustomer = new Customer();
     }
-    
+
     @PostConstruct
     public void postConstruct() {
         setCustomers(customerSessionBeanLocal.retrieveAllCustomers());
     }
-    
+
     public void createNewCustomer(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Customer c = CustomerSessionBeanLocal.retrieveCustomerById(AccountSessionBeanLocal.createNewAccount(getNewCustomer()));
+        Customer c = customerSessionBeanLocal.retrieveCustomerById(accountSessionBeanLocal.createNewAccount(getNewCustomer()));
         getCustomers().add(c);
         setNewCustomer(new Customer());
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Customer created successfully (Customer: " + c.getName() + ")", null));
     }
-    
+
     public void doUpdateCustomer(ActionEvent event) {
         setSelectedCustomerToUpdate((Customer) event.getComponent().getAttributes().get("selectedCustomerToUpdate"));
     }
-    
+
     public void updateCustomer(ActionEvent event) throws AccountNotFoundException, UpdateCustomerException {
         customerSessionBeanLocal.updateCustomer(getNewCustomer());
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Customer updated successfully", null));
     }
-    
+
     public void deleteCustomer(ActionEvent event) {
         try {
             Customer customerToDelete = (Customer) event.getComponent().getAttributes().get("customerToDelete");
             customerSessionBeanLocal.deleteCustomer(customerToDelete.getCustomerId());
             getCustomers().remove(customerToDelete);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Customer deleted successfully", null));
-        } catch (DeleteCustomerException ex) {
+        } catch (DeleteCustomerException | AccountNotFoundException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }
     }
@@ -138,5 +139,5 @@ public class customerManagementManagedBean implements Serializable {
     public void setSelectedCustomerToUpdate(Customer selectedCustomerToUpdate) {
         this.selectedCustomerToUpdate = selectedCustomerToUpdate;
     }
-    
+
 }
