@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./template/adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="content">
+        <div>
+            <h3>
+                Country Management
+            </h3>
+            <h:form>
+                <p:menubar>
+                    <p:submenu label="File" icon="ui-icon-document">
+                        <p:menuitem value="Create New Country" onclick="PF('dialogCreateNewCountry').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+            </h:form>
+            
+            <h:form id="formAllCountries">
+            
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllCountries" widgetVar="dataTableAllCountries" value="#{countryManagementManagedBean.countries}" var="country" rowKey="#{country.countryId}" rowIndexVar="row"
+                             filteredValue="#{countryManagementManagedBean.filteredCountries}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCountries').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Country ID" sortBy="#{country.countryId}" filterBy="#{country.countryId}" filterMatchMode="contains">
+                        <h:outputText value="#{country.countryId}" />
+                    </p:column>                            
+
+                    <p:column headerText="Name" sortBy="#{country.name}" filterBy="#{country.name}" filterMatchMode="contains">
+                        <h:outputText value="#{country.name}" />
+                    </p:column>
+
+                    <p:column headerText="Action" >
+                        <p:commandButton actionListener="#{countryManagementManagedBean.doUpdateCountry}" update="formUpdateCountry" oncomplete="PF('dialogUpdateCountry').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="countryEntityToUpdate" value="#{country}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{countryManagementManagedBean.deleteCountry}" update="formAllCountries:dataTableAllCountries formAllCountries:messages">
+                            <f:attribute name="countryEntityToDelete" value="#{country}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{country.name} ?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+            
+            <h:form id="formCreateNewCountry">
+
+                <p:dialog id="dialogCreateNewCountry" widgetVar="dialogCreateNewCountry" header="Create New Country" closable="true">
+
+                    <p:messages id="messagesCreateNewCountry" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{countryManagementManagedBean.newCountry.name}" placeholder="Country 1" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Country" update="@form formAllCountries:dataTableAllCountries" actionListener="#{countryManagementManagedBean.createNewCountry}" oncomplete="PF('dialogCreateNewCountry').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+            <h:form id="formUpdateCountry">
+
+                <p:dialog id="dialogUpdateCountry" widgetVar="dialogUpdateCountry" header="Update Country" closable="true">
+
+                    <p:messages id="messagesUpdateCountry" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Country ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{CountrytManagementManagedBean.selectedCountryToUpdate.countryId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{countryManagementManagedBean.selectedCountryToUpdate.name}" placeholder="Country 1" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Country" update="@form formAllCountries:dataTableAllCountries" actionListener="#{countryManagementManagedBean.updateCountry}" oncomplete="PF('dialogUpdateCountry').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+        </div>
+    </ui:define>
+
+</ui:composition>

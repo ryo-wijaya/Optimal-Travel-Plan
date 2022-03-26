@@ -39,6 +39,8 @@ public class Service implements Serializable {
     
     @ManyToMany(mappedBy = "services")
     private List<Tag> tags;
+    
+    private String serviceName;
 
     private ServiceType serviceType;
 
@@ -61,13 +63,14 @@ public class Service implements Serializable {
         this.totalNumOfRatings = 0;
     }
 
-    public Service(Business business, Country country, ServiceType serviceType, Boolean requireVaccination, String address) {
+    public Service(Business business, Country country, ServiceType serviceType, Boolean requireVaccination, String address, String serviceName) {
         this();
         this.business = business;
         this.country = country;
         this.serviceType = serviceType;
         this.requireVaccination = requireVaccination;
         this.address = address;
+        this.serviceName = serviceName;
     }
 
     public Integer getRating() {
@@ -193,6 +196,14 @@ public class Service implements Serializable {
     @Override
     public String toString() {
         return "entity.Service[ id=" + serviceId + " ]";
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     /**

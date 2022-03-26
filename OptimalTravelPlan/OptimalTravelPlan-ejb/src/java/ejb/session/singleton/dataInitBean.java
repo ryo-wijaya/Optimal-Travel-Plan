@@ -117,18 +117,18 @@ public class dataInitBean {
                 Country japan = countrySessionBeanLocal.createNewCountry(new Country("Japan"));
                 Country Taiwan = countrySessionBeanLocal.createNewCountry(new Country("Taiwan"));
 
-                Long service1 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.HOTEL, Boolean.TRUE, "address1"), business1.getBusinessId(), tagList1, singapore.getCountryId());
+                Long service1 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.HOTEL, Boolean.TRUE, "address1", "Melion Hotel"), business1.getBusinessId(), tagList1, singapore.getCountryId());
                 Long ServiceRate1 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(500.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service1);
 
-                Long service2 = serviceSessionBeanLocal.createNewService(new Service(business2, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address2"), business2.getBusinessId(), tagList2, singapore.getCountryId());
+                Long service2 = serviceSessionBeanLocal.createNewService(new Service(business2, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address2", "Encik Tan"), business2.getBusinessId(), tagList2, singapore.getCountryId());
 
-                Long service3 = serviceSessionBeanLocal.createNewService(new Service(business3, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address3"), business3.getBusinessId(), tagList3, singapore.getCountryId());
+                Long service3 = serviceSessionBeanLocal.createNewService(new Service(business3, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address3", "Singapore Flyer"), business3.getBusinessId(), tagList3, singapore.getCountryId());
                 Long ServiceRate3 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service3);
 
-                Long service4 = serviceSessionBeanLocal.createNewService(new Service(business4, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address4"), business4.getBusinessId(), tagList4, singapore.getCountryId());
+                Long service4 = serviceSessionBeanLocal.createNewService(new Service(business4, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address4", "Singapore Zoo"), business4.getBusinessId(), tagList4, singapore.getCountryId());
                 Long ServiceRate4 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(10.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.HOURLY), service4);
 
-                Long service5 = serviceSessionBeanLocal.createNewService(new Service(business5, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address5"), business5.getBusinessId(), tagList5, singapore.getCountryId());
+                Long service5 = serviceSessionBeanLocal.createNewService(new Service(business5, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address5", "Gong Cha"), business5.getBusinessId(), tagList5, singapore.getCountryId());
 
             } catch (UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
                 System.out.println(ex.getMessage());

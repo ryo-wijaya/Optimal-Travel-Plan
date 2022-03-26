@@ -20,6 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.PrimeFaces;
 import util.exception.DeleteTagException;
+import util.exception.TagAlreadyExistException;
 
 /**
  *
@@ -34,6 +35,7 @@ public class tagManagementManagedBean implements Serializable {
 
     private List<Tag> tags;
     private List<Tag> filteredTags;
+    private Boolean filtered;
     private Tag newTag;
     private Tag tagToUpdate;
 
@@ -43,30 +45,32 @@ public class tagManagementManagedBean implements Serializable {
 
     @PostConstruct
     public void post() {
-        filteredTags = (List<Tag>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("tagsToView");
-        if (filteredTags == null) {
+        List<Tag> selectedTags = (List<Tag>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("tagsToView");
+        if (selectedTags == null) {
             tags = tagSessionBeanLocal.retrieveAllTags();
+            filtered = false;
         } else {
-            tags = filteredTags;
+            tags = selectedTags;
+            filtered = true;
         }
         Boolean addTag = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewTag");
         if (addTag != null && addTag) {
             PrimeFaces.current().executeScript("PF('dialogCreateNewTag').show();");
         }
     }
-    
-    public void refreshTagsList(ActionEvent event){
+
+    public void refreshTagsList(ActionEvent event) {
         this.tags = tagSessionBeanLocal.retrieveAllTags();
-        filteredTags = new ArrayList<>();
+        this.filtered = false;
     }
 
     public void createNewTag(ActionEvent event) {
         try {
             Tag t = tagSessionBeanLocal.createNewTag(newTag);
+            tags.add(t);
             newTag = new Tag();
-            refreshTagsList(null);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New tag created successfully (Tag ID: " + t.getTagId() + ")", null));
-        } catch (Exception e) {
+        } catch (TagAlreadyExistException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to create tag: " + e.getMessage(), null));
         }
     }
@@ -82,7 +86,7 @@ public class tagManagementManagedBean implements Serializable {
     }
 
     public void updateTag(ActionEvent event) {
-        tagSessionBeanLocal.updateTag(tagToUpdate);
+        Tag t = tagSessionBeanLocal.updateTag(tagToUpdate);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Tag updated successfully", null));
     }
 
@@ -129,4 +133,11 @@ public class tagManagementManagedBean implements Serializable {
         this.tagToUpdate = tagToUpdate;
     }
 
+    public Boolean getFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(Boolean filtered) {
+        this.filtered = filtered;
+    }
 }

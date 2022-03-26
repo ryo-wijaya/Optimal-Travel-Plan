@@ -58,5 +58,16 @@ public class CountrySessionBean implements CountrySessionBeanLocal {
             em.remove(countryEntityToRemove);
         }     
     }
+    
+    @Override
+    public Country updateCountry(Country country) {
+        Country countryToUpdate = em.find(Country.class, country.getCountryId());
+        countryToUpdate.setName(country.getName());
+        if(countryToUpdate.getServices() != null) {
+            countryToUpdate.setServices(country.getServices());
+        }
+        em.flush();
+        return countryToUpdate;
+    }
 
 }
