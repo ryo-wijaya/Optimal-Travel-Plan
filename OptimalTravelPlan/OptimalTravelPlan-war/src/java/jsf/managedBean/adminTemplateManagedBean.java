@@ -21,12 +21,12 @@ public class adminTemplateManagedBean {
     public adminTemplateManagedBean() {
     }
 
-    public void redirectToCountryManagement() {
-
+    public void redirectToCountryManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("countryManagement.xhtml");
     }
 
-    public void redirectToAddCountryManagement() {
-
+    public void redirectToAddCountryManagement() throws IOException {
+        
     }
 
     public void redirectToTagManagement() throws IOException {
@@ -50,8 +50,8 @@ public class adminTemplateManagedBean {
 
     }
 
-    public void redirectToServiceManagement() {
-
+    public void redirectToServiceManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagaement.xhtml");
     }
 
     public void redirectToAddServiceManagement() {
