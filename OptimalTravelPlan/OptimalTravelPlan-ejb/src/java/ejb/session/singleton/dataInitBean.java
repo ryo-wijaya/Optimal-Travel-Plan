@@ -20,8 +20,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -103,15 +101,16 @@ public class dataInitBean {
                 tagList1.add(familyTag.getTagId());
 
                 List<Long> tagList2 = new ArrayList<>();
-                tagList1.add(natureTag.getTagId());
+                tagList2.add(natureTag.getTagId());
 
                 List<Long> tagList3 = new ArrayList<>();
-                tagList1.add(cultureTag.getTagId());
+                tagList3.add(cultureTag.getTagId());
 
                 List<Long> tagList4 = new ArrayList<>();
-                tagList1.add(nightTag.getTagId());
+                tagList4.add(nightTag.getTagId());
 
                 List<Long> tagList5 = new ArrayList<>();
+                tagList5.add(testTag.getTagId());
 
                 Country singapore = countrySessionBeanLocal.createNewCountry(new Country("Singapore"));
                 Country japan = countrySessionBeanLocal.createNewCountry(new Country("Japan"));
@@ -129,9 +128,18 @@ public class dataInitBean {
                         tagList1,
                         singapore.getCountryId());
                 Long ServiceRate1 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(500.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service1);
-                em.flush();
 
-                Long service2 = serviceSessionBeanLocal.createNewService(new Service(business2, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address2", "Encik Tan"), business2.getBusinessId(), tagList2, singapore.getCountryId());
+                Long service2 = serviceSessionBeanLocal.createNewService(
+                        new Service(
+                                business2, 
+                                singapore, 
+                                ServiceType.FOOD_AND_BEVERAGE, 
+                                Boolean.TRUE, 
+                                "address2", 
+                                "Encik Tan")
+                        , business2.getBusinessId()
+                        , tagList2
+                        , singapore.getCountryId());
                 Long ServiceRate2 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service2);
                 em.flush();
 
@@ -147,10 +155,8 @@ public class dataInitBean {
                 Long ServiceRate5 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, Boolean.TRUE, ChargeType.ENTRY), service5);
                 em.flush();
 
-            } catch (UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
+            } catch (TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
                 System.out.println(ex.getMessage());
-            } catch (TagAlreadyExistException ex) {
-                Logger.getLogger(dataInitBean.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             em.flush();

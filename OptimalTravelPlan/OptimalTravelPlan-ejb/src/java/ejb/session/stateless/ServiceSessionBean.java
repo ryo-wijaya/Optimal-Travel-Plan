@@ -42,9 +42,9 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
     private EntityManager em;
 
     @Override
-    public Long createNewService(Service newService, Long businessId, List<Long> tagIds, Long countryId) throws UnknownPersistenceException, ConstraintViolationException,
-            CreateNewServiceException {
+    public Long createNewService(Service newService, Long businessId, List<Long> tagIds, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, CreateNewServiceException {
         try {
+            System.out.println("ejb.session.stateless.ServiceSessionBean.createNewService()");
             List<Tag> tagsToAssociate = new ArrayList<>();
 
             for (Long tagId : tagIds) {
@@ -53,19 +53,23 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
             //A Service must have at least 1 tag
             if (tagsToAssociate.isEmpty()) {
-                throw new CreateNewServiceException();
+                throw new CreateNewServiceException("Please select a tag!");
             }
 
             Country countryToAssociate = countrySessionBeanLocal.retrieveCountryByCountryId(countryId);
+
+
+            //set country and tags
             newService.setCountry(countryToAssociate);
+            newService.setTags(tagsToAssociate);
+
             em.persist(newService);
-            
+            em.flush();
+            //add service to existing tags and country
             for (Tag tag : tagsToAssociate) {
                 tag.getServices().add(newService);
             }
-            
             countryToAssociate.getServices().add(newService);
-            newService.getTags().addAll(tagsToAssociate);
             em.flush();
             return newService.getServiceId();
 
@@ -112,7 +116,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
         }
         return services;
     }
-    
+
     @Override
     public List<Service> retrieveAllActiveServices() {
         Query query = em.createQuery("SELECT s FROM Service s WHERE s.active = true");
@@ -126,13 +130,13 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
         }
         return services;
     }
-    
+
     @Override
     public List<Service> retrieveAllServiceByCountry(Long countryId) {
         Country country = em.find(Country.class, countryId);
         Query query = em.createQuery("SELECT s FROM Service s WHERE s.country = :country");
         query.setParameter("country", country);
-        
+
         return query.getResultList();
     }
 
@@ -153,12 +157,12 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             throw new AccountNotFoundException("Service ID not provided for service to be updated");
         }
     }
-    
+
     // Implemented deactivation of service instead of deletion to preserve Booking records
     @Override
     public void toggleServiceActivation(Long serviceId) throws ServiceNotFoundException {
         Service service = this.retrieveServiceById(serviceId);
-        if (service != null && service.getServiceId()!= null) {
+        if (service != null && service.getServiceId() != null) {
             Boolean newStatus = service.getActive() ? false : true;
             service.setActive(newStatus);
         } else {
