@@ -25,5 +25,7 @@ public interface CountrySessionBeanLocal {
     public void deleteCountry(Long countryId) throws DeleteCountryException;
 
     public Country createNewCountry(Country newCountry);
+
+    public Country updateCountry(Country country);
     
 }
