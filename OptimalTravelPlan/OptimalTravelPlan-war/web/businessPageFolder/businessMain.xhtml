@@ -3,10 +3,180 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="../template/businessTemplate.xhtml"
-                xmlns:p="http://primefaces.org/ui">
-    
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
     <ui:define name="content">
-        Business Main
+
+
+        <p:panel id="bookings" style="width: 50%; height: 50%">
+            <h:form id="bookingForm">
+
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" var="booking">
+
+                    <p:column headerText="Start Date" sortBy="#{booking.startDate}" filterBy="#{booking.startDate}" filterMatchMode="contains">
+                        <h:outputText value="#{booking.startDate}" />
+                    </p:column>
+
+                    <p:column headerText="End Date" sortBy="#{booking.endDate}" filterBy="#{booking.endDate}" filterMatchMode="contains">
+                        <h:outputText value="#{booking.endDate}" />
+                    </p:column>
+
+                    <p:column headerText="Payment Information">
+                        <p:commandLink oncomplete="PF('dialogPayment').show()" update=":bookingForm:paymentBox">
+                            <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
+                        </p:commandLink>
+                    </p:column>   
+
+                    <p:column headerText="Review">
+                        <p:commandLink value="View" update=":reviewForm" actionListener="#{bookingPageManagedBean.filterReviews}">
+                            <f:setPropertyActionListener value="#{booking.review}" target="#{bookingPageManagedBean.selectedReview}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="Service ID">
+                        <h:outputText value="#{booking.service.serviceId}" />
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:dialog header="Payment Transacation Details" widgetVar="dialogPayment" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+                    <p:outputPanel id="paymentBox" style="text-align:center;">
+                        <p:panelGrid  columns="2">
+
+                            <h:outputText value="Transaction Number" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.transactionNumber}" />
+
+                            <h:outputText value="Payment Date:" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.dateOfPayment}" />
+
+                            <h:outputText value="Rate paid:" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.prevailingRateAtPaymentDate}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+
+
+            </h:form>
+        </p:panel>
+
+
+        <p:panel id="reviews" style="width: 50%; height: 50%">
+            <h:form id="reviewForm">
+
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="reviewTable" value="#{bookingPageManagedBean.reviews}" var="review">
+
+                    <p:column headerText="Review ID" filterBy="#{review.reviewId}" filterMatchMode="contains">
+                        <h:outputText value="#{review.reviewId}" />
+                    </p:column>
+
+                    <p:column headerText="Rating" sortBy="#{review.rating}" filterBy="#{review.rating}" filterMatchMode="contains">
+                        <h:outputText value="#{review.rating}" />
+                    </p:column>
+
+                    <p:column headerText="Details">
+                        <p:commandLink oncomplete="PF('dialogReply').show()" update=":reviewForm:reviewBox">
+                            <f:setPropertyActionListener value="#{review}" target="#{bookingPageManagedBean.selectedReview}"/>
+                        </p:commandLink>
+                    </p:column>  
+
+                    <p:column headerText="Replied">
+                        <h:outputText value="#{bookingPageManagedBean.checkIfReviewHasReply}" />
+                    </p:column>
+
+                </p:dataTable>
+
+
+                <p:dialog header="Review Details" widgetVar="dialogReply" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+                    <p:outputPanel id="reviewBox" style="text-align:center;">
+                        <p:panelGrid columns="2">
+
+                            <h:outputText value="Review Body: " />
+                            <h:outputText value="#{bookingPageManagedBean.selectedReview.content}" />
+
+                            <h:outputText value="Rating:" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedReview.rating}" />
+
+                            <h:outputText value="Reply:" />
+                            <p:inputText value="#{bookingPageManagedBean.selectedReview.businessReply}" />
+
+                        </p:panelGrid>
+
+                        <p:commandButton value="Add/Edit Reply" actionListener="#{bookingPageManagedBean.reviewReply}" process="@form" update="@form" />
+                    </p:outputPanel>
+                </p:dialog>
+
+
+            </h:form>
+        </p:panel>
+
+
+        <p:panel id="services" style="width: 48.5%; float: right">
+            <h:form id="servicesForm">
+
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="serviceTable" value="#{bookingPageManagedBean.services}" var="service">
+
+                    <p:column headerText="Service ID" filterBy="#{service.serviceId}" filterMatchMode="contains">
+                        <h:outputText value="#{service.serviceId}" />
+                    </p:column>
+
+                    <p:column headerText="Name" sortBy="#{service.serviceName}" filterBy="#{service.serviceName}" filterMatchMode="contains">
+                        <h:outputText value="#{service.serviceName}" />
+                    </p:column>
+
+                    <p:column headerText="Country" sortBy="#{service.country.name}" filterBy="#{service.country.name}" filterMatchMode="contains">
+                        <h:outputText value="#{service.country.name}" />
+                    </p:column>
+
+                    <p:column headerText="Bookings">
+                        <p:commandLink value="View" actionListener="#{bookingPageManagedBean.filterBooking}" update=":bookingForm">
+                            <f:setPropertyActionListener value="#{service}" target="#{bookingPageManagedBean.selectedService}"/>
+                        </p:commandLink>
+                    </p:column>  
+
+                    <p:column headerText="Tags">
+                        <p:commandLink oncomplete="PF('dialogTags').show()" update=":serviceForm:tagsBox">
+                            <f:setPropertyActionListener value="#{service}" target="#{bookingPageManagedBean.selectedService}"/>
+                        </p:commandLink>
+                    </p:column>  
+
+
+
+                </p:dataTable>
+
+
+                <p:dialog header="Tags" widgetVar="dialogReply" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+                    <p:outputPanel id="tagsBox" style="text-align:center;">
+
+                        <p:panelGrid columns="1">
+
+                            <p:dataTable id="tagTable" var="tag" value="#{bookingPageManagedBean.selectedService.tags}" >
+                                <p:column headerText="Tags">
+                                    <h:outputText value="#{tag.name}" />
+                                </p:column>
+                            </p:dataTable>
+
+                        </p:panelGrid>
+
+                    </p:outputPanel>
+                </p:dialog>
+
+
+            </h:form>
+        </p:panel>
+
+
+
     </ui:define>
-    
+
 </ui:composition>

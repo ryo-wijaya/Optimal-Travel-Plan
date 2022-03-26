@@ -30,5 +30,7 @@ public interface BookingSessionBeanLocal {
     public void deleteBookingById(Long bookingId) throws BookingNotFoundException, BookingAlreadyConfirmedException;
 
     public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException;
+
+    public List<Booking> retrieveBookingsByBusinessId(Long businessId);
     
 }

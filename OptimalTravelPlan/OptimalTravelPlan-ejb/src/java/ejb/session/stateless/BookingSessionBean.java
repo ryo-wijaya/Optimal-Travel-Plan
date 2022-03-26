@@ -6,11 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Booking;
-import entity.Country;
 import entity.Service;
-import entity.Tag;
 import entity.TravelItinerary;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -21,11 +18,8 @@ import javax.persistence.Query;
 import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
-import util.exception.CountryNotFoundException;
 import util.exception.CreateNewBookingException;
-import util.exception.CreateNewServiceException;
 import util.exception.ServiceNotFoundException;
-import util.exception.TagNotFoundException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -92,6 +86,13 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     public List<Booking> retrieveBookingsByServiceId(Long serviceId) {
         Query query = em.createQuery("SELECT b FROM Service s JOIN s.bookings b WHERE s.serviceId = :serviceId");
         query.setParameter("serviceId", serviceId);
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<Booking> retrieveBookingsByBusinessId(Long businessId) {
+        Query query = em.createQuery("SELECT b FROM Service s JOIN s.bookings b where s.business.accountId = :businessId");
+        query.setParameter("businessId", businessId);
         return query.getResultList();
     }
 

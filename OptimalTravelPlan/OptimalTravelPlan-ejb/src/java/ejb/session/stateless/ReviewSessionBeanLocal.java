@@ -31,5 +31,7 @@ public interface ReviewSessionBeanLocal {
     public void deleteReview(Long reviewId) throws ReviewNotFoundException;
 
     public List<Review> retrieveAllReview();
+
+    public List<Review> retrieveReviewsByBusinessId(Long businessId);
     
 }

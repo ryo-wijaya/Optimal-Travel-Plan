@@ -95,6 +95,13 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
     }
     
     @Override
+    public List<Review> retrieveReviewsByBusinessId(Long businessId) {
+        Query query = em.createQuery("SELECT r FROM Review r JOIN r.booking b JOIN b.service s WHERE s.business.accountId = :businessId");
+        query.setParameter("businessId", businessId);
+        return query.getResultList();
+    }
+    
+    @Override
     public void updateReview(Review review) throws ReviewNotFoundException {
         if (review != null && review.getReviewId()!= null) {
             Review reviewToUpdate = this.retrieveReviewByReviewId(review.getReviewId());
