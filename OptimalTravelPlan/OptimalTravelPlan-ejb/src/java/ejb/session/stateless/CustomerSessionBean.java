@@ -16,6 +16,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
+import util.exception.DeleteCustomerException;
 import util.exception.TagNotFoundException;
 import util.exception.UpdateCustomerException;
 
@@ -28,6 +29,7 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
+    private AccountSessionBeanLocal accountSessionBeanLocal;
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -95,5 +97,11 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
         } else {
             throw new AccountNotFoundException("Customer ID not provided for customer to be updated");
         }
+    }
+    
+    @Override
+    public void deleteCustomer(Long customerId) throws AccountNotFoundException, DeleteCustomerException{
+        Customer customerToDelete = em.find(Customer.class, customerId);
+        accountSessionBeanLocal.toggleAccountStatus(customerToDelete.getAccountId());
     }
 }

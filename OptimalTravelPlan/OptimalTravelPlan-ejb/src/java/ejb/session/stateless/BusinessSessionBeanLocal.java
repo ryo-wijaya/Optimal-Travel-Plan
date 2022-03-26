@@ -9,6 +9,7 @@ import entity.Business;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
+import util.exception.DeleteBusinessException;
 import util.exception.InvalidLoginCredentialsException;
 import util.exception.UpdateBusinessException;
 
@@ -26,5 +27,7 @@ public interface BusinessSessionBeanLocal {
     public Business retrieveBusinessByUsername(String username) throws AccountNotFoundException;
 
     public void updateBusiness(Business business) throws AccountNotFoundException, UpdateBusinessException;
+
+    public void deleteBusiness(Long businessId) throws AccountNotFoundException, DeleteBusinessException;
     
 }

@@ -14,6 +14,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
+import util.exception.DeleteBusinessException;
 import util.exception.UpdateBusinessException;
 
 /**
@@ -24,7 +25,8 @@ import util.exception.UpdateBusinessException;
 public class BusinessSessionBean implements BusinessSessionBeanLocal {
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
-    private EntityManager em;
+    private EntityManager em; 
+    private AccountSessionBeanLocal accountSessionBeanLocal;
 
     @Override
     public List<Business> retrieveAllBusinesses() {
@@ -79,5 +81,11 @@ public class BusinessSessionBean implements BusinessSessionBeanLocal {
         } else {
             throw new AccountNotFoundException("Business ID not provided for business to be updated");
         }
+    }
+    
+    @Override
+    public void deleteBusiness(Long businessId) throws AccountNotFoundException, DeleteBusinessException{
+        Business businessToDelete = em.find(Business.class, businessId);
+        accountSessionBeanLocal.toggleAccountStatus(businessToDelete.getAccountId());
     }
 }
