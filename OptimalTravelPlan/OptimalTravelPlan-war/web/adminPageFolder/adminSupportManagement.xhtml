@@ -2,10 +2,48 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../template/adminTemplate.xhtml">
+                template="../template/adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <ui:define name="content">
-        content
+        <div>
+            <h3>
+                Support Request Management
+            </h3>
+            
+            <p:dataTable id="dataTableAllSupportRequest" widgetVar="dataTableAllSupportRequest" value="#{adminSupportManagedBean.supportRequests}" var="supportRequest" rowKey="#{supportRequest.supportRequestId}" rowIndexVar="row"
+                             filteredValue="#{adminSupportManagedBean.filteredSupportRequests}"
+                             rows="10" paginator="true" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                             rowsPerPageTemplate="10,20,50">
+                    <p:column headerText="Customer Name" sortBy="#{supportRequest.booking.travelItinerary.customer.name}" filterBy="#{supportRequest.booking.travelItinerary.customer.name}" filterMatchMode="contains">
+                        <h:outputText value="#{supportRequest.booking.travelItinerary.customer.name}" />
+                    </p:column>
+                    <p:column headerText="Service name" sortBy="#{supportRequest.booking.service.serviceName}" filterBy="#{supportRequest.booking.service.serviceName}" filterMatchMode="contains">
+                        <h:outputText value="#{supportRequest.booking.service.serviceName}" />
+                        <!-- add in a view service button that shows the details of a service -->
+                    </p:column>
+                    <p:column headerText="Request Date" sortBy="#{supportRequest.requestCreationDate}" filterBy="#{supportRequest.requestCreationDate}" filterMatchMode="contains">
+                        <h:outputText value="#{supportRequest.requestCreationDate}" />
+                    </p:column>                            
+                    <p:column headerText="Action" >
+                        <p:commandButton update="formUpdateTag dataTableAllSupportRequest" oncomplete="PF('dialogViewSupportRequest').show()" title="View">
+                            <f:attribute name="supportRequestToUpdate" value="#{supportRequest}" />
+                        </p:commandButton>
+                        <!-- 
+                        1) fix the first button 
+                        2) add in one more button for update support request 
+                        3) dialog box for both buttons
+                        
+                        -->
+                    </p:column>
+            
+            </p:dataTable>
+            
+        </div>
     </ui:define>
 
 </ui:composition>

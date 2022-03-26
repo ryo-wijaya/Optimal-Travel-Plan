@@ -111,4 +111,12 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
             throw new ResolveSupportRequestException("SupportRequest resolved, email sending failed");
         }
     }
+    
+    @Override
+    public void updateSupportRequestDetails(Long supportRequestId, String comments) throws SupportRequestNotFoundException {
+        SupportRequest supportRequest = retrieveSupportRequestById(supportRequestId);
+        SupportRequest supportRequestToUpdate = retrieveSupportRequestById(supportRequest.getSupportRequestId());
+        String details = supportRequestToUpdate.getRequestDetails() + "\n";
+        supportRequestToUpdate.setRequestDetails(details + comments);
+    }
 }
