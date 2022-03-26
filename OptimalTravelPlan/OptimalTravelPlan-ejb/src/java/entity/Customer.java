@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import util.exception.PasswordNotAcceptedException;
 
 @Entity
 public class Customer extends Account implements Serializable {
@@ -43,7 +44,7 @@ public class Customer extends Account implements Serializable {
         this.paymentAccounts = new ArrayList<>();
     }
 
-    public Customer(String name, String mobile, String passportNumber, String email, Boolean vaccinationStatus, String username, String password) {
+    public Customer(String name, String mobile, String passportNumber, String email, Boolean vaccinationStatus, String username, String password) throws PasswordNotAcceptedException {
         super(username, password);
         this.name = name;
         this.mobile = mobile;

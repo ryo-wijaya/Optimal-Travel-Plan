@@ -36,6 +36,7 @@ import util.enumeration.ServiceType;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewServiceException;
 import util.exception.CreateNewServiceRateException;
+import util.exception.PasswordNotAcceptedException;
 import util.exception.TagAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -129,7 +130,7 @@ public class dataInitBean {
 
                 Long service5 = serviceSessionBeanLocal.createNewService(new Service(business5, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address5"), business5.getBusinessId(), tagList5, singapore.getCountryId());
 
-            } catch (UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException ex) {
+            } catch (UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
                 System.out.println(ex.getMessage());
             } catch (TagAlreadyExistException ex) {
                 Logger.getLogger(dataInitBean.class.getName()).log(Level.SEVERE, null, ex);

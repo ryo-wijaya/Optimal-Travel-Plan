@@ -4,6 +4,7 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import util.enumeration.EmployeeRole;
+import util.exception.PasswordNotAcceptedException;
 
 @Entity
 public class Staff extends Account implements Serializable {
@@ -17,7 +18,7 @@ public class Staff extends Account implements Serializable {
     public Staff() {
     }
 
-    public Staff(String username, String password, String name, EmployeeRole employeeRole) {
+    public Staff(String username, String password, String name, EmployeeRole employeeRole) throws PasswordNotAcceptedException {
         super(username, password);
         this.name = name;
         this.employeeRole = employeeRole;
