@@ -9,6 +9,7 @@ import entity.Customer;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
+import util.exception.DeleteCustomerException;
 import util.exception.InvalidLoginCredentialsException;
 import util.exception.TagNotFoundException;
 import util.exception.UpdateCustomerException;
@@ -29,5 +30,7 @@ public interface CustomerSessionBeanLocal {
     public void updateCustomer(Customer customer) throws AccountNotFoundException, UpdateCustomerException;
 
     public void associateTagToCustomer(Long customerId, Long tagId) throws AccountNotFoundException, TagNotFoundException;
+
+    public void deleteCustomer(Long businessId) throws AccountNotFoundException, DeleteCustomerException;
     
 }

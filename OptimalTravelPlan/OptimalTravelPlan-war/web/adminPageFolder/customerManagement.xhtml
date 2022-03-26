@@ -2,10 +2,145 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../template/adminTemplate.xhtml">
+                template="../template/adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <ui:define name="content">
-        content
+        <div>
+            <h3>
+                Customer Management
+            </h3>
+            <h:form>
+                <p:menubar>
+                    <p:submenu label="File" icon="ui-icon-document">
+                        <p:menuitem value="Create New Customer" onclick="PF('dialogCreateNewCustomer').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+            </h:form>
+            
+            <h:form id="formAllCustomers">
+            
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllCustomers" widgetVar="dataTableAllCustomers" value="#{adminManagementManagedBean.accounts}" var="account" rowKey="#{account.accountId}" rowIndexVar="row"
+                             filteredValue="#{adminManagementManagedBean.filteredCustomers}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCustomers').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Customer ID" sortBy="#{account.accountId}" filterBy="#{account.accountId}" filterMatchMode="contains">
+                        <h:outputText value="#{account.accountId}" />
+                    </p:column>                            
+
+                    <p:column headerText="Name" sortBy="#{account.name}" filterBy="#{account.name}" filterMatchMode="contains">
+                        <h:outputText value="#{account.name}" />
+                    </p:column>
+
+                    <p:column headerText="Action" >
+                        <p:commandButton actionListener="#{adminManagementManagedBean.doUpdateCustomer}" update="formUpdateCustomer" oncomplete="PF('dialogUpdateCustomer').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="accountEntityToUpdate" value="#{account}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{adminManagementManagedBean.deleteCustomer}" update="formAllCustomers:dataTableAllCustomers formAllCustomers:messages">
+                            <f:attribute name="accountEntityToDelete" value="#{account}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{account.name} ?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+            
+            <h:form id="formCreateNewCustomer">
+
+                <p:dialog id="dialogCreateNewCustomer" widgetVar="dialogCreateNewCustomer" header="Create New Customer" closable="true">
+
+                    <p:messages id="messagesCreateNewCustomer" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{adminManagementManagedBean.newCustomer.name}" placeholder="Customer 1" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Customer" update="@form formAllCustomers:dataTableAllCustomers" actionListener="#{adminManagementManagedBean.createNewCustomer}" oncomplete="PF('dialogCreateNewCustomer').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+            <h:form id="formUpdateCustomer">
+
+                <p:dialog id="dialogUpdateCustomer" widgetVar="dialogUpdateCustomer" header="Update Customer" closable="true">
+
+                    <p:messages id="messagesUpdateCustomer" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Customer ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{CustomerManagementManagedBean.selectedCustomerToUpdate.accountId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{adminManagementManagedBean.selectedCustomerToUpdate.name}" placeholder="Customer 1" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Customer" update="@form formAllCustomers:dataTableAllCustomers" actionListener="#{adminManagementManagedBean.updateCustomer}" oncomplete="PF('dialogUpdateCustomer').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+        </div>
     </ui:define>
 
 </ui:composition>
