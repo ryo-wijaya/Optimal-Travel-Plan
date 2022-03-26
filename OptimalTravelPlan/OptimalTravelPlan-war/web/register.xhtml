@@ -7,7 +7,7 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <ui:define name="center">
+    <ui:define name="content">
         <style>
             .panelStyle {
                 border: #006699 solid 5px;
@@ -26,18 +26,28 @@
 
                 <h:panelGrid columns="2">
                     <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
-                    <p:inputText id="username" value="#{loginPageManagedBean.username}" />
+                    <p:inputText id="username" value="#{registerPageManagedBean.username}" />
 
                     <p:outputLabel for="password"><b>Password:</b></p:outputLabel>
-                    <p:password id="password" value="#{loginPageManagedBean.password}" />
+                    <p:password id="password" value="#{registerPageManagedBean.password}" />
+                    
+                    <p:outputLabel for="companyName"><b>Company Name:</b></p:outputLabel>
+                    <p:password id="companyName" value="#{registerPageManagedBean.companyName}" />
+                    
+                    <p:outputLabel for="companySite"><b>Company Website:</b></p:outputLabel>
+                    <p:password id="companySite" value="#{registerPageManagedBean.companyWebsite}" />
+                    
+                    <p:outputLabel for="companyNo"><b>Company Number:</b></p:outputLabel>
+                    <p:password id="companyNo" value="#{registerPageManagedBean.companyNumber}" />
+                    
+                    <p:outputLabel for="companyAddress"><b>Company Address:</b></p:outputLabel>
+                    <p:password id="companyAddress" value="#{registerPageManagedBean.companyAddress}" />
                 </h:panelGrid>
-
-
 
                 <br></br>
 
                 <h:panelGroup style="display: block; text-align: center; width: 100%">
-                    <p:commandButton id="loginButton" value="Login" actionListener="#{loginPageManagedBean.login}" update="@form"/>
+                    <p:commandButton id="registerButton" value="Register" actionListener="#{registerPageManagedBean.register}" update="@form"/>
                 </h:panelGroup>
             </h:form>
         </p:panel>

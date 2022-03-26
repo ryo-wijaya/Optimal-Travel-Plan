@@ -44,7 +44,6 @@ public class LoginPageManagedBean {
      * Creates a new instance of LoginPageManagedBean
      */
     public LoginPageManagedBean() {
-        fc = FacesContext.getCurrentInstance();
     }
     
     @PostConstruct
@@ -57,6 +56,8 @@ public class LoginPageManagedBean {
 
     public void login(ActionEvent event) throws IOException {
         try {
+            fc = FacesContext.getCurrentInstance();
+            
             Account loginAccount;
             
             System.out.println("User & pass = " + username.isEmpty() + " " + password.isEmpty());
@@ -76,15 +77,15 @@ public class LoginPageManagedBean {
 
             if (loginAccount instanceof Staff) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Successful!", null));
-                fc.getExternalContext().redirect("adminMain.xhtml");
+                fc.getExternalContext().redirect("./adminPageFolder/adminMain.xhtml");
 
             } else if (loginAccount instanceof Business) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Successful!", null));
-                fc.getExternalContext().redirect("businessMain.xhtml");
+                fc.getExternalContext().redirect("./businessPageFolder/businessMain.xhtml");
 
             } else {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid AccessRight for this portal!", null));
-                fc.getExternalContext().redirect("error.xhtml");
+                fc.getExternalContext().redirect("errorPage.xhtml");
             }
 
         } catch (InvalidLoginCredentialException ex) {

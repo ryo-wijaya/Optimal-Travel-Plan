@@ -38,8 +38,8 @@ public class adminTemplateManagedBean {
         redirectToTagManagement();
     }
 
-    public void redirectToAccountManagement() {
-
+    public void redirectToAccountManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("./adminPageFolder/accountManagaement.xhtml");
     }
 
     public void redirectToAddAccountManagement() {
