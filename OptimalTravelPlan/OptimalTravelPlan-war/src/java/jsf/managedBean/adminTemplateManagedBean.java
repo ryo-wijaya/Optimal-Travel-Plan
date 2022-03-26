@@ -39,7 +39,7 @@ public class adminTemplateManagedBean {
     }
 
     public void redirectToAccountManagement() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("./adminPageFolder/accountManagaement.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("accountManagaement.xhtml");
     }
 
     public void redirectToAddAccountManagement() {

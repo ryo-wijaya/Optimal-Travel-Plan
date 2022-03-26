@@ -2,16 +2,29 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../template/adminTemplate.xhtml">
+                template="./../template/adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h3>Account Management</h3>
-
  
-
-
-
-
+        <p:button style="
+                  top:30%;
+                  left:25%;
+                  width:20%;
+                  height:40%;
+                  position:absolute;
+                  "
+                  value="Admin" outcome="adminManagement.xhtml" />
+        <p:button style="
+                  top:30%;
+                  left:55%;
+                  width:20%;
+                  height:40%;
+                  position:absolute;
+                  "
+                  value="Business" outcome="businessManagement.xhtml" />
 
     </ui:define>
 
