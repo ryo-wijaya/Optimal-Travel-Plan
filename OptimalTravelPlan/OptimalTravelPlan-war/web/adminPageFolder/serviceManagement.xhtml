@@ -21,6 +21,8 @@
                              rowsPerPageTemplate="10,20,50">
                     <f:facet name="header">
                         <p:outputPanel style="text-align: right;">
+                            <p:commandButton value="Create New Service" title="Create New Service" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewService').show()"
+                                             style="float: left;" />
                             <p:commandButton value="View all latest Services" title="View all latest Services"
                                              type="button" icon="pi pi-refresh" actionListener="#{serviceManagementManagedBean.refreshServicesList}"
                                              update="formAllServices" rendered="#{serviceManagementManagedBean.filtered}" />
@@ -57,7 +59,7 @@
                         <h:outputText value="#{service.business}" />
                         <p:commandButton actionListener="#{serviceManagementManagedBean.viewServiceOwner}" icon="pi pi-search-plus" title="business" value="View Business"
                                          style="float: right;">
-                            <f:attribute name="business" value="#{service.business}" />
+                            <f:attribute name="businessToView" value="#{service.business}" />
                         </p:commandButton>
                     </p:column>
 
@@ -65,10 +67,92 @@
                         <h:outputText value="#{service.active}" />
                         <p:commandButton actionListener="#{serviceManagementManagedBean.toggleServiceActive}" icon="pi pi-power-off" title="active" value="Toggle active"
                                          style="float: right;" update="formAllServices">
-                            <f:attribute name="service" value="#{service}" />
+                            <f:attribute name="serviceToToggle" value="#{service}" />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
+            </h:form>
+
+
+            <h:form id="formCreateNewService">
+                <p:dialog id="dialogCreateNewService" widgetVar="dialogCreateNewService" header="Create New Service" closable="true">
+                    <p:messages id="messagesCreateNewService" redisplay="false" />
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Service Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{serviceManagementManagedBean.newService.serviceName}" placeholder="Natural reserve" required="true" requiredMessage="Service Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selRequireVaccination" value="Require Vaccination " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column colspan="2">
+                                <p:selectBooleanCheckbox value="#{serviceManagementManagedBean.requireVac}" itemLabel="Requires Vaccination" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="address" value="Service Address: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="address" value="#{serviceManagementManagedBean.newService.address}" placeholder="Tekong" required="true" requiredMessage="Service address is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="address" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selCountry" value="Country " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selCountry" value="#{serviceManagementManagedBean.selectedCountry}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItems value="#{serviceManagementManagedBean.allCountries}" 
+                                                   var="country" itemValue="#{country.countryId}"
+                                                   itemLabel="#{country.name}" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selCountry" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selTags" value="Tag(s) " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectManyMenu id="selTags" value="#{serviceManagementManagedBean.tagsSelected}" showCheckbox="true" required="true" requiredMessage="Please select at least 1!">
+                                    <f:selectItems value="#{serviceManagementManagedBean.allTags}" 
+                                                   var="tagEntity" itemValue="#{tagEntity.tagId}" 
+                                                   itemLabel="#{tagEntity.name}" />
+                                </p:selectManyMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selTags" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Service" update="@form formAllServices:dataTableAllServices" actionListener="#{tagManagementManagedBean.createNewService}" 
+                                                  oncomplete="PF('dialogCreateNewService').show();" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:dialog>
             </h:form>
         </div>
     </ui:define>

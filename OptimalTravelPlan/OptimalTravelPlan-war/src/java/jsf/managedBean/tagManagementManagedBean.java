@@ -45,7 +45,8 @@ public class tagManagementManagedBean implements Serializable {
 
     @PostConstruct
     public void post() {
-        List<Tag> selectedTags = (List<Tag>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("tagsToView");
+        List<Tag> selectedTags = (List<Tag>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("tagsToView");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("tagsToView");
         if (selectedTags == null) {
             tags = tagSessionBeanLocal.retrieveAllTags();
             filtered = false;

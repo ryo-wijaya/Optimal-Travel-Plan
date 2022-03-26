@@ -54,9 +54,9 @@
                                 </p:submenu>
 
                                 <p:submenu label="Issues and services">
-                                    <p:menuitem value="View Support Tickets" action="#{function}" ajax="false" icon="pi pi-list"/>
-                                    <p:menuitem value="Add Non-Business Service" action="#{function}" ajax="false" icon="pi pi-plus"/>
-                                    <p:menuitem value="View All Services" action="#{function}" ajax="false" icon="pi pi-list"/>
+                                    <p:menuitem value="View Support Tickets" action="#{adminTemplateManagedBean.redirectToSupportManagement}" ajax="false" icon="pi pi-list"/>
+                                    <p:menuitem value="Add Non-Business Service" action="#{adminTemplateManagedBean.redirectToAddServiceManagement}" ajax="false" icon="pi pi-plus"/>
+                                    <p:menuitem value="View All Services" action="#{adminTemplateManagedBean.redirectToServiceManagement}" ajax="false" icon="pi pi-list"/>
                                 </p:submenu> 
                             </p:menu>
                         </h:form>

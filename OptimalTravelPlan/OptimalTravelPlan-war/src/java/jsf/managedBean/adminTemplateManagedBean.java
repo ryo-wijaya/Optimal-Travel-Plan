@@ -40,7 +40,7 @@ public class adminTemplateManagedBean {
     }
 
     public void redirectToAccountManagement() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("accountManagaement.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("accountManagement.xhtml");
     }
 
     public void redirectToAddAccountManagement() throws IOException {
@@ -48,12 +48,12 @@ public class adminTemplateManagedBean {
         redirectToAccountManagement();
     }
 
-    public void redirectToSupportManagement() {
-
+    public void redirectToSupportManagement() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("adminSupportManagement.xhtml");
     }
 
     public void redirectToServiceManagement() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagaement.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagement.xhtml");
     }
 
     public void redirectToAddServiceManagement() throws IOException {

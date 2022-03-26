@@ -220,4 +220,8 @@ public class Service implements Serializable {
         this.tags = tags;
     }
 
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
+
 }

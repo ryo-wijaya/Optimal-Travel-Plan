@@ -72,6 +72,10 @@ public class dataInitBean {
                 Staff customerService = new Staff("staff123", "password", "staff1", EmployeeRole.CUSTOMER_SERVICE);
                 em.persist(customerService);
 
+                Business optimalTravelPlan = new Business("OTP themselves!", "www.OTP.com", "99999999", "OTP address", "manager1", "password");
+                em.persist(optimalTravelPlan);
+                em.flush();
+                
                 Business business1 = new Business("company1", "www.company1.com", "0000001", "address1", "company1", "password");
                 em.persist(business1);
 
