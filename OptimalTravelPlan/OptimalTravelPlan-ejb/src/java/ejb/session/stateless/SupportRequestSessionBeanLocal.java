@@ -30,5 +30,7 @@ public interface SupportRequestSessionBeanLocal {
     public List<SupportRequest> retrieveAllUnresolvedSupportRequests();
 
     public void resolveSupportRequest(Long supportRequestId) throws SupportRequestNotFoundException, ResolveSupportRequestException;
+
+    public void updateSupportRequestDetails(Long supportRequestId, String comments) throws SupportRequestNotFoundException;
     
 }
