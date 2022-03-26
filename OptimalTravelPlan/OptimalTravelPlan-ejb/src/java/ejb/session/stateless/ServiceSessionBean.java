@@ -147,6 +147,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             serviceToUpdate.setAddress(newService.getAddress());
             serviceToUpdate.setRequireVaccination(newService.getRequireVaccination());
             serviceToUpdate.setTags(newService.getTags());
+            serviceToUpdate.setServiceName(newService.getServiceName());
 
         } else {
             throw new AccountNotFoundException("Service ID not provided for service to be updated");
