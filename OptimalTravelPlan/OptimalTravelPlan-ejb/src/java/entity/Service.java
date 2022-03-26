@@ -55,6 +55,7 @@ public class Service implements Serializable {
     private Integer totalNumOfRatings;
 
     public Service() {
+        this.requireVaccination = false;
         this.rates = new ArrayList<>();
         this.bookings = new ArrayList<>();
         this.tags = new ArrayList<>();

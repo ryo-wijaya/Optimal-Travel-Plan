@@ -92,7 +92,7 @@
 
                         <p:row>
                             <p:column>
-                                <p:outputLabel for="selRequireVaccination" value="Require Vaccination " style="font-weight: bold;" />
+                                <p:outputLabel value="Require Vaccination " style="font-weight: bold;" />
                             </p:column>
                             <p:column colspan="2">
                                 <p:selectBooleanCheckbox value="#{serviceManagementManagedBean.requireVac}" itemLabel="Requires Vaccination" />
@@ -147,7 +147,7 @@
                         <p:row>
                             <p:column colspan="3">
                                 <p:commandButton type="reset" value="Clear" />&nbsp;
-                                <p:commandButton  value="Create New Service" update="@form formAllServices:dataTableAllServices" actionListener="#{tagManagementManagedBean.createNewService}" 
+                                <p:commandButton  value="Create New Service" update="@form formAllServices:dataTableAllServices" actionListener="#{serviceManagementManagedBean.createNewNonBusinessService}" 
                                                   oncomplete="PF('dialogCreateNewService').show();" />
                             </p:column>
                         </p:row>

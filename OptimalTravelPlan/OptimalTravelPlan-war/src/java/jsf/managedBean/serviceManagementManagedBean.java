@@ -73,6 +73,7 @@ public class serviceManagementManagedBean implements Serializable {
         this.allCountries = countrySessionBeanLocal.retrieveAllCountries();
         this.allTags = tagSessionBeanLocal.retrieveAllTags();
         this.tagsSelected = new ArrayList<>();
+        this.newService = new Service();
     }
 
     public void refreshServicesList(ActionEvent event) {
@@ -104,12 +105,15 @@ public class serviceManagementManagedBean implements Serializable {
             if (tagsSelected == null || tagsSelected.size() < 1) {
                 throw new Exception("Please select at least 1 tag!");
             }
+            newService.setRequireVaccination(requireVac);
+            newService.setServiceType(ServiceType.ENTERTAINMENT);
             Long s = serviceSessionBeanLocal.createNewService(newService, 1l, tagsSelected, selectedCountry);
             newService.setServiceId(s);
             this.services.add(newService);
             newService = new Service();
             selectedCountry = null;
             tagsSelected = null;
+            requireVac = null;
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully Created service ID = " + s, null));
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + e.getMessage(), null));
