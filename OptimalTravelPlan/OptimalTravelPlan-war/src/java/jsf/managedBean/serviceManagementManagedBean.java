@@ -38,12 +38,21 @@ public class serviceManagementManagedBean implements Serializable {
 
     @PostConstruct
     public void post() {
-        filteredServices = (List<Service>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("servicesToView");
-        services = serviceSessionBeanLocal.retrieveAllActiveServices();
+        List<Service> list = (List<Service>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("servicesToView");
+        if (list != null) {
+            services = list;
+            filtered = true;
+        } else {
+            services = serviceSessionBeanLocal.retrieveAllActiveServices();
+            filtered = false;
+        }
+        System.out.println("list = " + list);
+        System.out.println("Services = " + services);
     }
 
     public void refreshServicesList(ActionEvent event) {
-
+        this.services = serviceSessionBeanLocal.retrieveAllServices();
+        this.filtered = false;
     }
 
     public void viewServiceOwner(ActionEvent event) throws IOException {
@@ -51,11 +60,15 @@ public class serviceManagementManagedBean implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("businessToView", business);
         FacesContext.getCurrentInstance().getExternalContext().redirect("BusinessManagement.xhtml");
     }
-    
-    public void toggleServiceActive(ActionEvent event){
+
+    public void toggleServiceActive(ActionEvent event) {
         Service service = (Service) event.getComponent().getAttributes().remove("service");
-        Boolean temp = service.getActive() ? false : true;
-        service.setActive(temp);
+        Boolean temp = service.getActive();
+        if (temp){
+            service.setActive(false);
+        } else{
+            service.setActive(true);
+        }
     }
 
     public List<Service> getServices() {

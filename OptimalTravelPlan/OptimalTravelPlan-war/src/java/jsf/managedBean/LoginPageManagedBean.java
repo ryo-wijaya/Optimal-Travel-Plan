@@ -62,10 +62,8 @@ public class LoginPageManagedBean {
             
             System.out.println("User & pass = " + username.isEmpty() + " " + password.isEmpty());
             if (!username.isEmpty() && !password.isEmpty()) {
-                System.out.println("User & pass = " + username + " " + password);
                 loginAccount = accountSessionBeanLocal.login(username, password);
             } else {
-                System.out.println("User & pass = " + username2 + " " + password2);
                 loginAccount = accountSessionBeanLocal.login(username2, password2);
             }
 

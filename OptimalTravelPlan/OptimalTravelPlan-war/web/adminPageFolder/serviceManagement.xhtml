@@ -21,8 +21,6 @@
                              rowsPerPageTemplate="10,20,50">
                     <f:facet name="header">
                         <p:outputPanel style="text-align: right;">
-                            <p:commandButton value="Create New Service" title="Create New Service" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewService').show()"
-                                             style="float: left;" />
                             <p:commandButton value="View all latest Services" title="View all latest Services"
                                              type="button" icon="pi pi-refresh" actionListener="#{serviceManagementManagedBean.refreshServicesList}"
                                              update="formAllServices" rendered="#{serviceManagementManagedBean.filtered}" />
@@ -36,8 +34,8 @@
                     <p:column headerText="Service name" sortBy="#{service.serviceName}" filterBy="#{service.serviceName}" filterMatchMode="contains">
                         <h:outputText value="#{service.serviceName}" />
                     </p:column>
-                    <p:column headerText="Service Country" sortBy="#{service.country}" filterBy="#{service.country}" filterMatchMode="contains">
-                        <h:outputText value="#{service.country}" />
+                    <p:column headerText="Service Country" sortBy="#{service.country.name}" filterBy="#{service.country.name}" filterMatchMode="contains">
+                        <h:outputText value="#{service.country.name}" />
                     </p:column>
                     <p:column headerText="Service Address" sortBy="#{service.address}" filterBy="#{service.address}" filterMatchMode="contains">
                         <h:outputText value="#{service.address}" />
