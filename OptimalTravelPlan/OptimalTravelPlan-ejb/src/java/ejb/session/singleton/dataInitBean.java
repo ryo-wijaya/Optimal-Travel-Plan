@@ -178,14 +178,13 @@ public class dataInitBean {
                 
                 Date startDate = new Date();
                 Date endDate = new Date();
+                endDate.setTime(endDate.getTime() + 2160000000l);
                 TravelItinerary travelItinerary1 = new TravelItinerary(customer1, startDate, endDate, singapore);
                 Long travel1 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary1, customer1.getAccountId(), singapore.getCountryId());
                 em.flush();
                 
-                
-                
                 Booking booking1 = new Booking(startDate, endDate, null, null);
-                Long book1 = bookingSessionBeanLocal.createBooking(booking1, service3, travel1);
+                Long book1 = bookingSessionBeanLocal.createBooking(booking1, service1, travel1);
                 em.flush();
                
 

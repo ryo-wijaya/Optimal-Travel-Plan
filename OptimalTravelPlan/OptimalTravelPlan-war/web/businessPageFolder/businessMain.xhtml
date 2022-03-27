@@ -9,7 +9,7 @@
 
     <ui:define name="content">
 
-        
+
         <p:panel id="services" header="Services" style="width: 48.6%; height: 460px; float: right; text-align: center">
             <h:form id="servicesForm">
 
@@ -77,10 +77,23 @@
 
                 <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" var="booking">
 
+                    <p:column headerText="Service ">
+                        <h:outputText value="#{booking.service.serviceName}" />
+                    </p:column>
+
                     <p:column headerText="Booking ID" filterBy="#{booking.bookingId}" filterMatchMode="contains">
                         <h:outputText value="#{booking.bookingId}" />
                     </p:column>
-                    
+
+                    <p:column headerText="Customer " sortBy="#{booking.travelItinerary.customer.name}" filterBy="#{booking.travelItinerary.customer.name}" filterMatchMode="contains">
+                        <h:outputText value="#{booking.travelItinerary.customer.name}" />
+                        <p:commandButton actionListener="#{bookingPageManagedBean.viewCustomerDetails}" icon="pi pi-search-plus" title="ViewCustomer" value="View customer"
+                                         style="float: right;" oncomplete="PF('dialogCustomer').show()" update="customerDataForm" >
+                            <f:attribute name="customerToView" value="#{booking.travelItinerary.customer}" />
+                            <f:attribute name="serviceForMessage" value="#{booking.service}" />
+                        </p:commandButton>
+                    </p:column>
+
                     <p:column headerText="Start Date" sortBy="#{booking.startDate}" filterBy="#{booking.startDate}" filterMatchMode="contains">
                         <h:outputText value="#{booking.startDate}" />
                     </p:column>
@@ -89,22 +102,11 @@
                         <h:outputText value="#{booking.endDate}" />
                     </p:column>
 
-                    <p:column headerText="Payment Information">
-                        <p:commandLink oncomplete="PF('dialogPayment').show()" update=":bookingForm:paymentBox">
+                    <p:column headerText="Payment transaction number (if any)">
+                        <p:commandLink oncomplete="PF('dialogPayment').show()" update=":bookingForm:paymentBox" value="#{booking.paymentTransaction.transactionNumber}">
                             <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
                         </p:commandLink>
-                    </p:column>   
-
-                    <p:column headerText="Review">
-                        <p:commandLink value="View" update=":reviewForm" actionListener="#{bookingPageManagedBean.filterReviews}">
-                            <f:setPropertyActionListener value="#{booking.review}" target="#{bookingPageManagedBean.selectedReview}"/>
-                        </p:commandLink>
                     </p:column>
-
-                    <p:column headerText="Service ID">
-                        <h:outputText value="#{booking.service.serviceId}" />
-                    </p:column>
-
                 </p:dataTable>
 
                 <p:dialog header="Payment Transacation Details" widgetVar="dialogPayment" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
@@ -122,11 +124,8 @@
                         </p:panelGrid>
                     </p:outputPanel>
                 </p:dialog>
-
-
             </h:form>
         </p:panel>
-
 
         <p:panel id="reviews"  style="width: 50%; height: 225px;">
             <h:form id="reviewForm">
@@ -181,7 +180,89 @@
         </p:panel>
 
 
- 
+        <h:form id="customerDataForm">
+            <p:dialog id="dialogCustomer" widgetVar="dialogCustomer" header="Customer Details" closable="true">
+                <p:messages id="messages" redisplay="false" closable="true" />
+                <p:panelGrid>
+                    <p:row>
+                        <p:column>
+                            <h:outputText  value="Name: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{bookingPageManagedBean.selectedCustomer.name}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputText  value="Email: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{bookingPageManagedBean.selectedCustomer.email}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputText  value="Contact Number: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{bookingPageManagedBean.selectedCustomer.mobile}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputText  value="Contact Number: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{bookingPageManagedBean.selectedCustomer.passportNumber}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputText  value="Vaccinated: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{bookingPageManagedBean.selectedCustomer.vaccinationStatus}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{bookingPageManagedBean.selectedCustomer.email != null}">
+                        <p:column>
+                            <p:outputLabel for="quickSend" value="Quick email Notification " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="quickSend" value="#{bookingPageManagedBean.emailMessage}" placeholder="Email message.."/>
+                        </p:column>
+                        <p:column>
+                            <p:message for="quickSend" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row rendered="#{bookingPageManagedBean.selectedCustomer.email != null}">
+                        <p:column colspan="3">
+                            <p:commandButton type="reset" value="Clear" />&nbsp;
+                            <p:commandButton  value="Send" update="customerDataForm" actionListener="#{bookingPageManagedBean.sendEmail}" 
+                                              oncomplete="PF('dialogCustomer').show();" />
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+
+
 
 
     </ui:define>

@@ -6,10 +6,13 @@
 package jsf.managedBean;
 
 import ejb.session.stateless.BookingSessionBeanLocal;
+import ejb.session.stateless.EmailSessionBeanLocal;
 import ejb.session.stateless.ReviewSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import entity.Account;
 import entity.Booking;
+import entity.Business;
+import entity.Customer;
 import entity.Review;
 import entity.Service;
 import javax.inject.Named;
@@ -18,7 +21,9 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import util.exception.ReviewNotFoundException;
 
 /**
@@ -28,6 +33,9 @@ import util.exception.ReviewNotFoundException;
 @Named(value = "bookingPageManagedBean")
 @ViewScoped
 public class BookingPageManagedBean implements Serializable {
+
+    @EJB
+    private EmailSessionBeanLocal emailSessionBeanLocal;
 
     @EJB
     private ServiceSessionBeanLocal serviceSessionBeanLocal;
@@ -44,13 +52,17 @@ public class BookingPageManagedBean implements Serializable {
     private Review selectedReview;
     private List<Service> services;
     private Service selectedService;
+    private Customer selectedCustomer;
+    private String emailMessage;
+    private Business business;
+    private Service serviceMessage;
 
     public BookingPageManagedBean() {
     }
 
     @PostConstruct
     public void PostConstruct() {
-        Account business = (Account) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
+        this.business = (Business) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
         bookings = bookingSessionBeanLocal.retrieveBookingsByBusinessId(business.getAccountId());
         reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
         // services = serviceSessionBeanLocal.retrieveServicesByBusinessId(business.getAccountId()); 
@@ -71,15 +83,36 @@ public class BookingPageManagedBean implements Serializable {
             System.out.println("Error with review reply");
         }
     }
-    
+
     public void filterReviews() {
         reviews.clear();
         reviews.add(selectedReview);
     }
-    
+
     public void filterBooking() {
         bookings.clear();
         bookings = bookingSessionBeanLocal.retrieveBookingsByServiceId(selectedService.getServiceId());
+    }
+
+    public void sendEmail(ActionEvent event) {
+        if (!emailMessage.isEmpty()) {
+            String message = "Dear " + selectedCustomer.getName() + ",\n\n"
+                    + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
+                    + emailMessage + "\n\nThank you for using our booking services!\n\nOptimal Travel Plan\n\nThis is a system generated message. Please do not reply!";
+            try{
+            emailSessionBeanLocal.emailCheckoutNotificationSync(message, selectedCustomer.getEmail());
+            }catch (Exception e){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "EJB Error! cos no email used haha, caught error", null));
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Message 'sent' to Customer!", null));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Please type in a message to send!", null));
+        }
+    }
+
+    public void viewCustomerDetails(ActionEvent event) {
+        this.selectedCustomer = (Customer) event.getComponent().getAttributes().get("customerToView");
+        this.serviceMessage = (Service) event.getComponent().getAttributes().get("serviceForMessage");
     }
 
     public List<Booking> getBookings() {
@@ -114,6 +147,14 @@ public class BookingPageManagedBean implements Serializable {
         this.selectedReview = selectedReview;
     }
 
+    public String getEmailMessage() {
+        return emailMessage;
+    }
+
+    public void setEmailMessage(String emailMessage) {
+        this.emailMessage = emailMessage;
+    }
+
     public List<Service> getServices() {
         return services;
     }
@@ -129,4 +170,13 @@ public class BookingPageManagedBean implements Serializable {
     public void setSelectedService(Service selectedService) {
         this.selectedService = selectedService;
     }
+
+    public Customer getSelectedCustomer() {
+        return selectedCustomer;
+    }
+
+    public void setSelectedCustomer(Customer selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
+    }
+
 }
