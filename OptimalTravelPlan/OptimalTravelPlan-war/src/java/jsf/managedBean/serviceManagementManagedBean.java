@@ -41,8 +41,8 @@ public class serviceManagementManagedBean implements Serializable {
 
     @EJB(name = "ServiceSessionBeanLocal")
     private ServiceSessionBeanLocal serviceSessionBeanLocal;
-    
-    
+
+
 
     private List<Service> services;
     private List<Service> filteredServices;
@@ -53,7 +53,7 @@ public class serviceManagementManagedBean implements Serializable {
     private List<Country> allCountries;
     private Long selectedCountry;
     private Boolean requireVac;
-    
+
 
     public serviceManagementManagedBean() {
 
@@ -67,8 +67,7 @@ public class serviceManagementManagedBean implements Serializable {
             services = list;
             filtered = true;
         } else {
-            services = serviceSessionBeanLocal.retrieveAllActiveServices();
-            filtered = false;
+            refreshServicesList(null);
         }
         this.allCountries = countrySessionBeanLocal.retrieveAllCountries();
         this.allTags = tagSessionBeanLocal.retrieveAllTags();

@@ -25,7 +25,7 @@
                             <p:commandButton value="Create New Tag" title="Create New Tag" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewTag').show()"
                                              style="float: left;" />
                             <p:commandButton value="View all latest Tags" title="View all latest Tags" 
-                                             type="button" icon="pi pi-refresh" actionListener="#{tagManagementManagedBean.refreshTagsList}" 
+                                             icon="pi pi-refresh" actionListener="#{tagManagementManagedBean.refreshTagsList}" 
                                              update="formAllTags" rendered="#{tagManagementManagedBean.filtered}" />
                             <h:outputText value="Search all fields:" />
                             <p:inputText id="globalFilter" onkeyup="PF('dataTableAllTags').filter()" style="width:300px" placeholder="Enter value"/>
