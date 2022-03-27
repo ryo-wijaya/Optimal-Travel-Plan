@@ -37,7 +37,7 @@ public class adminSupportManagedBean implements Serializable {
     private List<SupportRequest> filteredSupportRequests;
     private List<SupportRequest> unresolvedSupportRequests;
     
-    private SupportRequest supportRequest;
+    private SupportRequest supportRequestToView;
     
     private SupportRequest supportRequestToUpdate;
     private String newComment;
@@ -46,7 +46,7 @@ public class adminSupportManagedBean implements Serializable {
      * Creates a new instance of adminSupportManagedBean
      */
     public adminSupportManagedBean() {
-        supportRequest = new SupportRequest();
+        supportRequestToView = new SupportRequest();
     }
     
     @PostConstruct
@@ -90,6 +90,16 @@ public class adminSupportManagedBean implements Serializable {
             supportRequestSessionBeanLocal.resolveSupportRequest(getSupportRequestToUpdate().getSupportRequestId());
         } catch (SupportRequestNotFoundException | ResolveSupportRequestException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "An error has occurred while resolving request: " + ex.getMessage(), null));
+        }
+    }
+    
+    public void toggleSupportRequestResolved(ActionEvent event) {
+        SupportRequest supportRequest = (SupportRequest) event.getComponent().getAttributes().get("supportRequestToToggle");
+        Boolean temp = supportRequest.getResolved();
+        if (temp) {
+            supportRequest.setResolved(false);
+        } else {
+            supportRequest.setResolved(true);
         }
     }
 
@@ -136,17 +146,17 @@ public class adminSupportManagedBean implements Serializable {
     }
 
     /**
-     * @return the supportRequest
+     * @return the supportRequestToView
      */
-    public SupportRequest getSupportRequest() {
-        return supportRequest;
+    public SupportRequest getSupportRequestToView() {
+        return supportRequestToView;
     }
 
     /**
-     * @param supportRequest the supportRequest to set
+     * @param supportRequestToView the supportRequestToView to set
      */
-    public void setSupportRequest(SupportRequest supportRequest) {
-        this.supportRequest = supportRequest;
+    public void setSupportRequestToView(SupportRequest supportRequestToView) {
+        this.supportRequestToView = supportRequestToView;
     }
 
     /**
