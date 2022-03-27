@@ -35,5 +35,7 @@ public interface ServiceSessionBeanLocal {
     public void toggleServiceActivation(Long serviceId) throws ServiceNotFoundException;
 
     public List<Service> retrieveAllServiceByCountry(Long countryId);
+
+    public List<Service> retrieveAllServiceByBusinessId(Long businessId);
     
 }

@@ -25,6 +25,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import util.exception.ReviewNotFoundException;
+import util.exception.ServiceNotFoundException;
 
 /**
  *
@@ -94,14 +95,28 @@ public class BookingPageManagedBean implements Serializable {
         bookings = bookingSessionBeanLocal.retrieveBookingsByServiceId(selectedService.getServiceId());
     }
 
+    public void filterByService(ActionEvent event) {
+
+        this.selectedService = (Service) event.getComponent().getAttributes().get("selectedService");
+
+        bookings.clear();
+        reviews.clear();
+        bookings = selectedService.getBookings();
+
+        for (Booking booking : bookings) {
+            reviews.add(booking.getReview());
+        }
+
+    }
+
     public void sendEmail(ActionEvent event) {
         if (!emailMessage.isEmpty()) {
             String message = "Dear " + selectedCustomer.getName() + ",\n\n"
                     + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
                     + emailMessage + "\n\nThank you for using our booking services!\n\nOptimal Travel Plan\n\nThis is a system generated message. Please do not reply!";
-            try{
-            emailSessionBeanLocal.emailCheckoutNotificationSync(message, selectedCustomer.getEmail());
-            }catch (Exception e){
+            try {
+                emailSessionBeanLocal.emailCheckoutNotificationSync(message, selectedCustomer.getEmail());
+            } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "EJB Error! cos no email used haha, caught error", null));
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Message 'sent' to Customer!", null));

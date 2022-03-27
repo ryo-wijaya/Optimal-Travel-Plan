@@ -8,6 +8,8 @@ package jsf.managedBean;
 import ejb.session.stateless.CountrySessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
+import entity.Account;
+import entity.Booking;
 import entity.Business;
 import entity.Country;
 import entity.Service;
@@ -24,6 +26,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import util.enumeration.ServiceType;
+import util.exception.ServiceNotFoundException;
 
 /**
  *
@@ -42,8 +45,6 @@ public class serviceManagementManagedBean implements Serializable {
     @EJB(name = "ServiceSessionBeanLocal")
     private ServiceSessionBeanLocal serviceSessionBeanLocal;
 
-
-
     private List<Service> services;
     private List<Service> filteredServices;
     private Boolean filtered;
@@ -53,7 +54,8 @@ public class serviceManagementManagedBean implements Serializable {
     private List<Country> allCountries;
     private Long selectedCountry;
     private Boolean requireVac;
-
+    private Account loggedInAccount;
+    private Service selectedService;
 
     public serviceManagementManagedBean() {
 
@@ -63,11 +65,20 @@ public class serviceManagementManagedBean implements Serializable {
     public void post() {
         List<Service> list = (List<Service>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("servicesToView");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("servicesToView");
-        if (list != null) {
-            services = list;
-            filtered = true;
+        loggedInAccount = (Account) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
+
+        if (loggedInAccount instanceof Business) {
+            refreshBusinessServiceList();
         } else {
-            refreshServicesList(null);
+
+            if (list != null) {
+                services = list;
+                filtered = true;
+            } else {
+
+                refreshServicesList(null);
+
+            }
         }
         this.allCountries = countrySessionBeanLocal.retrieveAllCountries();
         this.allTags = tagSessionBeanLocal.retrieveAllTags();
@@ -77,6 +88,11 @@ public class serviceManagementManagedBean implements Serializable {
 
     public void refreshServicesList(ActionEvent event) {
         this.services = serviceSessionBeanLocal.retrieveAllServices();
+        this.filtered = false;
+    }
+
+    public void refreshBusinessServiceList() {
+        this.services = serviceSessionBeanLocal.retrieveAllServiceByBusinessId(loggedInAccount.getAccountId());
         this.filtered = false;
     }
 
@@ -117,6 +133,52 @@ public class serviceManagementManagedBean implements Serializable {
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + e.getMessage(), null));
         }
+    }
+
+    public void createNewBusinessService(ActionEvent event) {
+        try {
+            if (selectedCountry == null) {
+                throw new Exception("Please Select a country!");
+            }
+            if (tagsSelected == null || tagsSelected.size() < 1) {
+                throw new Exception("Please select at least 1 tag!");
+            }
+            newService.setRequireVaccination(requireVac);
+            newService.setServiceType(ServiceType.ENTERTAINMENT);
+            System.out.println("ACCOUNT ID CREATION: " + loggedInAccount.getAccountId());
+            Long s = serviceSessionBeanLocal.createNewService(newService, loggedInAccount.getAccountId(), tagsSelected, selectedCountry);
+            newService.setServiceId(s);
+            this.services.add(newService);
+            newService = new Service();
+            selectedCountry = null;
+            tagsSelected = null;
+            requireVac = null;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully Created service ID = " + s, null));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + e.getMessage(), null));
+        }
+    }
+    
+//    public void filterByService(ActionEvent event) {
+//
+//            Service serviceToFilter = (Service) event.getComponent().getAttributes().get("selectedService");
+//            System.out.println("SERVICE TO FILTER" + serviceToFilter);
+//            selectedService = serviceSessionBeanLocal.retrieveServiceById(serviceToFilter);
+//            bookings.clear();
+//            reviews.clear();
+//            bookings = selectedService.getBookings();
+//
+//            for (Booking booking : bookings) {
+//                reviews.add(booking.getReview());
+//            }
+//    }
+
+    public Service getSelectedService() {
+        return selectedService;
+    }
+
+    public void setSelectedService(Service selectedService) {
+        this.selectedService = selectedService;
     }
 
     public List<Service> getServices() {

@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Business;
 import entity.Country;
 import entity.Service;
 import entity.ServiceRate;
@@ -30,6 +31,9 @@ import util.exception.UpdateServiceException;
 public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
     @EJB
+    private BusinessSessionBeanLocal businessSessionBeanLocal;
+
+    @EJB
     private CountrySessionBeanLocal countrySessionBeanLocal;
 
     @EJB
@@ -37,6 +41,8 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
+    
+    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -57,11 +63,12 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             }
 
             Country countryToAssociate = countrySessionBeanLocal.retrieveCountryByCountryId(countryId);
-
+            Business businessToAssociate = businessSessionBeanLocal.retrieveBusinessById(businessId);
 
             //set country and tags
             newService.setCountry(countryToAssociate);
             newService.setTags(tagsToAssociate);
+            newService.setBusiness(businessToAssociate);
 
             em.persist(newService);
             em.flush();
@@ -70,6 +77,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
                 tag.getServices().add(newService);
             }
             countryToAssociate.getServices().add(newService);
+            businessToAssociate.getServices().add(newService);
             em.flush();
             return newService.getServiceId();
 
@@ -83,7 +91,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
-        } catch (CountryNotFoundException | TagNotFoundException ex) {
+        } catch (CountryNotFoundException | AccountNotFoundException | TagNotFoundException ex) {
             throw new CreateNewServiceException("Issue with provided businessId, TagIds, RateIds, or CountryIds!");
         }
     }
@@ -138,6 +146,21 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
         query.setParameter("country", country);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<Service> retrieveAllServiceByBusinessId(Long businessId) {
+        Query query = em.createQuery("SELECT s FROM Service s WHERE s.business.accountId = :inBusiness");
+        query.setParameter("inBusiness", businessId);
+        List<Service> services = query.getResultList();
+        for (Service service : services) {
+            service.getBookings().size(); //lazy loading
+            service.getBusiness();
+            service.getRates().size();
+            service.getCountry();
+            service.getTags().size();
+        }
+        return services;
     }
 
     @Override
