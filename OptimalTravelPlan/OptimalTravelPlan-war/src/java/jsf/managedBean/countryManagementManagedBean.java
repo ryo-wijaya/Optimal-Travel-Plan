@@ -59,17 +59,17 @@ public class countryManagementManagedBean implements Serializable {
     }
     
     public void doUpdateCountry(ActionEvent event) {
-        setSelectedCountryToUpdate((Country) event.getComponent().getAttributes().get("selectedCountryToUpdate"));
+        setSelectedCountryToUpdate((Country) event.getComponent().getAttributes().get("countryEntityToUpdate"));
     }
     
     public void updateCountry(ActionEvent event) {
-        countrySessionBeanLocal.updateCountry(getNewCountry());
+        countrySessionBeanLocal.updateCountry(selectedCountryToUpdate);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Country updated successfully", null));
     }
     
     public void deleteCountry(ActionEvent event) {
         try {
-            Country countryToDelete = (Country) event.getComponent().getAttributes().get("countryToDelete");
+            Country countryToDelete = (Country) event.getComponent().getAttributes().get("countryEntityToDelete");
             countrySessionBeanLocal.deleteCountry(countryToDelete.getCountryId());
             getCountries().remove(countryToDelete);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Country deleted successfully", null));

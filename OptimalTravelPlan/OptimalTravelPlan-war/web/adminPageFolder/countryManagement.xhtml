@@ -43,7 +43,8 @@
                         <p:commandButton actionListener="#{countryManagementManagedBean.doUpdateCountry}" update="formUpdateCountry" oncomplete="PF('dialogUpdateCountry').show()" icon="ui-icon-pencil" title="Update">
                             <f:attribute name="countryEntityToUpdate" value="#{country}" />
                         </p:commandButton>
-                        <p:commandButton icon="ui-icon-trash" actionListener="#{countryManagementManagedBean.deleteCountry}" update="formAllCountries">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{countryManagementManagedBean.deleteCountry}" update="formAllCountries"
+                                         rendered="#{country.services.size() eq 0}">
                             <f:attribute name="countryEntityToDelete" value="#{country}" />
                             <p:confirm header="Confirmation" message="Are you sure you want to delete #{country.name} ?" icon="ui-icon-alert" />
                         </p:commandButton>
