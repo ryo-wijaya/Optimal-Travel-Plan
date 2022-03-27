@@ -26,7 +26,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import util.enumeration.ServiceType;
+import util.exception.AccountNotFoundException;
 import util.exception.ServiceNotFoundException;
+import util.exception.UpdateServiceException;
 
 /**
  *
@@ -158,20 +160,14 @@ public class serviceManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + e.getMessage(), null));
         }
     }
-    
-//    public void filterByService(ActionEvent event) {
-//
-//            Service serviceToFilter = (Service) event.getComponent().getAttributes().get("selectedService");
-//            System.out.println("SERVICE TO FILTER" + serviceToFilter);
-//            selectedService = serviceSessionBeanLocal.retrieveServiceById(serviceToFilter);
-//            bookings.clear();
-//            reviews.clear();
-//            bookings = selectedService.getBookings();
-//
-//            for (Booking booking : bookings) {
-//                reviews.add(booking.getReview());
-//            }
-//    }
+
+    public void editService() {
+        try {
+            serviceSessionBeanLocal.updateService(selectedService);
+        } catch (AccountNotFoundException | ServiceNotFoundException | UpdateServiceException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Update Values!", null));
+        }
+    }
 
     public Service getSelectedService() {
         return selectedService;
