@@ -13,8 +13,8 @@
             <h3>
                 Support Request Management
             </h3>
-            
-            <p:dataTable id="dataTableAllSupportRequest" widgetVar="dataTableAllSupportRequest" value="#{adminSupportManagedBean.supportRequests}" var="supportRequest" rowKey="#{supportRequest.supportRequestId}" rowIndexVar="row"
+            <h:form id="formAllSupportRequests">
+                <p:dataTable id="dataTableAllSupportRequests" widgetVar="dataTableAllSupportRequests" value="#{adminSupportManagedBean.supportRequests}" var="supportRequest" rowKey="#{supportRequest.supportRequestId}" rowIndexVar="row"
                              filteredValue="#{adminSupportManagedBean.filteredSupportRequests}"
                              rows="10" paginator="true" 
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
@@ -30,19 +30,141 @@
                         <h:outputText value="#{supportRequest.requestCreationDate}" />
                     </p:column>                            
                     <p:column headerText="Action" >
-                        <p:commandButton update="formUpdateTag dataTableAllSupportRequest" oncomplete="PF('dialogViewSupportRequest').show()" title="View">
-                            <f:attribute name="supportRequestToUpdate" value="#{supportRequest}" />
+                        <p:commandButton update="formViewSupportRequest dataTableAllSupportRequest" oncomplete="PF('dialogViewSupportRequest').show()" icon="ui-icon-document" title="View">
+                            <f:attribute name="supportRequestToView" value="#{supportRequest}" />
                         </p:commandButton>
-                        <!-- 
-                        1) fix the first button 
-                        2) add in one more button for update support request 
-                        3) dialog box for both buttons
-                        
-                        -->
                     </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="formViewSupportRequest">
+                <p:dialog id="dialogViewSupportRequest" widgetVar="dialogViewSupportRequest" header="View SupportRequest" closable="true">
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Support Request ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.supportRequestId}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Request Date: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.requestCreationDate}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Customer Name: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.booking.travelItinerary.customer.name}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Company Name: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.booking.service.business.companyName}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Service: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.booking.service.serviceName}" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Booking Start Date: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.booking.startDate}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Booking End Date: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.booking.endDate}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column headerText="Action" >
+                                <p:commandButton actionListener="#{supportRequestManagedBean.doUpdateSupportRequest}" update="formUpdateSupportRequest" oncomplete="PF('dialogUpdateSupportRequest').show()" icon="ui-icon-pencil" title="Update">
+                                    <f:attribute name="supportRequestToUpdate" value="#{supportRequest}" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
             
-            </p:dataTable>
-            
+            <h:form id="formUpdateSupportRequest">
+                <p:dialog id="dialogUpdateSupportRequest" widgetVar="dialogUpdateSupportRequest" header="Update Support Request" closable="true">
+                    <p:messages id="messagesUpdateSupportRequest" redisplay="false" />
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Request ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.supportRequestId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="requestDetails" value="Request Details: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequestManagedBean.supportRequestToView.requestDetails}" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="requestDetails" value="#{supportRequestManagedBean.supportRequestToView.requestDetails}" placeholder="message" required="true" requiredMessage="request message is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="requestDetails" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Resolve status: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{supportRequest.resolved}" />
+                            </p:column>
+                            <p:column>
+                                <p:commandButton actionListener="#{supportRequestManagedBean.toggleSupportRequestResolved}" icon="pi pi-power-off" title="active" value="Toggle active"
+                                                 style="float: right;" update="formAllSupportRequests">
+                                    <f:attribute name="supportRequestToToggle" value="#{supportRequest}" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Request Details" update="@form formAllSupportRequests:dataTableAllSupportRequests" actionListener="#{supportRequestManagedBean.updateComment}" oncomplete="PF('dialogUpdateSupportRequest').show();" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+
         </div>
     </ui:define>
 
