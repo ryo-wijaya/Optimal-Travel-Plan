@@ -8,19 +8,21 @@ package jsf.managedBean;
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import entity.Customer;
+import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.primefaces.PrimeFaces;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteCustomerException;
+import util.exception.CustomerAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateCustomerException;
 import util.exception.UsernameAlreadyExistException;
@@ -35,109 +37,104 @@ public class customerManagementManagedBean implements Serializable {
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
-    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
 
     private List<Customer> customers;
     private List<Customer> filteredCustomers;
-
+    private Boolean filtered;
     private Customer newCustomer;
+    private Customer customerToUpdate;
 
-    private Customer selectedCustomerToUpdate;
-
-    /**
-     * Creates a new instance of customerManagementManagedBean
-     */
     public customerManagementManagedBean() {
         newCustomer = new Customer();
     }
 
     @PostConstruct
-    public void postConstruct() {
-        setCustomers(customerSessionBeanLocal.retrieveAllCustomers());
+    public void post() {
+        List<Customer> selectedCustomers = (List<Customer>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("customersToView");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("customersToView");
+        if (selectedCustomers == null) {
+            customers = customerSessionBeanLocal.retrieveAllCustomers();
+            filtered = false;
+        } else {
+            customers = selectedCustomers;
+            filtered = true;
+        }
+        Boolean addCustomer = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewCustomer");
+        if (addCustomer != null && addCustomer) {
+            PrimeFaces.current().executeScript("PF('dialogCreateNewCustomer').show();");
+        }
+    }
+
+    public void refreshCustomersList(ActionEvent event) {
+        this.customers = customerSessionBeanLocal.retrieveAllCustomers();
+        this.filtered = false;
     }
 
     public void createNewCustomer(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Customer c = customerSessionBeanLocal.retrieveCustomerById(accountSessionBeanLocal.createNewAccount(getNewCustomer()));
-        getCustomers().add(c);
-        setNewCustomer(new Customer());
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Customer created successfully (Customer: " + c.getName() + ")", null));
+        Customer t = customerSessionBeanLocal.retrieveCustomerById(accountSessionBeanLocal.createNewAccount(getNewCustomer()));
+        customers.add(t);
+        newCustomer = new Customer();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New customer created successfully (Customer ID: " + t.getCustomerId() + ")", null));
     }
 
     public void doUpdateCustomer(ActionEvent event) {
-        setSelectedCustomerToUpdate((Customer) event.getComponent().getAttributes().get("selectedCustomerToUpdate"));
+        customerToUpdate = (Customer) event.getComponent().getAttributes().get("customerToUpdate");
     }
 
     public void updateCustomer(ActionEvent event) throws AccountNotFoundException, UpdateCustomerException {
-        customerSessionBeanLocal.updateCustomer(getNewCustomer());
+        customerSessionBeanLocal.updateCustomer(customerToUpdate);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Customer updated successfully", null));
     }
 
-    public void deleteCustomer(ActionEvent event) {
+    public void deleteCustomer(ActionEvent event) throws AccountNotFoundException {
         try {
             Customer customerToDelete = (Customer) event.getComponent().getAttributes().get("customerToDelete");
             customerSessionBeanLocal.deleteCustomer(customerToDelete.getCustomerId());
-            getCustomers().remove(customerToDelete);
+            customers.remove(customerToDelete);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Customer deleted successfully", null));
-        } catch (DeleteCustomerException | AccountNotFoundException ex) {
+        } catch (DeleteCustomerException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }
     }
 
-    /**
-     * @return the customers
-     */
     public List<Customer> getCustomers() {
         return customers;
     }
 
-    /**
-     * @param customers the customers to set
-     */
     public void setCustomers(List<Customer> customers) {
         this.customers = customers;
     }
 
-    /**
-     * @return the filteredCustomers
-     */
     public List<Customer> getFilteredCustomers() {
         return filteredCustomers;
     }
 
-    /**
-     * @param filteredCustomers the filteredCustomers to set
-     */
     public void setFilteredCustomers(List<Customer> filteredCustomers) {
         this.filteredCustomers = filteredCustomers;
     }
 
-    /**
-     * @return the newCustomer
-     */
     public Customer getNewCustomer() {
         return newCustomer;
     }
 
-    /**
-     * @param newCustomer the newCustomer to set
-     */
     public void setNewCustomer(Customer newCustomer) {
         this.newCustomer = newCustomer;
     }
 
-    /**
-     * @return the selectedCustomerToUpdate
-     */
-    public Customer getSelectedCustomerToUpdate() {
-        return selectedCustomerToUpdate;
+    public Customer getCustomerToUpdate() {
+        return customerToUpdate;
     }
 
-    /**
-     * @param selectedCustomerToUpdate the selectedCustomerToUpdate to set
-     */
-    public void setSelectedCustomerToUpdate(Customer selectedCustomerToUpdate) {
-        this.selectedCustomerToUpdate = selectedCustomerToUpdate;
+    public void setCustomerToUpdate(Customer customerToUpdate) {
+        this.customerToUpdate = customerToUpdate;
     }
 
+    public Boolean getFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(Boolean filtered) {
+        this.filtered = filtered;
+    }
 }

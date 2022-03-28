@@ -8,19 +8,21 @@ package jsf.managedBean;
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.BusinessSessionBeanLocal;
 import entity.Business;
+import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.primefaces.PrimeFaces;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteBusinessException;
+import util.exception.BusinessAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateBusinessException;
 import util.exception.UsernameAlreadyExistException;
@@ -35,110 +37,110 @@ public class businessManagementManagedBean implements Serializable {
 
     @EJB
     private BusinessSessionBeanLocal businessSessionBeanLocal;
-    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
-    
+
     private List<Business> businesses;
     private List<Business> filteredBusinesses;
-    
+    private Boolean filtered;
     private Business newBusiness;
-    
-    private Business selectedBusinessToUpdate;
-    
-    
-    /**
-     * Creates a new instance of businessManagementManagedBean
-     */
+    private Business businessToUpdate;
+
     public businessManagementManagedBean() {
         newBusiness = new Business();
     }
-    
+
     @PostConstruct
-    public void postConstruct() {
-        setBusinesses(businessSessionBeanLocal.retrieveAllBusinesses());
+    public void post() {
+        List<Business> selectedBusinesses = (List<Business>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("businessesToView");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("businessesToView");
+        if (selectedBusinesses == null) {
+            businesses = businessSessionBeanLocal.retrieveAllBusinesses();
+            filtered = false;
+        } else {
+            businesses = selectedBusinesses;
+            filtered = true;
+        }
+        Boolean addBusiness = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewBusiness");
+        if (addBusiness != null && addBusiness) {
+            PrimeFaces.current().executeScript("PF('dialogCreateNewBusiness').show();");
+        }
     }
-    
+
+    public void refreshBusinessesList(ActionEvent event) {
+        this.businesses = businessSessionBeanLocal.retrieveAllBusinesses();
+        this.filtered = false;
+    }
+
     public void createNewBusiness(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Business c = businessSessionBeanLocal.retrieveBusinessById(accountSessionBeanLocal.createNewAccount(getNewBusiness()));
-        getBusinesses().add(c);
-        setNewBusiness(new Business());
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Business created successfully (Business: " + c.getCompanyName() + ")", null));
+        Business t = businessSessionBeanLocal.retrieveBusinessById(accountSessionBeanLocal.createNewAccount(getNewBusiness()));
+        businesses.add(t);
+        newBusiness = new Business();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New business created successfully (Business ID: " + t.getBusinessId() + ")", null));
     }
-    
+
+    public void viewBusinessServices(ActionEvent event) throws IOException {
+        Business selectedBusiness = (Business) event.getComponent().getAttributes().get("businessToViewServices");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("servicesToView", selectedBusiness.getServices());
+        FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagement.xhtml");
+    }
+
     public void doUpdateBusiness(ActionEvent event) {
-        setSelectedBusinessToUpdate((Business) event.getComponent().getAttributes().get("selectedBusinessToUpdate"));
+        businessToUpdate = (Business) event.getComponent().getAttributes().get("businessToUpdate");
     }
-    
+
     public void updateBusiness(ActionEvent event) throws AccountNotFoundException, UpdateBusinessException {
-        businessSessionBeanLocal.updateBusiness(getNewBusiness());
+        businessSessionBeanLocal.updateBusiness(businessToUpdate);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business updated successfully", null));
     }
-    
-    public void deleteBusiness(ActionEvent event) {
+
+    public void deleteBusiness(ActionEvent event) throws AccountNotFoundException {
         try {
             Business businessToDelete = (Business) event.getComponent().getAttributes().get("businessToDelete");
             businessSessionBeanLocal.deleteBusiness(businessToDelete.getBusinessId());
-            getBusinesses().remove(businessToDelete);
+            businesses.remove(businessToDelete);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business deleted successfully", null));
-        } catch (DeleteBusinessException | AccountNotFoundException ex) {
+        } catch (DeleteBusinessException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }
     }
 
-    /**
-     * @return the businesses
-     */
     public List<Business> getBusinesses() {
         return businesses;
     }
 
-    /**
-     * @param businesses the businesses to set
-     */
     public void setBusinesses(List<Business> businesses) {
         this.businesses = businesses;
     }
 
-    /**
-     * @return the filteredBusinesses
-     */
     public List<Business> getFilteredBusinesses() {
         return filteredBusinesses;
     }
 
-    /**
-     * @param filteredBusinesses the filteredBusinesses to set
-     */
     public void setFilteredBusinesses(List<Business> filteredBusinesses) {
         this.filteredBusinesses = filteredBusinesses;
     }
 
-    /**
-     * @return the newBusiness
-     */
     public Business getNewBusiness() {
         return newBusiness;
     }
 
-    /**
-     * @param newBusiness the newBusiness to set
-     */
     public void setNewBusiness(Business newBusiness) {
         this.newBusiness = newBusiness;
     }
 
-    /**
-     * @return the selectedBusinessToUpdate
-     */
-    public Business getSelectedBusinessToUpdate() {
-        return selectedBusinessToUpdate;
+    public Business getBusinessToUpdate() {
+        return businessToUpdate;
     }
 
-    /**
-     * @param selectedBusinessToUpdate the selectedBusinessToUpdate to set
-     */
-    public void setSelectedBusinessToUpdate(Business selectedBusinessToUpdate) {
-        this.selectedBusinessToUpdate = selectedBusinessToUpdate;
+    public void setBusinessToUpdate(Business businessToUpdate) {
+        this.businessToUpdate = businessToUpdate;
     }
-    
+
+    public Boolean getFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(Boolean filtered) {
+        this.filtered = filtered;
+    }
 }

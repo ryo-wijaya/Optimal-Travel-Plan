@@ -29,5 +29,7 @@ public interface BusinessSessionBeanLocal {
     public void updateBusiness(Business business) throws AccountNotFoundException, UpdateBusinessException;
 
     public void deleteBusiness(Long businessId) throws AccountNotFoundException, DeleteBusinessException;
+
+    public Business createNewBusiness(Business newBusiness);
     
 }
