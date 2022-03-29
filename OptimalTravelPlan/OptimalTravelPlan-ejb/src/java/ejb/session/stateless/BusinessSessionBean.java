@@ -15,7 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteBusinessException;
+import util.exception.UnknownPersistenceException;
 import util.exception.UpdateBusinessException;
+import util.exception.UsernameAlreadyExistException;
 
 /**
  *
@@ -39,6 +41,13 @@ public class BusinessSessionBean implements BusinessSessionBeanLocal {
         return businesses;
     }
 
+    @Override
+    public Business createNewBusiness(Business newBusiness)throws UsernameAlreadyExistException, UnknownPersistenceException{
+        Long accountId = accountSessionBeanLocal.createNewAccount(newBusiness);
+        newBusiness.setAccountId(accountId);
+        return newBusiness;
+    }
+    
     @Override
     public Business retrieveBusinessById(Long businessId) throws AccountNotFoundException {
         Business business = em.find(Business.class, businessId);

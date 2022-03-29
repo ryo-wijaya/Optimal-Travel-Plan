@@ -97,8 +97,7 @@ public class businessManagementManagedBean implements Serializable {
         try {
             Business businessToDelete = (Business) event.getComponent().getAttributes().get("businessToDelete");
             businessSessionBeanLocal.deleteBusiness(businessToDelete.getBusinessId());
-            businesses.remove(businessToDelete);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business deleted successfully", null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business disabled successfully", null));
         } catch (DeleteBusinessException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }

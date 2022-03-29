@@ -51,8 +51,8 @@
                                          value="Update Staff Name" icon="ui-icon-pencil" title="Update">
                             <f:attribute name="staffToUpdate" value="#{staff}" />
                         </p:commandButton>
-                        <p:commandButton icon="ui-icon-trash" actionListener="#{staffManagementManagedBean.deleteStaff}" update="formAllStaffs"
-                                         rendered="#{staff.services.size() eq 0}" value="Delete Unused Staff">
+                        <p:commandButton icon="pi pi-power" actionListener="#{staffManagementManagedBean.deleteStaff}" update="formAllStaffs"
+                                         value="Disable Staff">
                             <f:attribute name="staffToDelete" value="#{staff}" />
                             <p:confirm header="Confirmation" message="Are you sure you want to delete #{staff.name} (Staff ID: #{staff.staffId})?" icon="ui-icon-alert"  />
                         </p:commandButton>

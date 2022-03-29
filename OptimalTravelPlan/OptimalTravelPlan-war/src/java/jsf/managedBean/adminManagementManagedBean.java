@@ -92,7 +92,7 @@ public class adminManagementManagedBean implements Serializable {
             Staff staffToDelete = (Staff) event.getComponent().getAttributes().get("staffToDelete");
             staffSessionBeanLocal.deleteStaff(staffToDelete.getStaffId());
             staffs.remove(staffToDelete);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Staff deleted successfully", null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Staff disabled successfully", null));
         } catch (DeleteStaffException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }

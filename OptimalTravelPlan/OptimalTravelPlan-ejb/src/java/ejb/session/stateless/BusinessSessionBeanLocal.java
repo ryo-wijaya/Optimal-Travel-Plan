@@ -11,7 +11,9 @@ import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteBusinessException;
 import util.exception.InvalidLoginCredentialsException;
+import util.exception.UnknownPersistenceException;
 import util.exception.UpdateBusinessException;
+import util.exception.UsernameAlreadyExistException;
 
 /**
  *
@@ -30,6 +32,5 @@ public interface BusinessSessionBeanLocal {
 
     public void deleteBusiness(Long businessId) throws AccountNotFoundException, DeleteBusinessException;
 
-    public Business createNewBusiness(Business newBusiness);
-    
+    public Business createNewBusiness(Business newBusiness)throws UsernameAlreadyExistException, UnknownPersistenceException;
 }
