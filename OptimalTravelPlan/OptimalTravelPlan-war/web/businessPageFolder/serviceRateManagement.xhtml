@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/businessTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div>
+            <h3>Service Rate Management</h3>
+
+            <h:form id="formAllServiceRates">
+                <p:menu>
+                    <p:menuitem style="float:left; color: activeborder; background-color: activecaption" value="Back" ajax="false" 
+                                icon="pi pi-arrow-circle-left" outcome="./limitedServicePage.xhtml"/>
+                </p:menu>
+                
+                <p:menu>
+                    <p:menuitem style="width: 900px; right: 5%; color: activeborder; background-color: activecaption" value="Look I got no idea how to make this menu item button not look bad in
+                                primefaces.THEME.Redmond ok?! Not my fault. I tried throwing in random colours but the colours does not appear as I want it!
+                                "/>
+                </p:menu>
+                
+                
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllServiceRates" widgetVar="dataTableAllServiceRates" value="#{serviceRateManagementManagedBean.rates}" var="serviceRate" rowKey="#{serviceRate.serviceRateId}" rowIndexVar="row"
+                             filteredValue="#{serviceRateManagementManagedBean.filteredServiceRates}"
+                             rows="10" paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+                    <f:facet name="header">
+                        <h:outputText style="text-align: left;" value="Service rates for #{serviceRateManagementManagedBean.selectedService.serviceName}" />
+                        <p:outputPanel style="text-align: right;">
+                            <p:commandButton value="Create New Service Rate" title="Create New Service Rate" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewServiceRate').show()"
+                                             style="float: left;" />
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllServiceRates').filter()" style="width:300px" placeholder="Enter value"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="Service Rate ID" sortBy="#{serviceRate.serviceRateId}" filterBy="#{serviceRate.serviceRateId}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.serviceRateId}" />
+                    </p:column>
+                    <p:column headerText="Rate Type" sortBy="#{serviceRate.rateType}" filterBy="#{serviceRate.rateType}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.rateType}" />
+                    </p:column>
+                    <p:column headerText="Charge type" sortBy="#{serviceRate.chargeType}" filterBy="#{serviceRate.chargeType}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.chargeType}" />
+                    </p:column>
+                    <p:column headerText="Starts on" sortBy="#{serviceRate.startDate}" filterBy="#{serviceRate.startDate}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.startDate}" />
+                    </p:column>
+                    <p:column headerText="Ends on" sortBy="#{serviceRate.endDate}" filterBy="#{serviceRate.endDate}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.endDate}" />
+                    </p:column>
+                    <p:column headerText="Price" sortBy="#{serviceRate.price}" filterBy="#{serviceRate.price}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.price}" />
+                    </p:column>
+                    <p:column headerText="Enabled " sortBy="#{serviceRate.enabled}" filterBy="#{serviceRate.enabled}" filterMatchMode="contains">
+                        <h:outputText value="#{serviceRate.enabled}" />
+                        <p:commandButton actionListener="#{serviceRateManagementManagedBean.deleteServiceRate}" icon="pi pi-power-off" title="active" value="Toggle active"
+                                         style="float: right;" update="formAllServiceRates">
+                            <f:attribute name="serviceRateToToggle" value="#{serviceRate}" />
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="Update" width="25px">
+                        <p:commandButton actionListener="#{serviceRateManagementManagedBean.doUpdateServiceRate}" icon="pi pi-power-off" title="active" value="Update (incomplete)"
+                                         style="float: right;" oncomplete="PF('dialogUpdateNewServiceRate').show()" >
+                            <f:attribute name="serviceRateToUpdate" value="#{serviceRate}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+
+            <h:form id="formCreateNewServiceRate">
+                <p:dialog id="dialogCreateNewServiceRate" widgetVar="dialogCreateNewServiceRate" header="Create New Service Rate" closable="true">
+                    <p:messages id="messagesCreateNewService" redisplay="false" />
+                    <p:panelGrid>
+
+                        <p:row rendered="#{serviceRateManagementManagedBean.rates.size() > 0}">
+                            <p:column>
+                                <p:outputLabel for="rateType" value="rateType " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="rateType" value="#{serviceRateManagementManagedBean.selectedRateType}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="false" />
+                                    <f:selectItems value="#{serviceRateManagementManagedBean.allRateTypes}" 
+                                                   var="rateType" itemValue="#{rateType}"
+                                                   itemLabel="#{rateType}" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="rateType" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="chargeType" value="chargeType " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="chargeType" value="#{serviceRateManagementManagedBean.selectedChargeType}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="false" />
+                                    <f:selectItems value="#{serviceRateManagementManagedBean.allChargeTypes}" 
+                                                   var="chargeType" itemValue="#{chargeType}"
+                                                   itemLabel="#{chargeType}" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="chargeType" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="price" value="Price " />
+                            </p:column>
+                            <p:column>
+                                <p:spinner id="price" value="#{serviceRateManagementManagedBean.newServiceRate.price}" placeholder="10.00" min="0" max="1000000" stepFactor="0.01" required="true" requiredMessage="Price is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="price" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row rendered="#{serviceRateManagementManagedBean.rates.size() > 0}">
+                            <p:column>
+                                <p:outputLabel for="startDate" value="Start Date: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:datePicker id="startDate" value="#{serviceRateManagementManagedBean.newServiceRate.startDate}" showTime="true" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="startDate" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row rendered="#{serviceRateManagementManagedBean.rates.size() > 0}">
+                            <p:column>
+                                <p:outputLabel for="endDate" value="Start Date: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:datePicker id="endDate" value="#{serviceRateManagementManagedBean.newServiceRate.endDate}" showTime="true" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="endDate" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Service Rate" update="@form formAllServiceRates:dataTableAllServiceRates" actionListener="#{serviceRateManagementManagedBean.createNewServiceRate}" 
+                                                  oncomplete="PF('dialogCreateNewServiceRate').show();" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

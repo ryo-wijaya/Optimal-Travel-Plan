@@ -7,6 +7,8 @@ package ejb.session.stateless;
 
 import entity.Service;
 import entity.ServiceRate;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -37,15 +39,7 @@ public class ServiceRateSessionBean implements ServiceRateSessionBeanLocal {
             return newServiceRate.getServiceRateId();
 
         } catch (PersistenceException ex) {
-            if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
-                if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new ConstraintViolationException();
-                } else {
-                    throw new UnknownPersistenceException(ex.getMessage());
-                }
-            } else {
-                throw new UnknownPersistenceException(ex.getMessage());
-            }
+            throw new UnknownPersistenceException(ex.getMessage());
         } catch (ServiceNotFoundException ex) {
             throw new CreateNewServiceRateException("Issue with provided ServiceId!");
         }
@@ -71,5 +65,30 @@ public class ServiceRateSessionBean implements ServiceRateSessionBeanLocal {
         } else {
             throw new ServiceRateNotFoundException("ID not provided for serviceRate status to be updated");
         }
+    }
+
+    @Override
+    public List<ServiceRate> retrieveServiceRateByServiceId(Long serviceID) throws ServiceNotFoundException {
+        return this.serviceSessionBeanLocal.retrieveServiceById(serviceID).getRates();
+    }
+
+    @Override
+    public ServiceRate updateServiceRate(ServiceRate serviceRate) throws ServiceRateNotFoundException, ConstraintViolationException {
+        ServiceRate rate = retrieveServiceRateById(serviceRate.getServiceRateId());
+        Date today = new Date();
+        //ensure that can only extend 
+        if (rate.getStartDate().compareTo(serviceRate.getStartDate()) >= 0
+                && rate.getEndDate().compareTo(serviceRate.getStartDate()) <= 0) {
+            if (rate.getPrice() != serviceRate.getPrice()){
+                throw new ConstraintViolationException("Unable to change rate price! Please create a new rate and disable old one!");
+            }
+            rate.setChargeType(serviceRate.getChargeType());
+            rate.setEndDate(serviceRate.getEndDate());
+            rate.setStartDate(serviceRate.getStartDate());
+            rate.setChargeType(serviceRate.getChargeType());
+            em.flush();
+            return rate;
+        }
+        throw new ConstraintViolationException("Only allowed to extend rate or make it start earlier!");
     }
 }

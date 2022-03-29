@@ -10,7 +10,7 @@
     <ui:define name="content">
 
 
-        <p:panel id="services" style="width: 48.6%; height: 460px; float: right; text-align: center">
+        <p:panel id="services" style="width: 48.6%; height: 100%; float: right; text-align: center">
 
             <h:form id="formAllServices">
                 <p:messages id="messages" redisplay="false" closable="true" />
@@ -19,11 +19,11 @@
                              filteredValue="#{serviceManagementManagedBean.filteredServices}" scrollable="true" style="height: 200px; text-align: center">
                     <f:facet name="header">
                         <p:outputPanel style="text-align: right;">
-                            <p:commandButton value="Create New Service" title="Create New Service" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewService').show()"
-                                             style="float: left;" />
-                            <p:commandButton value="View all latest Services" title="View all latest Services"
-                                             icon="pi pi-refresh" actionListener="#{serviceManagementManagedBean.refreshServicesList}"
-                                             update="formAllServices" rendered="#{serviceManagementManagedBean.filtered}" />
+
+                            <p:menu>
+                                <p:menuitem style="float:left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
+                            </p:menu>
+
                             <h:outputText value="Search all fields:" />
                             <p:inputText id="globalFilter" onkeyup="PF('dataTableAllServices').filter()" style="width:300px" placeholder="Enter value"/>
                         </p:outputPanel>
@@ -209,38 +209,38 @@
                             </p:column>
                         </p:row>
 
-<!--                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="selCountry" value="Country " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:selectOneMenu id="selCountry" value="#{serviceManagementManagedBean.selectedService.country}">
-                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
-                                    <f:selectItems value="#{serviceManagementManagedBean.allCountries}" 
-                                                   var="country" itemValue="#{country.countryId}"
-                                                   itemLabel="#{country.name}" />
-                                </p:selectOneMenu>
-                            </p:column>
-                            <p:column>
-                                <p:message for="selCountry" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="selTags" value="Tag(s) " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:selectManyMenu id="selTags" value="#{serviceManagementManagedBean.selectedService.tags}" showCheckbox="true" required="true" requiredMessage="Please select at least 1!">
-                                    <f:selectItems value="#{serviceManagementManagedBean.allTags}" 
-                                                   var="tagEntity" itemValue="#{tagEntity.tagId}" 
-                                                   itemLabel="#{tagEntity.name}" />
-                                </p:selectManyMenu>
-                            </p:column>
-                            <p:column>
-                                <p:message for="selTags" />
-                            </p:column>
-                        </p:row>-->
+                        <!--                        <p:row>
+                                                    <p:column>
+                                                        <p:outputLabel for="selCountry" value="Country " style="font-weight: bold;" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <p:selectOneMenu id="selCountry" value="#{serviceManagementManagedBean.selectedService.country}">
+                                                            <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                                            <f:selectItems value="#{serviceManagementManagedBean.allCountries}" 
+                                                                           var="country" itemValue="#{country.countryId}"
+                                                                           itemLabel="#{country.name}" />
+                                                        </p:selectOneMenu>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <p:message for="selCountry" />
+                                                    </p:column>
+                                                </p:row>
+                        
+                                                <p:row>
+                                                    <p:column>
+                                                        <p:outputLabel for="selTags" value="Tag(s) " style="font-weight: bold;" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <p:selectManyMenu id="selTags" value="#{serviceManagementManagedBean.selectedService.tags}" showCheckbox="true" required="true" requiredMessage="Please select at least 1!">
+                                                            <f:selectItems value="#{serviceManagementManagedBean.allTags}" 
+                                                                           var="tagEntity" itemValue="#{tagEntity.tagId}" 
+                                                                           itemLabel="#{tagEntity.name}" />
+                                                        </p:selectManyMenu>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <p:message for="selTags" />
+                                                    </p:column>
+                                                </p:row>-->
 
                         <p:row>
                             <p:column colspan="3">
@@ -257,23 +257,28 @@
 
 
 
-        <p:panel id="bookings" style="width: 50%; height: 225px; text-align: center">
+        <p:panel id="bookings" style="width: 50%; height: 48%; text-align: center">
             <h:form id="bookingForm">
 
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" var="booking" scrollable="true">
+                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" 
+                             var="booking" scrollable="true" 
+                             tableStyle="font-size:15px">
 
                     <p:column headerText="Service ">
                         <h:outputText value="#{booking.service.serviceName}" />
                     </p:column>
 
-                    <p:column headerText="Booking ID" filterBy="#{booking.bookingId}" filterMatchMode="contains">
+                    <p:column headerText="Booking ID" filterBy="#{booking.bookingId}" 
+                              filterMatchMode="contains">
                         <h:outputText value="#{booking.bookingId}" />
                     </p:column>
 
-                    <p:column headerText="Customer" sortBy="#{booking.travelItinerary.customer.name}" filterBy="#{booking.travelItinerary.customer.name}" filterMatchMode="contains">
+                    <p:column headerText="Customer" sortBy="#{booking.travelItinerary.customer.name}" 
+                              filterBy="#{booking.travelItinerary.customer.name}" filterMatchMode="contains"
+                              width="500px" >
                         <h:outputText value="#{booking.travelItinerary.customer.name}" />
                         <p:commandButton actionListener="#{bookingPageManagedBean.viewCustomerDetails}" icon="pi pi-search-plus" title="ViewCustomer" value="View"
                                          style="float: right;" oncomplete="PF('dialogCustomer').show()" update="customerDataForm" >
@@ -294,7 +299,7 @@
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Payment transaction number (if any)">
+                    <p:column headerText="Payment No.">
                         <p:commandLink oncomplete="PF('dialogPayment').show()" update=":bookingForm:paymentBox" value="#{booking.paymentTransaction.transactionNumber}">
                             <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
                         </p:commandLink>
@@ -319,13 +324,15 @@
             </h:form>
         </p:panel>
 
-        <p:panel id="reviews"  style="width: 50%; height: 225px;">
+        <p:panel id="reviews"  style="width: 50%; height: 48%;">
             <h:form id="reviewForm">
 
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:dataTable id="reviewTable" value="#{bookingPageManagedBean.reviews}" var="review" scrollable="true">
+                <p:dataTable id="reviewTable" value="#{bookingPageManagedBean.reviews}"
+                             var="review" scrollable="true"
+                             tableStyle="font-size:15px">
 
                     <p:column headerText="Review ID" filterBy="#{review.reviewId}" filterMatchMode="contains">
                         <h:outputText value="#{review.reviewId}" />

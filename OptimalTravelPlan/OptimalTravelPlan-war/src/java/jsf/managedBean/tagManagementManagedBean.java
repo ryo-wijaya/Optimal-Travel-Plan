@@ -54,7 +54,8 @@ public class tagManagementManagedBean implements Serializable {
             tags = selectedTags;
             filtered = true;
         }
-        Boolean addTag = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewTag");
+        Boolean addTag = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("addNewTag");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewTag");
         if (addTag != null && addTag) {
             PrimeFaces.current().executeScript("PF('dialogCreateNewTag').show();");
         }

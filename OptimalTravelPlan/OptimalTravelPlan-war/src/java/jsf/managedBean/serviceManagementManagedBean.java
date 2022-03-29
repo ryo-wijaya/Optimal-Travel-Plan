@@ -9,7 +9,6 @@ import ejb.session.stateless.CountrySessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
 import entity.Account;
-import entity.Booking;
 import entity.Business;
 import entity.Country;
 import entity.Service;
@@ -20,6 +19,8 @@ import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -30,10 +31,6 @@ import util.exception.AccountNotFoundException;
 import util.exception.ServiceNotFoundException;
 import util.exception.UpdateServiceException;
 
-/**
- *
- * @author sucram
- */
 @Named(value = "serviceManagementManagedBean")
 @ViewScoped
 public class serviceManagementManagedBean implements Serializable {
@@ -58,9 +55,15 @@ public class serviceManagementManagedBean implements Serializable {
     private Boolean requireVac;
     private Account loggedInAccount;
     private Service selectedService;
+    private List<ServiceType> allServiceTypes;
+    private ServiceType selectedServiceType;
 
     public serviceManagementManagedBean() {
-
+        allServiceTypes = new ArrayList<>();
+        allServiceTypes.add(ServiceType.HOTEL);
+        allServiceTypes.add(ServiceType.ENTERTAINMENT);
+        allServiceTypes.add(ServiceType.FOOD_AND_BEVERAGE);
+        allServiceTypes.add(ServiceType.VEHICLE_RENTAL);
     }
 
     @PostConstruct
@@ -68,20 +71,17 @@ public class serviceManagementManagedBean implements Serializable {
         List<Service> list = (List<Service>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("servicesToView");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("servicesToView");
         loggedInAccount = (Account) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
-
-        if (loggedInAccount instanceof Business) {
-            refreshBusinessServiceList();
+        if (list != null) {
+            services = list;
+            filtered = true;
         } else {
-
-            if (list != null) {
-                services = list;
-                filtered = true;
+            if (loggedInAccount instanceof Business) {
+                refreshBusinessServiceList();
             } else {
-
                 refreshServicesList(null);
-
             }
         }
+
         this.allCountries = countrySessionBeanLocal.retrieveAllCountries();
         this.allTags = tagSessionBeanLocal.retrieveAllTags();
         this.tagsSelected = new ArrayList<>();
@@ -122,9 +122,10 @@ public class serviceManagementManagedBean implements Serializable {
             if (tagsSelected == null || tagsSelected.size() < 1) {
                 throw new Exception("Please select at least 1 tag!");
             }
+            Long s = 0l;
             newService.setRequireVaccination(requireVac);
             newService.setServiceType(ServiceType.ENTERTAINMENT);
-            Long s = serviceSessionBeanLocal.createNewService(newService, 1l, tagsSelected, selectedCountry);
+            s = serviceSessionBeanLocal.createNewService(newService, 1l, tagsSelected, selectedCountry);
             newService.setServiceId(s);
             this.services.add(newService);
             newService = new Service();
@@ -139,25 +140,35 @@ public class serviceManagementManagedBean implements Serializable {
 
     public void createNewBusinessService(ActionEvent event) {
         try {
-            if (selectedCountry == null) {
+            if (selectedCountry == 0) {
                 throw new Exception("Please Select a country!");
             }
+            System.out.println("jsf.managedBean.serviceManagementManagedBean.createNewBusinessService()" + selectedCountry);
             if (tagsSelected == null || tagsSelected.size() < 1) {
                 throw new Exception("Please select at least 1 tag!");
             }
             newService.setRequireVaccination(requireVac);
-            newService.setServiceType(ServiceType.ENTERTAINMENT);
+            newService.setServiceType(selectedServiceType);
             System.out.println("ACCOUNT ID CREATION: " + loggedInAccount.getAccountId());
             Long s = serviceSessionBeanLocal.createNewService(newService, loggedInAccount.getAccountId(), tagsSelected, selectedCountry);
             newService.setServiceId(s);
             this.services.add(newService);
-            newService = new Service();
-            selectedCountry = null;
-            tagsSelected = null;
-            requireVac = null;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully Created service ID = " + s, null));
+
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedService", newService);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewServiceRate", true);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("./serviceRateManagement.xhtml");
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + e.getMessage(), null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new service: " + e.getMessage(), null));
+        }
+    }
+
+    public void editServiceFees(ActionEvent event) {
+        try {
+            Service service = (Service) event.getComponent().getAttributes().get("serviceRateEditSelected");
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedService", service);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("./serviceRateManagement.xhtml");
+        } catch (IOException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Navigation fail! : " + ex.getMessage(), null));
         }
     }
 
@@ -248,4 +259,33 @@ public class serviceManagementManagedBean implements Serializable {
     public void setSelectedCountry(Long selectedCountry) {
         this.selectedCountry = selectedCountry;
     }
+
+    public Account getLoggedInAccount() {
+        return loggedInAccount;
+    }
+
+    public void setLoggedInAccount(Account loggedInAccount) {
+        this.loggedInAccount = loggedInAccount;
+    }
+
+    public Boolean isBusiness() {
+        return this.loggedInAccount instanceof Business;
+    }
+
+    public List<ServiceType> getAllServiceTypes() {
+        return allServiceTypes;
+    }
+
+    public void setAllServiceTypes(List<ServiceType> allServiceTypes) {
+        this.allServiceTypes = allServiceTypes;
+    }
+
+    public ServiceType getSelectedServiceType() {
+        return selectedServiceType;
+    }
+
+    public void setSelectedServiceType(ServiceType selectedServiceType) {
+        this.selectedServiceType = selectedServiceType;
+    }
+
 }
