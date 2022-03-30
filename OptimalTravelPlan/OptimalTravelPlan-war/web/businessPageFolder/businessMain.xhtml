@@ -9,330 +9,64 @@
 
     <ui:define name="content">
 
-
-        <p:panel id="services" style="width: 48.6%; height: 100%; float: right; text-align: center">
-
-            <h:form id="formAllServices">
-                <p:messages id="messages" redisplay="false" closable="true" />
-
-                <p:dataTable id="dataTableAllServices" widgetVar="dataTableAllServices" value="#{serviceManagementManagedBean.services}" var="service" rowKey="#{service.serviceId}" rowIndexVar="row"
-                             filteredValue="#{serviceManagementManagedBean.filteredServices}" scrollable="true" style="height: 200px; text-align: center">
-                    <f:facet name="header">
-                        <p:outputPanel style="text-align: right;">
-
-                            <p:menu>
-                                <p:menuitem style="float:left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
-                            </p:menu>
-
-                            <h:outputText value="Search all fields:" />
-                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllServices').filter()" style="width:300px" placeholder="Enter value"/>
-                        </p:outputPanel>
-                    </f:facet>
-                    <p:column headerText="Service name" sortBy="#{service.serviceName}" filterBy="#{service.serviceName}" filterMatchMode="contains">
-                        <h:outputText value="#{service.serviceName}" />
-                    </p:column>
-                    <p:column headerText="Service Country" sortBy="#{service.country.name}" filterBy="#{service.country.name}" filterMatchMode="contains">
-                        <h:outputText value="#{service.country.name}" />
-                    </p:column>
-                    <p:column headerText="Require Vaccination" sortBy="#{service.requireVaccination}" filterBy="#{service.requireVaccination}" filterMatchMode="contains">
-                        <h:outputText value="#{service.requireVaccination}" />
-                    </p:column>
-                    <p:column headerText="Total bookings" sortBy="#{service.bookings.size()}" filterBy="#{service.bookings.size()}" filterMatchMode="contains">
-                        <h:outputText value="#{service.bookings.size()}" />
-                    </p:column>
-                    <p:column headerText="Details">
-                        <p:commandButton value="View" oncomplete="PF('dialogServiceDetails').show()" update=":formViewServiceDetails:serviceDetailsBox">
-                            <f:setPropertyActionListener value="#{service}" target="#{serviceManagementManagedBean.selectedService}"/>
-                        </p:commandButton>
-                    </p:column>
-
-                    <p:column headerText="Enabled" sortBy="#{service.active}" filterBy="#{service.active}" filterMatchMode="contains">
-                        <h:outputText value="#{service.active}" />
-                        <p:commandButton actionListener="#{serviceManagementManagedBean.toggleServiceActive}" icon="pi pi-power-off" title="active" value="Toggle active"
-                                         style="float: right;" update="formAllServices">
-                            <f:attribute name="serviceToToggle" value="#{service}" />
-                        </p:commandButton>
-                    </p:column>
-                    <p:column headerText="Edit">
-                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialogEditService').show()" update=":formEditService">
-                            <f:setPropertyActionListener value="#{service}" target="#{serviceManagementManagedBean.selectedService}"/>
-                        </p:commandButton>
-                    </p:column>
-                </p:dataTable>
-            </h:form>
+        <script type="text/javascript">
+            PrimeFaces.locales ['de'] = {
+                closeText: 'Schließen',
+                prevText: 'Zurück',
+                nextText: 'Weiter',
+                monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+                monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+                dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+                dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+                dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+                weekHeader: 'Woche',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Nur Zeit',
+                timeText: 'Zeit',
+                hourText: 'Stunde',
+                minuteText: 'Minute',
+                secondText: 'Sekunde',
+                currentText: 'Aktuelles Datum',
+                ampm: false,
+                month: 'Monat',
+                week: 'Woche',
+                day: 'Tag',
+                allDayText: 'Ganzer Tag'
+            };
+        </script>
 
 
-            <h:form id="formCreateNewService">
-                <p:dialog id="dialogCreateNewService" widgetVar="dialogCreateNewService" header="Create New Service" closable="true">
-                    <p:messages id="messagesCreateNewService" redisplay="false" />
-                    <p:panelGrid>
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="name" value="Service Name: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="name" value="#{serviceManagementManagedBean.newService.serviceName}" placeholder="Natural reserve" required="true" requiredMessage="Service Name is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="name" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel value="Require Vaccination " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column colspan="2">
-                                <p:selectBooleanCheckbox value="#{serviceManagementManagedBean.requireVac}" itemLabel="Requires Vaccination" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="address" value="Service Address: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="address" value="#{serviceManagementManagedBean.newService.address}" placeholder="Tekong" required="true" requiredMessage="Service address is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="address" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="selCountry" value="Country " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:selectOneMenu id="selCountry" value="#{serviceManagementManagedBean.selectedCountry}">
-                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
-                                    <f:selectItems value="#{serviceManagementManagedBean.allCountries}" 
-                                                   var="country" itemValue="#{country.countryId}"
-                                                   itemLabel="#{country.name}" />
-                                </p:selectOneMenu>
-                            </p:column>
-                            <p:column>
-                                <p:message for="selCountry" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="selTags" value="Tag(s) " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:selectManyMenu id="selTags" value="#{serviceManagementManagedBean.tagsSelected}" showCheckbox="true" required="true" requiredMessage="Please select at least 1!">
-                                    <f:selectItems value="#{serviceManagementManagedBean.allTags}" 
-                                                   var="tagEntity" itemValue="#{tagEntity.tagId}" 
-                                                   itemLabel="#{tagEntity.name}" />
-                                </p:selectManyMenu>
-                            </p:column>
-                            <p:column>
-                                <p:message for="selTags" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column colspan="3">
-                                <p:commandButton type="reset" value="Clear" />&nbsp;
-                                <p:commandButton  value="Create New Service" update="@form formAllServices:dataTableAllServices" actionListener="#{serviceManagementManagedBean.createNewBusinessService}" 
-                                                  oncomplete="PF('dialogCreateNewService').show();" />
-                            </p:column>
-                        </p:row>
-                    </p:panelGrid>
-                </p:dialog>
-            </h:form>
-
-            <h:form id="formViewServiceDetails">
-                <p:dialog header="Service Details" widgetVar="dialogServiceDetails" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
-                    <p:outputPanel id="serviceDetailsBox" style="text-align:center; margin: auto">
-                        <p:panelGrid  columns="2" style="margin: auto">
-
-                            <h:outputText value="Service ID" />
-                            <h:outputText value="#{serviceManagementManagedBean.selectedService.serviceId}" />
-
-                            <h:outputText value="Service Country:" />
-                            <h:outputText value="#{serviceManagementManagedBean.selectedService.country.name}" />
-
-                            <h:outputText value="Address:" />
-                            <h:outputText value="#{serviceManagementManagedBean.selectedService.address}" />
-
-                            <h:outputText value="Rating:" />
-                            <p:rating id="serviceRating" value="#{serviceManagementManagedBean.selectedService.rating}" stars="5" disabled="true" />
-
-                            <h:outputText value="Service Type:" />
-                            <h:outputText value="#{serviceManagementManagedBean.selectedService.serviceType}" />
-                        </p:panelGrid>
-                        <br />
-                        <p:commandButton value="View Booking and Review Details" actionListener="#{bookingPageManagedBean.filterByService}" 
-                                         update="bookingForm reviewForm" >
-                            <f:attribute value="#{serviceManagementManagedBean.selectedService}" name="selectedService" />
-                        </p:commandButton>
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
-
-            <h:form id="formEditService">
-                <p:dialog header="Edit Service" widgetVar="dialogEditService" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
-                    <p:messages id="messagesCreateNewService" redisplay="false" />
-                    <p:panelGrid>
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="name" value="Service Name: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="name" value="#{serviceManagementManagedBean.selectedService.serviceName}" required="true" requiredMessage="Service name is required"/>
-                            </p:column>
-                            <p:column>
-                                <p:message for="name" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel value="Require Vaccination " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column colspan="2">
-                                <p:selectBooleanCheckbox value="#{serviceManagementManagedBean.selectedService.requireVaccination}" itemLabel="Requires Vaccination" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="address" value="Service Address: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="address" value="#{serviceManagementManagedBean.selectedService.address}" required="true" requiredMessage="Service address is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="address" />
-                            </p:column>
-                        </p:row>
-
-                        <!--                        <p:row>
-                                                    <p:column>
-                                                        <p:outputLabel for="selCountry" value="Country " style="font-weight: bold;" />
-                                                    </p:column>
-                                                    <p:column>
-                                                        <p:selectOneMenu id="selCountry" value="#{serviceManagementManagedBean.selectedService.country}">
-                                                            <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
-                                                            <f:selectItems value="#{serviceManagementManagedBean.allCountries}" 
-                                                                           var="country" itemValue="#{country.countryId}"
-                                                                           itemLabel="#{country.name}" />
-                                                        </p:selectOneMenu>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <p:message for="selCountry" />
-                                                    </p:column>
-                                                </p:row>
-                        
-                                                <p:row>
-                                                    <p:column>
-                                                        <p:outputLabel for="selTags" value="Tag(s) " style="font-weight: bold;" />
-                                                    </p:column>
-                                                    <p:column>
-                                                        <p:selectManyMenu id="selTags" value="#{serviceManagementManagedBean.selectedService.tags}" showCheckbox="true" required="true" requiredMessage="Please select at least 1!">
-                                                            <f:selectItems value="#{serviceManagementManagedBean.allTags}" 
-                                                                           var="tagEntity" itemValue="#{tagEntity.tagId}" 
-                                                                           itemLabel="#{tagEntity.name}" />
-                                                        </p:selectManyMenu>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <p:message for="selTags" />
-                                                    </p:column>
-                                                </p:row>-->
-
-                        <p:row>
-                            <p:column colspan="3">
-
-                                <p:commandButton  value="Edit Service" update="@form formAllServices:dataTableAllServices" 
-                                                  actionListener="#{serviceManagementManagedBean.editService}"/>
-
-                            </p:column>
-                        </p:row>
-                    </p:panelGrid>
-                </p:dialog>
-            </h:form>
+        <p:panel>
+            <p:menu>
+                <p:menuitem style="float:left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
+            </p:menu>
         </p:panel>
 
 
-
-        <p:panel id="bookings" style="width: 50%; height: 48%; text-align: center">
-            <h:form id="bookingForm">
-
-
-                <p:messages id="messages" redisplay="false" closable="true" />
-
-                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" 
-                             var="booking" scrollable="true" 
-                             tableStyle="font-size:15px">
-
-                    <p:column headerText="Service ">
-                        <h:outputText value="#{booking.service.serviceName}" />
-                    </p:column>
-
-                    <p:column headerText="Booking ID" filterBy="#{booking.bookingId}" 
-                              filterMatchMode="contains">
-                        <h:outputText value="#{booking.bookingId}" />
-                    </p:column>
-
-                    <p:column headerText="Customer" sortBy="#{booking.travelItinerary.customer.name}" 
-                              filterBy="#{booking.travelItinerary.customer.name}" filterMatchMode="contains"
-                              width="500px" >
-                        <h:outputText value="#{booking.travelItinerary.customer.name}" />
-                        <p:commandButton actionListener="#{bookingPageManagedBean.viewCustomerDetails}" icon="pi pi-search-plus" title="ViewCustomer" value="View"
-                                         style="float: right;" oncomplete="PF('dialogCustomer').show()" update="customerDataForm" >
-                            <f:attribute name="customerToView" value="#{booking.travelItinerary.customer}" />
-                            <f:attribute name="serviceForMessage" value="#{booking.service}" />
-                        </p:commandButton>
-                    </p:column>
-
-                    <p:column headerText="Start Date" sortBy="#{booking.startDate}" filterBy="#{booking.startDate}" filterMatchMode="contains">
-                        <h:outputText value="#{booking.startDate}" >
-                            <f:convertDateTime type="date" />
-                        </h:outputText>
-                    </p:column>
-
-                    <p:column headerText="End Date" sortBy="#{booking.endDate}" filterBy="#{booking.endDate}" filterMatchMode="contains">
-                        <h:outputText value="#{booking.endDate}" >
-                            <f:convertDateTime type="date" />
-                        </h:outputText>
-                    </p:column>
-
-                    <p:column headerText="Payment No.">
-                        <p:commandLink oncomplete="PF('dialogPayment').show()" update=":bookingForm:paymentBox" value="#{booking.paymentTransaction.transactionNumber}">
-                            <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
-                        </p:commandLink>
-                    </p:column>
-                </p:dataTable>
-
-                <p:dialog header="Payment Transacation Details" widgetVar="dialogPayment" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
-                    <p:outputPanel id="paymentBox" style="text-align:center;">
-                        <p:panelGrid  columns="2">
-
-                            <h:outputText value="Transaction Number" />
-                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.transactionNumber}" />
-
-                            <h:outputText value="Payment Date:" />
-                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.dateOfPayment}" />
-
-                            <h:outputText value="Rate paid:" />
-                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.prevailingRateAtPaymentDate}" />
-                        </p:panelGrid>
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
-        </p:panel>
-
-        <p:panel id="reviews"  style="width: 50%; height: 48%;">
+        <div id="reviews" style="width: 49.5%; float: right">
             <h:form id="reviewForm">
 
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
                 <p:dataTable id="reviewTable" value="#{bookingPageManagedBean.reviews}"
-                             var="review" scrollable="true"
-                             tableStyle="font-size:15px">
+                             var="review" tableStyle="font-size:15px" rows="10" paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="10,20,50" rowKey="#{review.reviewId}" rowIndexVar="row">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: left; float: left">
+                            <h:outputText value="Reviews" style="font-size: 25" />
+                        </p:outputPanel>
+
+                        <p:outputPanel style="text-align: right">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('reviewTable').filter()" style="width:300px" placeholder="Enter value"/>
+                        </p:outputPanel>
+                    </f:facet>
 
                     <p:column headerText="Review ID" filterBy="#{review.reviewId}" filterMatchMode="contains">
                         <h:outputText value="#{review.reviewId}" />
@@ -376,7 +110,115 @@
 
 
             </h:form>
-        </p:panel>
+        </div>
+
+
+
+        <div id="bookings" style="width: 49.5%; text-align: center">
+            <h:form id="bookingForm">
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" 
+                             var="booking" tableStyle="font-size:15px" rows="10" paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="10,20,50" rowKey="#{booking.bookingId}" rowIndexVar="row"
+                             filteredValue="#{bookingPageManagedBean.filteredBookings}">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: left; float: left">
+                            <h:outputText value="Bookings" style="font-size: 25" />
+                        </p:outputPanel>
+
+                        <p:outputPanel style="text-align: right">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('bookingsTable').filter()" style="width:300px" placeholder="Enter value"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Service" filterBy="#{booking.service.serviceName}">
+                        <h:outputText value="#{booking.service.serviceName}" />
+                    </p:column>
+
+                    <p:column headerText="Booking ID" filterBy="#{booking.bookingId}" 
+                              filterMatchMode="contains">
+                        <h:outputText value="#{booking.bookingId}" />
+                    </p:column>
+
+                    <p:column headerText="Customer" sortBy="#{booking.travelItinerary.customer.name}" 
+                              filterBy="#{booking.travelItinerary.customer.name}" filterMatchMode="contains"
+                              width="500px" >
+                        <h:outputText value="#{booking.travelItinerary.customer.name}" />
+                        <p:commandButton actionListener="#{bookingPageManagedBean.viewCustomerDetails}" icon="pi pi-search-plus" title="ViewCustomer" value="View"
+                                         style="float: right;" oncomplete="PF('dialogCustomer').show()" update="customerDataForm" >
+                            <f:attribute name="customerToView" value="#{booking.travelItinerary.customer}" />
+                            <f:attribute name="serviceForMessage" value="#{booking.service}" />
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="Start Date" sortBy="#{booking.startDate}" filterBy="#{booking.startDate}" filterMatchMode="contains">
+                        <h:outputText value="#{booking.startDate}" >
+                            <f:convertDateTime type="date" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="End Date" sortBy="#{booking.endDate}" filterBy="#{booking.endDate}" filterMatchMode="contains">
+                        <h:outputText value="#{booking.endDate}" >
+                            <f:convertDateTime type="date" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Payment No.">
+                        <p:commandLink oncomplete="PF('dialogPayment').show()" update=":bookingForm:paymentBox" value="#{booking.paymentTransaction.transactionNumber}">
+                            <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="Edit">
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialogEditBooking').show()" update=":bookingForm:editBookingBox" value="Edit" actionListener="#{bookingPageManagedBean.debugMethod}">
+                            <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
+                            <f:setPropertyActionListener value="#{booking.startDate}" target="#{bookingPageManagedBean.startDate}"/>
+                            <f:setPropertyActionListener value="#{booking.endDate}" target="#{bookingPageManagedBean.endDate}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+                <p:dialog header="Payment Transacation Details" widgetVar="dialogPayment" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+                    <p:outputPanel id="paymentBox" style="text-align:center;">
+                        <p:panelGrid  columns="2">
+
+                            <h:outputText value="Transaction Number" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.transactionNumber}" />
+
+                            <h:outputText value="Payment Date:" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.dateOfPayment}" />
+
+                            <h:outputText value="Rate paid:" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.prevailingRateAtPaymentDate}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+
+                <p:dialog header="Edit Booking" widgetVar="dialogEditBooking" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+                    <p:outputPanel id="editBookingBox" style="text-align:center;">
+                        <p:panelGrid  columns="2">
+
+                            <h:outputText value="Start Date: " />
+                            <p:calendar value="#{bookingPageManagedBean.startDate}" showOn="button" />
+
+                            <h:outputText value="End Date: " />
+                            <p:calendar value="#{bookingPageManagedBean.endDate}" showOn="button" />
+
+
+                        </p:panelGrid>
+
+                        <br/>
+                        <p:commandButton value="Save Changes" actionListener="#{bookingPageManagedBean.editBooking}" process="@form" update="@form" />
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </div>
+
 
 
         <h:form id="customerDataForm">

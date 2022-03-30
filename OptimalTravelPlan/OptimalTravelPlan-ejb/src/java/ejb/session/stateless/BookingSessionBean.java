@@ -22,6 +22,7 @@ import util.exception.CreateNewBookingException;
 import util.exception.ServiceNotFoundException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateBookingException;
 
 @Stateless
 public class BookingSessionBean implements BookingSessionBeanLocal {
@@ -108,5 +109,17 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
         //cascade type for review and support = Cascade.remove
         em.remove(booking);
         em.flush();
+    }
+    
+    @Override
+    public void updateBooking(Booking booking) throws BookingNotFoundException, UpdateBookingException {
+        Booking bookingToUpdate = retrieveBookingById(booking.getBookingId());
+        
+        if (booking.getStartDate().after(booking.getEndDate())) {
+            throw new UpdateBookingException();
+        }
+        
+        bookingToUpdate.setStartDate(booking.getStartDate());
+        bookingToUpdate.setEndDate(booking.getEndDate());
     }
 }

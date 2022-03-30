@@ -13,6 +13,7 @@ import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateBookingException;
 
 /**
  *
@@ -32,5 +33,7 @@ public interface BookingSessionBeanLocal {
     public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException;
 
     public List<Booking> retrieveBookingsByBusinessId(Long businessId);
+
+    public void updateBooking(Booking booking) throws BookingNotFoundException, UpdateBookingException;
     
 }

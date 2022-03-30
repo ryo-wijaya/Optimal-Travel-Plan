@@ -18,14 +18,17 @@ import entity.Service;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import util.exception.BookingNotFoundException;
 import util.exception.ReviewNotFoundException;
 import util.exception.ServiceNotFoundException;
+import util.exception.UpdateBookingException;
 
 /**
  *
@@ -57,6 +60,11 @@ public class BookingPageManagedBean implements Serializable {
     private String emailMessage;
     private Business business;
     private Service serviceMessage;
+    private List<Booking> filteredBookings;
+    
+    // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
+    private Date startDate;
+    private Date endDate;
 
     public BookingPageManagedBean() {
     }
@@ -66,6 +74,8 @@ public class BookingPageManagedBean implements Serializable {
         this.business = (Business) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
         bookings = bookingSessionBeanLocal.retrieveBookingsByBusinessId(business.getAccountId());
         reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
+        startDate = new Date();
+        endDate = new Date();
     }
 
     public String checkIfReviewHasReply() {
@@ -83,7 +93,13 @@ public class BookingPageManagedBean implements Serializable {
             System.out.println("Error with review reply");
         }
     }
+    
+    private void updatePage() {
+        bookings = bookingSessionBeanLocal.retrieveBookingsByBusinessId(business.getAccountId());
+        reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
+    }
 
+    /*
     public void filterReviews() {
         reviews.clear();
         reviews.add(selectedReview);
@@ -105,8 +121,8 @@ public class BookingPageManagedBean implements Serializable {
         for (Booking booking : bookings) {
             reviews.add(booking.getReview());
         }
-
     }
+    */
 
     public void sendEmail(ActionEvent event) {
         if (!emailMessage.isEmpty()) {
@@ -128,9 +144,64 @@ public class BookingPageManagedBean implements Serializable {
         this.selectedCustomer = (Customer) event.getComponent().getAttributes().get("customerToView");
         this.serviceMessage = (Service) event.getComponent().getAttributes().get("serviceForMessage");
     }
+    
+    public void editBooking() {
+        System.out.println("Start edit method");
+        System.out.println("selected booking" + selectedBooking.toString());
+        
+        // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
+        selectedBooking.setStartDate(startDate);
+        selectedBooking.setEndDate(endDate);
+        try {
+            bookingSessionBeanLocal.updateBooking(selectedBooking);
+            
+            Customer customer = selectedBooking.getTravelItinerary().getCustomer();
+            
+            emailMessage = "The date of your booking has been changed to a start date of: " + startDate.toString() + " and an end date of: " + endDate.toString();
+            
+            String message = "Dear " + customer.getName() + ",\n\n"
+                    + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
+                    + emailMessage + "\n\nThank you for using our booking services!\n\nOptimal Travel Plan\n\nThis is a system generated message. Please do not reply!";
+            
+            emailSessionBeanLocal.emailCheckoutNotificationSync(message, customer.getEmail());
+        } catch (BookingNotFoundException | UpdateBookingException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Start date cannot exceed end date!", null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to send email - coz no email address", null));
+        }
+    }
+    
+    public void debugMethod() {
+        System.out.println("Start debug method");
+        System.out.println("selected Booking start date" + startDate.toString());
+    }
+
+    public List<Booking> getFilteredBookings() {
+        return filteredBookings;
+    }
+
+    public void setFilteredBookings(List<Booking> filteredBookings) {
+        this.filteredBookings = filteredBookings;
+    }
 
     public List<Booking> getBookings() {
         return bookings;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public void setBookings(List<Booking> bookings) {
