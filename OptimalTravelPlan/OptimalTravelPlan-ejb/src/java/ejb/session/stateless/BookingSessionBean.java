@@ -37,6 +37,7 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
 
     @Override
     public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
+        System.out.println("ejb.session.stateless.BookingSessionBean.createBooking()");
         try {
             Service service = serviceSessionBeanLocal.retrieveServiceById(serviceId);
             TravelItinerary travelItinerary = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId);
@@ -46,7 +47,7 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
             travelItinerary.getBookings().add(newBooking);
             service.getBookings().add(newBooking);
             em.flush();
-
+            System.out.println("ejb.session.stateless.BookingSessionBean.createBooking() successful!! booking id = " + newBooking.getBookingId());
             return newBooking.getBookingId();
 
         } catch (PersistenceException ex) {

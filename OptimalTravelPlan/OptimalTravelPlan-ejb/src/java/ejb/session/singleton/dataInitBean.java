@@ -7,6 +7,7 @@ package ejb.session.singleton;
 
 import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.CountrySessionBeanLocal;
+import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.ServiceRateSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
@@ -43,12 +44,16 @@ import util.exception.CreateNewServiceRateException;
 import util.exception.PasswordNotAcceptedException;
 import util.exception.ServiceNotFoundException;
 import util.exception.TagAlreadyExistException;
+import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 @Singleton
 @LocalBean
 @Startup
 public class dataInitBean {
+
+    @EJB
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
 
     @EJB
     private TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal;
@@ -67,10 +72,6 @@ public class dataInitBean {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
-    
-    
-    
-    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -92,7 +93,7 @@ public class dataInitBean {
                 Business optimalTravelPlan = new Business("OTP themselves!", "www.OTP.com", "99999999", "OTP address", "optimal123", "password");
                 em.persist(optimalTravelPlan);
                 em.flush();
-                
+
                 Business business1 = new Business("company1", "www.company1.com", "0000001", "address1", "company1", "password");
                 em.persist(business1);
 
@@ -118,12 +119,20 @@ public class dataInitBean {
                 Tag nightTag = tagSessionBeanLocal.createNewTag(new Tag("night"));
                 Tag testTag = tagSessionBeanLocal.createNewTag(new Tag("empty test tag"));
 
+                customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), familyTag.getTagId());
+                customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), natureTag.getTagId());
+                customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), cultureTag.getTagId());
+                customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), nightTag.getTagId());
+
                 List<Long> tagList1 = new ArrayList<>();
                 tagList1.add(familyTag.getTagId());
+                tagList1.add(natureTag.getTagId());
+                tagList1.add(cultureTag.getTagId());
 
                 List<Long> tagList2 = new ArrayList<>();
                 tagList2.add(natureTag.getTagId());
-
+                tagList2.add(cultureTag.getTagId());
+                
                 List<Long> tagList3 = new ArrayList<>();
                 tagList3.add(cultureTag.getTagId());
 
@@ -137,60 +146,68 @@ public class dataInitBean {
                 Country japan = countrySessionBeanLocal.createNewCountry(new Country("Japan"));
                 Country Taiwan = countrySessionBeanLocal.createNewCountry(new Country("Taiwan"));
 
-                Long service1 = serviceSessionBeanLocal.createNewService(
-                        new Service(
-                                business1,
-                                singapore,
-                                ServiceType.HOTEL,
-                                Boolean.TRUE,
-                                "address1",
-                                "Melion Hotel"),
-                        business1.getBusinessId(),
-                        tagList1,
-                        singapore.getCountryId());
-                Long ServiceRate1 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(500.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service1);
+                Long service1 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.HOTEL, Boolean.TRUE, "address1", "Melion Hotel"), business1.getBusinessId(), tagList1, singapore.getCountryId());
+                Long ServiceRate1 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(500.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service1);
 
-                Long service2 = serviceSessionBeanLocal.createNewService(
-                        new Service(
-                                business2, 
-                                singapore, 
-                                ServiceType.FOOD_AND_BEVERAGE, 
-                                Boolean.TRUE, 
-                                "address2", 
-                                "Encik Tan")
-                        , business2.getBusinessId()
-                        , tagList2
-                        , singapore.getCountryId());
-                Long ServiceRate2 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service2);
+                Long service2 = serviceSessionBeanLocal.createNewService(new Service(business2, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address2", "Encik Tan"), business2.getBusinessId(), tagList2, singapore.getCountryId());
+                Long ServiceRate2 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service2);
                 em.flush();
 
                 Long service3 = serviceSessionBeanLocal.createNewService(new Service(business3, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address3", "Singapore Flyer"), business3.getBusinessId(), tagList3, singapore.getCountryId());
-                Long ServiceRate3 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service3);
+                Long ServiceRate3 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service3);
                 em.flush();
 
                 Long service4 = serviceSessionBeanLocal.createNewService(new Service(business4, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address4", "Singapore Zoo"), business4.getBusinessId(), tagList4, singapore.getCountryId());
-                Long ServiceRate4 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(10.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service4);
+                Long ServiceRate4 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(10.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service4);
                 em.flush();
 
                 Long service5 = serviceSessionBeanLocal.createNewService(new Service(business5, singapore, ServiceType.FOOD_AND_BEVERAGE, Boolean.TRUE, "address5", "Gong Cha"), business5.getBusinessId(), tagList5, singapore.getCountryId());
-                Long ServiceRate5 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(2022, 02, 26), new Date(2022, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service5);
+                Long ServiceRate5 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(100.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service5);
+                em.flush();
+
+                Long service6 = serviceSessionBeanLocal.createNewService(new Service(business4, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address6", "Sentosa"), business4.getBusinessId(), tagList2, singapore.getCountryId());
+                Long ServiceRate6 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(69.00), RateType.NORMAL, Boolean.TRUE, ChargeType.HOURLY), service6);
+                em.flush();
+
+                Long service7 = serviceSessionBeanLocal.createNewService(new Service(business4, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address7", "NUS Tour"), business4.getBusinessId(), tagList1, singapore.getCountryId());
+                Long ServiceRate7 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(999999.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service7);
+                em.flush();
+
+                Long service8 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address8", "Experiemental Test"), business1.getBusinessId(), tagList5, singapore.getCountryId());
+                Long ServiceRate8 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(0.01), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service8);
                 em.flush();
                 
                 Date startDate = new Date();
                 Date endDate = new Date();
-                endDate.setTime(endDate.getTime() + 2160000000l);
+                endDate.setTime(endDate.getTime() + 216000000l);
                 TravelItinerary travelItinerary1 = new TravelItinerary(customer1, startDate, endDate, singapore);
                 Long travel1 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary1, customer1.getAccountId(), singapore.getCountryId());
                 em.flush();
+
+                travelItinerary1 = travelItinerarySessionBeanLocal.recommendTravelItinerary(travelItinerary1);
+
+                System.out.println("travel Itin = " + travelItinerary1);
+                System.out.println("travel Itin booking = " + travelItinerary1.getBookings().size());
+                List<Booking> list = travelItinerary1.getBookings();
                 
+                for (int i = 0; i < list.size(); i++) {
+                    Booking booking = list.get(i);
+                    System.out.println("i = " + i + " list[i] = " + booking);
+                    System.out.println("booking id = " + booking.getBookingId());
+                    System.out.println("booking start = " + booking.getStartDate());
+                    System.out.println("booking end = " + booking.getEndDate());
+                    System.out.println("Service name = " + booking.getService().getServiceName());
+                    System.out.println("\n...");
+                }
+
                 Booking booking1 = new Booking(startDate, endDate, null, null);
                 Long book1 = bookingSessionBeanLocal.createBooking(booking1, service1, travel1);
                 em.flush();
-               
 
-
-            } catch (CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
-                System.out.println(ex.getMessage());
+            } catch (TagNotFoundException | CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
+                for (int i = 0; i < 30; i++) {
+                    System.out.println("Error in init bean!" + ex.getMessage());
+                }
             }
 
             em.flush();

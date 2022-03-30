@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.enumeration.ServiceType;
 import util.exception.AccountNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CountryNotFoundException;
@@ -41,8 +42,6 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
-    
-    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -128,6 +127,21 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
     @Override
     public List<Service> retrieveAllActiveServices() {
         Query query = em.createQuery("SELECT s FROM Service s WHERE s.active = true");
+        List<Service> services = query.getResultList();
+        for (Service service : services) {
+            service.getBookings().size(); //lazy loading
+            service.getBusiness();
+            service.getRates().size();
+            service.getCountry();
+            service.getTags().size();
+        }
+        return services;
+    }
+
+    @Override
+    public List<Service> retrieveAllEntertainment() {
+        Query query = em.createQuery("SELECT s FROM Service s WHERE s.active = true AND s.serviceType = :st");
+        query.setParameter("st", ServiceType.ENTERTAINMENT);
         List<Service> services = query.getResultList();
         for (Service service : services) {
             service.getBookings().size(); //lazy loading

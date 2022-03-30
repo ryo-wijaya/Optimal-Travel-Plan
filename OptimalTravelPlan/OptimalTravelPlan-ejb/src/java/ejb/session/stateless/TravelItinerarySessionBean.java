@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,6 +37,9 @@ import util.exception.UnknownPersistenceException;
 
 @Stateless
 public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLocal {
+
+    @EJB(name = "TagSessionBeanLocal")
+    private TagSessionBeanLocal tagSessionBeanLocal;
 
     @EJB(name = "ServiceSessionBeanLocal")
     private ServiceSessionBeanLocal serviceSessionBeanLocal;
@@ -54,6 +60,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     @Override
     public Long createNewTravelItinerary(TravelItinerary travelItinerary, Long customerId, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, AccountNotFoundException {
         try {
+            System.out.println("ejb.session.stateless.TravelItinerarySessionBean.createNewTravelItinerary()");
             Customer customer = em.find(Customer.class, customerId);
             Country country = em.find(Country.class, countryId);
             if (customer == null || country == null) {
@@ -102,8 +109,13 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     //Ensure there are always one hotel/F&B/Entertainment in each country else prepare for errors!
     @Override
     public TravelItinerary recommendTravelItinerary(TravelItinerary travelItinerary) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
+        System.out.println("ejb.session.stateless.TravelItinerarySessionBean.recommendTravelItinerary()");
         travelItinerary = em.find(TravelItinerary.class, travelItinerary.getTravelItineraryId());
         List<Tag> tags = travelItinerary.getCustomer().getFavouriteTags();
+        if (tags == null || tags.size() < 1) {
+            tags = tagSessionBeanLocal.retrieveAllTags();
+        }
+
         Calendar startDate = Calendar.getInstance();
         startDate.setTime(travelItinerary.getStartDate());
         Calendar endDate = Calendar.getInstance();
@@ -111,31 +123,50 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         endDate.setTime(travelItinerary.getEndDate());
         List<Booking> currBooking = new ArrayList<Booking>(travelItinerary.getBookings());
 
-        Query query = em.createQuery("SELECT s,COUNT(s) FROM Tag t JOIN t.services s WHERE t IN :tags AND s.country == :country AND s.serviceType == :entertainment GROUP BY s ORDER BY COUNT(s) ASC"); // OR
+        System.out.println("tags = " + tags);
+        Query query = em.createQuery("SELECT s FROM Service s JOIN s.tags t WHERE s.country = :country AND s.serviceType = :entertainment AND t in :tags GROUP BY s ORDER BY COUNT(s) DESC");
         query.setParameter("tags", tags);
         query.setParameter("country", travelItinerary.getCountry());
         query.setParameter("entertainment", ServiceType.ENTERTAINMENT);
-        List<Object[]> result = query.getResultList();
+
+        List<Service> result = query.getResultList();
+        /*
+        System.out.println("Result Before sort = " + result);
+        for(Service s :result){
+            System.out.println("Service = " + s.getServiceName());
+        }
+        
+        sortByMostMatches(result, tags);*/
+        
         List<Service> services = new ArrayList<>();
 
-        for (Object[] arr : result) {
-            System.out.print("arr[0] = " + arr[0] + " arr[1] = " + arr[1]);
-            services.add((Service) arr[0]);
+        if (result.size() < 3) {
+            services = serviceSessionBeanLocal.retrieveAllEntertainment();
+        } else {
+            services = result;
         }
 
-        if (services.size() < 5) {
-            services = serviceSessionBeanLocal.retrieveAllActiveServices();
+        for (Service se : services) {
+            System.out.println("Entertainment found = " + se.getServiceName());
         }
 
-        Query query2 = em.createQuery("SELECT s FROM Service s WHERE s.country == :country AND s.serviceType == :hotel");
+        Query query2 = em.createQuery("SELECT s FROM Service s WHERE s.country = :country AND s.serviceType = :hotel");
         query2.setParameter("hotel", ServiceType.HOTEL);
         query2.setParameter("country", travelItinerary.getCountry());
         List<Service> hotels = query2.getResultList();
 
-        Query query3 = em.createQuery("SELECT s FROM Service s WHERE s.country == :country AND s.serviceType == :FnB ORDER BY s.rating DESC");
+        for (Service se : hotels) {
+            System.out.println("Hotels found = " + se.getServiceName());
+        }
+
+        Query query3 = em.createQuery("SELECT s FROM Service s WHERE s.country = :country AND s.serviceType = :FnB ORDER BY s.rating DESC");
         query3.setParameter("FnB", ServiceType.FOOD_AND_BEVERAGE);
         query3.setParameter("country", travelItinerary.getCountry());
         List<Service> FnB = query3.getResultList();
+
+        for (Service se : FnB) {
+            System.out.println("FnB found = " + se.getServiceName());
+        }
 
         moveToDaylight(startDate);
 
@@ -157,7 +188,6 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             entertainmentPointer.add(Calendar.DAY_OF_MONTH, 1);
             moveToDaylight(entertainmentPointer);
         }
-
         return travelItinerary;
     }
 
@@ -200,6 +230,8 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     }
 
     private void addHotels(TravelItinerary ti, Calendar day, List<Service> hotels) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
+        System.out.println("ejb.session.stateless.TravelItinerarySessionBean.addHotels()");
+        
         for (Booking booking : ti.getBookings()) {
             Calendar formatter = Calendar.getInstance();
             formatter.setTime(booking.getStartDate());
@@ -212,8 +244,11 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         Calendar startDate = (Calendar) day.clone();
         Calendar endDate = (Calendar) day.clone();
         startDate.set(Calendar.HOUR_OF_DAY, 15);
+        startDate.set(Calendar.MINUTE, 0);
         endDate.set(Calendar.HOUR_OF_DAY, 12);
+        endDate.set(Calendar.MINUTE, 0);
         endDate.add(Calendar.DAY_OF_MONTH, 1);
+
         Service hotel = hotels.remove(0);
         hotels.add(hotel);
         Booking newBooking = new Booking(startDate.getTime(), endDate.getTime(), ti, hotel);
@@ -221,6 +256,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     }
 
     private void addMeals(TravelItinerary ti, Calendar day, List<Service> meals) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
+        System.out.println("ejb.session.stateless.TravelItinerarySessionBean.addMeals() at day " + day.get(Calendar.DAY_OF_MONTH) + " month = " + day.get(Calendar.MONTH));
         List<Booking> sameDay = new ArrayList<>();
 
         for (Booking booking : ti.getBookings()) {
@@ -257,22 +293,27 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             Calendar formatter2 = Calendar.getInstance();
             formatter2.setTime(booking.getEndDate());
             if (formatter.before(lunchEnd) || formatter2.after(lunchStart)) {
+                //System.out.println("Lunch Overlap found!");
                 lunchOverlap = true;
                 if (booking.getService().getServiceType() == ServiceType.FOOD_AND_BEVERAGE) {
                     hadLunch = true;
                 }
             } else if (formatter.before(dinnerEnd) || formatter2.after(dinnerStart)) {
                 dinnerOverlap = true;
+                //System.out.println("Dinner Overlap found!");
                 if (booking.getService().getServiceType() == ServiceType.FOOD_AND_BEVERAGE) {
                     hadDinner = true;
                 }
             }
         }
-        if (hadLunch = false) {
+        //System.out.println("checking for lunch Had Lunch = " + hadLunch);
+        if (!hadLunch) {
             Calendar noon = Calendar.getInstance();
             noon.setTime(day.getTime());
             noon.set(Calendar.HOUR_OF_DAY, 12);
-            if (lunchOverlap == false) {
+            //System.out.println("checking for lunch overlap = " + lunchOverlap);
+            if (!lunchOverlap) {
+                
                 Service lunch = meals.remove(0);
                 meals.add(lunch);
                 Calendar lunchS = Calendar.getInstance();
@@ -281,6 +322,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                 Calendar lunchE = (Calendar) lunchS.clone();
                 lunchE.add(Calendar.HOUR_OF_DAY, 1);
                 Booking newBooking = new Booking(lunchS.getTime(), lunchE.getTime(), ti, lunch);
+                //System.out.println("Add lunch without overlap! name = " + lunch.getServiceName() + " from " + lunchS.getTime() + " to " + lunchE.getTime());
                 bookingSessionBeanLocal.createBooking(newBooking, lunch.getServiceId(), ti.getTravelItineraryId());
                 hadLunch = true;
             } else {
@@ -292,7 +334,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                     Calendar formatter2 = Calendar.getInstance();
                     formatter2.setTime(sameDay.get(i).getEndDate());
                     if (i == 0 && lunchStart.getTimeInMillis() + HOUR_IN_MILLISECONDS <= formatter.getTimeInMillis()) {
-
+                        
                         Service lunch = meals.remove(0);
                         meals.add(lunch);
                         Date endDate = (Date) sameDay.get(i).getStartDate().clone();
@@ -305,6 +347,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
                         Date startDate = (Date) endDate.clone();
                         startDate.setTime(startDate.getTime() - HOUR_IN_MILLISECONDS);
+                        //System.out.println("Added lunch with overlap! name = " + lunch.getServiceName() + " from " + startDate + " to " + endDate);
                         Booking newBooking = new Booking(startDate, endDate, ti, lunch);
                         bookingSessionBeanLocal.createBooking(newBooking, lunch.getServiceId(), ti.getTravelItineraryId());
                         hadLunch = true;
@@ -325,6 +368,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                         endDate.setTime(endDate.getTime() + HOUR_IN_MILLISECONDS);
                         Booking newBooking = new Booking(startDate, endDate, ti, lunch);
                         bookingSessionBeanLocal.createBooking(newBooking, lunch.getServiceId(), ti.getTravelItineraryId());
+                        //System.out.println("Added lunch with overlap!");
                         hadLunch = true;
                         break;
                     } else if (formatter.after(lunchStart)
@@ -341,16 +385,18 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                         Date startDate = (Date) endDate.clone();
                         startDate.setTime(startDate.getTime() - HOUR_IN_MILLISECONDS);
                         Booking newBooking = new Booking(startDate, endDate, ti, lunch);
+                        //System.out.println("Added lunch with overlap!");
                         bookingSessionBeanLocal.createBooking(newBooking, lunch.getServiceId(), ti.getTravelItineraryId());
-                        hadDinner = true;
+                        hadLunch = true;
                         break;
                     }
                 }
             }
         }
-        if (hadDinner = false) {
+        //System.out.println("checking for dinner Had Dinner = " + hadDinner);
+        if (!hadDinner) {
 
-            if (dinnerOverlap == false) {
+            if (!dinnerOverlap) {
                 Service dinner = meals.remove(0);
                 meals.add(dinner);
                 Calendar dinnerS = Calendar.getInstance();
@@ -433,6 +479,8 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     }
 
     private void moveToDaylight(Calendar formatter) {
+        formatter.set(Calendar.MINUTE, 0);
+        formatter.set(Calendar.MILLISECOND, 0);
         Calendar morning = (Calendar) formatter.clone();
         cleanTime(morning);
         morning.set(Calendar.HOUR_OF_DAY, 9);
@@ -463,5 +511,28 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             }
         }
         return totalPrice;
+    }
+
+    private List<Service> sortByMostMatches(List<Service> result, List<Tag> tags) {
+        HashMap<Service, Integer> map = new HashMap<>();
+        for (Tag t : tags) {
+            for (Service s : result) {
+                if (t.getServices().contains(s)) {
+                    Integer count = map.get(s);
+                    if (count != null) {
+                        map.put(s, count + 1);
+                    } else {
+                        map.put(s, 1);
+                    }
+                }
+            }
+        }
+        List<Entry<Service,Integer>> newList = new ArrayList<>(map.entrySet());
+        newList.sort((a,b) -> a.getValue().compareTo(b.getValue()));
+        List<Service> output = new LinkedList<>();
+        for (Entry<Service,Integer> entry:newList){
+            output.add(entry.getKey());
+        }
+        return output;
     }
 }

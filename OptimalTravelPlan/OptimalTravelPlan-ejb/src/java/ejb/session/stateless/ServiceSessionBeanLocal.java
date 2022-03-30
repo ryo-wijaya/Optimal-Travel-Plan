@@ -37,5 +37,7 @@ public interface ServiceSessionBeanLocal {
     public List<Service> retrieveAllServiceByCountry(Long countryId);
 
     public List<Service> retrieveAllServiceByBusinessId(Long businessId);
+
+    public List<Service> retrieveAllEntertainment();
     
 }
