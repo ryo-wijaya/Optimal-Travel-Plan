@@ -34,6 +34,7 @@ public class RegisterPageManagedBean {
     private String companyWebsite;
     private String companyNumber;
     private String companyAddress;
+    private String businessEmail;
 
     public RegisterPageManagedBean() {
     }
@@ -56,7 +57,7 @@ public class RegisterPageManagedBean {
 
     public void register() throws IOException {
         try {
-            Business newBusiness = new Business(companyName, companyWebsite, companyNumber, companyAddress, username, password);
+            Business newBusiness = new Business(companyName, companyWebsite, companyNumber, companyAddress, username, password, businessEmail);
             accountSessionBeanLocal.createNewAccount(newBusiness);
 
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("isLogin", true);
@@ -72,6 +73,14 @@ public class RegisterPageManagedBean {
         } catch (UnknownPersistenceException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration Failed", null));
         }
+    }
+
+    public String getBusinessEmail() {
+        return businessEmail;
+    }
+
+    public void setBusinessEmail(String businessEmail) {
+        this.businessEmail = businessEmail;
     }
 
     public String getUsername() {

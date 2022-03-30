@@ -90,23 +90,23 @@ public class dataInitBean {
                 Staff customerService = new Staff("staff123", "password", "staff1", EmployeeRole.CUSTOMER_SERVICE);
                 em.persist(customerService);
 
-                Business optimalTravelPlan = new Business("OTP themselves!", "www.OTP.com", "99999999", "OTP address", "optimal123", "password");
+                Business optimalTravelPlan = new Business("OTP themselves!", "www.OTP.com", "99999999", "OTP address", "optimal123", "password", "emailAdress");
                 em.persist(optimalTravelPlan);
                 em.flush();
 
-                Business business1 = new Business("company1", "www.company1.com", "0000001", "address1", "company1", "password");
+                Business business1 = new Business("company1", "www.company1.com", "0000001", "address1", "company1", "password", "emailAdress");
                 em.persist(business1);
 
-                Business business2 = new Business("company2", "www.company2.com", "0000002", "address2", "company2", "password");
+                Business business2 = new Business("company2", "www.company2.com", "0000002", "address2", "company2", "password", "emailAdress");
                 em.persist(business2);
 
-                Business business3 = new Business("company3", "www.company3.com", "0000003", "address3", "company3", "password");
+                Business business3 = new Business("company3", "www.company3.com", "0000003", "address3", "company3", "password", "emailAdress");
                 em.persist(business3);
 
-                Business business4 = new Business("company4", "www.company4.com", "0000004", "address4", "company4", "password");
+                Business business4 = new Business("company4", "www.company4.com", "0000004", "address4", "company4", "password", "emailAdress");
                 em.persist(business4);
 
-                Business business5 = new Business("company5", "www.company5.com", "0000005", "address5", "company5", "password");
+                Business business5 = new Business("company5", "www.company5.com", "0000005", "address5", "company5", "password", "emailAdress");
                 em.persist(business5);
 
                 Customer customer1 = new Customer("customer1", "123456789", "000000001", "customer1@email.com", Boolean.TRUE, "customer1", "password");

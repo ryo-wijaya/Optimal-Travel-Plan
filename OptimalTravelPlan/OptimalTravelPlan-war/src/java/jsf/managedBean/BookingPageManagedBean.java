@@ -66,7 +66,6 @@ public class BookingPageManagedBean implements Serializable {
         this.business = (Business) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
         bookings = bookingSessionBeanLocal.retrieveBookingsByBusinessId(business.getAccountId());
         reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
-        // services = serviceSessionBeanLocal.retrieveServicesByBusinessId(business.getAccountId()); 
     }
 
     public String checkIfReviewHasReply() {

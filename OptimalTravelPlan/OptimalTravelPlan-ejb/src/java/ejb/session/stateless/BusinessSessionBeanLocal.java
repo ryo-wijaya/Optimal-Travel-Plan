@@ -33,4 +33,6 @@ public interface BusinessSessionBeanLocal {
     public void deleteBusiness(Long businessId) throws AccountNotFoundException, DeleteBusinessException;
 
     public Business createNewBusiness(Business newBusiness)throws UsernameAlreadyExistException, UnknownPersistenceException;
+
+    public Business retrieveBusinessByEmail(String email) throws AccountNotFoundException;
 }

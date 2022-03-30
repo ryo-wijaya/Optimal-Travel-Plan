@@ -6,18 +6,22 @@
 package jsf.managedBean;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
+import ejb.session.stateless.BusinessSessionBeanLocal;
+import ejb.session.stateless.EmailSessionBeanLocal;
 import entity.Account;
 import entity.Business;
 import entity.Staff;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import util.exception.AccountDisabledException;
+import util.exception.AccountNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 
 /**
@@ -25,11 +29,20 @@ import util.exception.InvalidLoginCredentialException;
  * @author ryo20
  */
 @Named(value = "loginPageManagedBean")
-@RequestScoped
-public class LoginPageManagedBean {
+@ViewScoped
+public class LoginPageManagedBean implements Serializable {
+
+    @EJB
+    private EmailSessionBeanLocal emailSessionBeanLocal;
+
+    @EJB
+    private BusinessSessionBeanLocal businessSessionBeanLocal;
 
     @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
+    
+    
+    
 
     private String username;
     private String password;
@@ -45,9 +58,9 @@ public class LoginPageManagedBean {
      */
     public LoginPageManagedBean() {
     }
-    
+
     @PostConstruct
-    public void post(){
+    public void post() {
         this.password = "";
         this.password2 = "";
         this.username = "";
@@ -57,9 +70,9 @@ public class LoginPageManagedBean {
     public void login(ActionEvent event) throws IOException {
         try {
             fc = FacesContext.getCurrentInstance();
-            
+
             Account loginAccount;
-            
+
             System.out.println("User & pass = " + username.isEmpty() + " " + password.isEmpty());
             if (!username.isEmpty() && !password.isEmpty()) {
                 loginAccount = accountSessionBeanLocal.login(username, password);
@@ -95,12 +108,25 @@ public class LoginPageManagedBean {
     }
 
     public void logout() throws IOException {
+        fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().invalidateSession();
         fc.getExternalContext().redirect("index.xhtml");
     }
 
     public void sendRecoveryEmail() {
-        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Recovery Email Sent!", null));
+        try {
+            Business business = businessSessionBeanLocal.retrieveBusinessByEmail(recoveryEmail);
+            String newPassword = accountSessionBeanLocal.forgetPasswordChange(business.getAccountId());
+            
+            String message = "Dear user" + ",\n\n"
+                + " please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
+                + "\n\nUsername: " +  business.getUsername() + "\n\nNew password: " + newPassword;
+            
+            emailSessionBeanLocal.emailCheckoutNotificationSync(message, recoveryEmail);
+        } catch (AccountNotFoundException ex) {
+            System.out.println("Email address " + recoveryEmail + " not found");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No account associated with this email address", null));
+        }
     }
 
     public String getUsername() {

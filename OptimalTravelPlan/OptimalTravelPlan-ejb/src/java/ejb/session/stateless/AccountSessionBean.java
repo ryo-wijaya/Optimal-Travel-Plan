@@ -9,6 +9,9 @@ import entity.Account;
 import entity.Business;
 import entity.Customer;
 import entity.Staff;
+import java.security.SecureRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -107,6 +110,28 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             account.setPassword(newPassword);
         } else {
             throw new ChangePasswordException("Password does not match!");
+        }
+    }
+    
+    @Override
+    public String forgetPasswordChange(Long accountId) {
+        try {
+            Account account = this.retrieveAccountById(accountId);
+            
+            //Generate random password
+            final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            SecureRandom random = new SecureRandom();
+            String newPassword = IntStream.range(9, 10)
+                .map(i -> random.nextInt(chars.length()))
+                .mapToObj(randomIndex -> String.valueOf(chars.charAt(randomIndex)))
+                .collect(Collectors.joining());
+            
+            account.setPassword(newPassword);
+            return newPassword;
+            
+        } catch (AccountNotFoundException | PasswordNotAcceptedException ex) {
+            // Do nothing as account is guaranteed to be found and password is guaranteed to be accepted
+            return null;
         }
     }
 }

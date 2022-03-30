@@ -20,8 +20,11 @@
 
         <p:panel styleClass="panelStyle">
             <f:facet name="header">
-                <p:outputPanel style="text-align: left;">
+                <p:outputPanel style="text-align: left; float: left">
                     <p:button value="Back" title="Back" outcome="index.xhtml"/>
+                </p:outputPanel>
+                <p:outputPanel style="text-align: center">
+                    <h:outputText value="Enter Registration Details"/>
                 </p:outputPanel>
             </f:facet>
             
@@ -29,8 +32,9 @@
 
                 <p:growl id="registerGrowl"/>
 
-                <p:panelGrid columns="2">
+                <p:panelGrid columns="2" >
 
+                    
 
                     <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
                     <p:inputText id="username" value="#{registerPageManagedBean.username}" />
@@ -49,6 +53,9 @@
 
                     <p:outputLabel for="companyAddress"><b>Company Address:</b></p:outputLabel>
                     <p:inputText id="companyAddress" value="#{registerPageManagedBean.companyAddress}" />
+                    
+                    <p:outputLabel for="businessEmail"><b>Business Email:</b></p:outputLabel>
+                    <p:inputText id="businessEmail" value="#{registerPageManagedBean.businessEmail}" />
                 </p:panelGrid>
 
                 <br></br>

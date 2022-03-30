@@ -28,16 +28,19 @@ public class Business extends Account implements Serializable {
     private String companyNumber;
 
     private String headquarterAddress;
+    
+    private String businessEmail;
 
     public Business() {
     }
 
-    public Business(String companyName, String companyWebsite, String companyNumber, String headquarterAddress, String username, String password) throws PasswordNotAcceptedException {
+    public Business(String companyName, String companyWebsite, String companyNumber, String headquarterAddress, String username, String password, String email) throws PasswordNotAcceptedException {
         super(username, password);
         this.companyName = companyName;
         this.companyWebsite = companyWebsite;
         this.companyNumber = companyNumber;
         this.headquarterAddress = headquarterAddress;
+        this.businessEmail = email;
         this.services = new ArrayList<>();
     }
 
@@ -47,6 +50,14 @@ public class Business extends Account implements Serializable {
 
     public void setBusinessId(Long businessId) {
         setAccountId(businessId);
+    }
+
+    public String getBusinessEmail() {
+        return businessEmail;
+    }
+
+    public void setBusinessEmail(String businessEmail) {
+        this.businessEmail = businessEmail;
     }
 
     @Override

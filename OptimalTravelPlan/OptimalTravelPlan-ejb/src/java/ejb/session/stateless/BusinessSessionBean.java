@@ -72,7 +72,18 @@ public class BusinessSessionBean implements BusinessSessionBeanLocal {
         }
     }
     
-    //Deleted business login
+    @Override
+    public Business retrieveBusinessByEmail(String email) throws AccountNotFoundException {
+        Query query = em.createQuery("SELECT b FROM Business b WHERE b.businessEmail = :inBusinessEmail");
+        query.setParameter("inBusinessEmail", email);
+        try {
+            Business business = (Business) query.getSingleResult();
+            business.getServices().size(); //lazy loading
+            return business;
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new AccountNotFoundException("Email has no match!");
+        }
+    }
 
     @Override
     public void updateBusiness(Business business) throws AccountNotFoundException, UpdateBusinessException {

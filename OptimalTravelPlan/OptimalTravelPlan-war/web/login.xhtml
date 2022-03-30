@@ -23,13 +23,13 @@
 
 
         <p:panel styleClass="panelStyle">
-            
+
             <f:facet name="header">
                 <p:outputPanel style="text-align: left;">
                     <p:button value="Back" title="Back" outcome="index.xhtml"/>
                 </p:outputPanel>
             </f:facet>
-            
+
             <h:form id="formLogin">
 
                 <p:growl id="loginGrowl"/>
@@ -71,8 +71,10 @@
                 </h:panelGroup>
             </h:form>
         </p:panel>
-        
+
         <p:dialog header="Please input your email address for password recovery" widgetVar="forgetPassword" showEffect="fade" hideEffect="fade" resizable="false">
+            <h:form id="formResetPassword">
+                <p:growl id="forgetPassGrowl"/>
                 <p:outputPanel style="text-align:center;">
                     <p:panelGrid  columns="2">
                         <p:outputLabel for="recoverEmail"><b>Recovery Email:</b></p:outputLabel>
@@ -80,9 +82,10 @@
                     </p:panelGrid>
 
                     <br></br>
-                    <p:commandButton id="sendRecoveryEmail" value="Send Email" actionListener="#{loginPageManagedBean.sendRecoveryEmail}" />
+                    <p:commandButton id="sendRecoveryEmail" value="Send Email" actionListener="#{loginPageManagedBean.sendRecoveryEmail}" process="@form" update="@form"/>
                 </p:outputPanel>
-            </p:dialog>
+            </h:form>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>

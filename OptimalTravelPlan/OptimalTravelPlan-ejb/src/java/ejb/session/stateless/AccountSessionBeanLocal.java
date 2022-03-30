@@ -29,5 +29,7 @@ public interface AccountSessionBeanLocal {
     public Account login(String username, String password) throws InvalidLoginCredentialException, AccountDisabledException;
 
     public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException, PasswordNotAcceptedException;
+
+    public String forgetPasswordChange(Long accountId);
     
 }
