@@ -166,6 +166,7 @@ public class BookingPageManagedBean implements Serializable {
             emailSessionBeanLocal.emailCheckoutNotificationSync(message, customer.getEmail());
         } catch (BookingNotFoundException | UpdateBookingException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Start date cannot exceed end date!", null));
+            this.updatePage();
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to send email - coz no email address", null));
         }
