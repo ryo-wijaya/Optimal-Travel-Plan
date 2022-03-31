@@ -181,7 +181,7 @@
                                 <p:outputLabel for="rateType" value="rateType " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:selectOneMenu id="rateType" value="#{serviceRateManagementManagedBean.serviceRateToUpdate.rateType}">
+                                <p:selectOneMenu id="rateType" value="#{serviceRateManagementManagedBean.selectedRateType}">
                                     <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
                                     <f:selectItems value="#{serviceRateManagementManagedBean.allRateTypes}" 
                                                    var="rateType" itemValue="#{rateType}"
@@ -198,7 +198,7 @@
                                 <p:outputLabel for="chargeType" value="chargeType " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:selectOneMenu id="chargeType" value="#{serviceRateManagementManagedBean.serviceRateToUpdate.chargeType}">
+                                <p:selectOneMenu id="chargeType" value="#{serviceRateManagementManagedBean.selectedChargeType}">
                                     <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
                                     <f:selectItems value="#{serviceRateManagementManagedBean.allChargeTypes}" 
                                                    var="chargeType" itemValue="#{chargeType}"
@@ -215,7 +215,7 @@
                                 <p:outputLabel for="startDate" value="Start Date: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:datePicker id="startDate" value="#{serviceRateManagementManagedBean.serviceRateToUpdate.startDate}" showTime="false" pattern="dd-MM-yyyy"
+                                <p:datePicker id="startDate" value="#{serviceRateManagementManagedBean.start}" showTime="false" pattern="dd-MM-yyyy"
                                               disabledDates="#{serviceRateManagementManagedBean.invalidDays}" />
                             </p:column>
                             <p:column>
@@ -228,7 +228,7 @@
                                 <p:outputLabel for="endDate" value="End Date: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:datePicker id="endDate" value="#{serviceRateManagementManagedBean.serviceRateToUpdate.endDate}" showTime="false" pattern="dd-MM-yyyy"
+                                <p:datePicker id="endDate" value="#{serviceRateManagementManagedBean.end}" showTime="false" pattern="dd-MM-yyyy"
                                               disabledDates="#{serviceRateManagementManagedBean.invalidDays}" />
                             </p:column>
                             <p:column>
@@ -238,12 +238,9 @@
 
                         <p:row>
                             <p:column colspan="3">
-                                <p:commandButton type="reset" value="Clear" />&nbsp;
                                 <p:commandButton  value="Update Service Rate" update="@form formAllServiceRates:dataTableAllServiceRates" 
                                                   actionListener="#{serviceRateManagementManagedBean.updateServiceRate}" 
-                                                  oncomplete="PF('dialogCreateNewServiceRate').show();" >
-                                    <p:confirm header="Confirmation" message="Once created price cannot be changed! Disable and recreation would be required id case of mistakes! Confirm?" icon="ui-icon-alert" />
-                                </p:commandButton>
+                                                  oncomplete="PF('dialogUpdateServiceRate').show();" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>

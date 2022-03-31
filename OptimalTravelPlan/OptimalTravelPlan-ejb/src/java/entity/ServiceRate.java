@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +32,7 @@ public class ServiceRate implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
     
+    @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal price;
     
     private RateType rateType;

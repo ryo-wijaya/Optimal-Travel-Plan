@@ -77,8 +77,14 @@ public class ServiceRateSessionBean implements ServiceRateSessionBeanLocal {
         ServiceRate rate = retrieveServiceRateById(serviceRate.getServiceRateId());
         Date today = new Date();
         //ensure that can only extend 
+        System.out.println("rate.getStartDate()" + rate.getStartDate());
+        System.out.println("serviceRate.getStartDate()" + serviceRate.getStartDate());
+        System.out.println("rate.getEndDate()" + rate.getEndDate());
+        System.out.println("serviceRate.getEndDate()" + serviceRate.getEndDate());
+        System.out.println("rate.getStartDate().compareTo(serviceRate.getStartDate()) = " + rate.getStartDate().compareTo(serviceRate.getStartDate()));
+        System.out.println("rate.getEndDate().compareTo(serviceRate.getEndDate()) = " + rate.getEndDate().compareTo(serviceRate.getEndDate()));
         if (rate.getStartDate().compareTo(serviceRate.getStartDate()) >= 0
-                && rate.getEndDate().compareTo(serviceRate.getStartDate()) <= 0) {
+                && rate.getEndDate().compareTo(serviceRate.getEndDate()) <= 0) {
             if (rate.getPrice() != serviceRate.getPrice()){
                 throw new ConstraintViolationException("Unable to change rate price! Please create a new rate and disable old one!");
             }
