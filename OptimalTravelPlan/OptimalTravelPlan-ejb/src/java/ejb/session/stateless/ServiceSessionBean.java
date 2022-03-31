@@ -206,4 +206,17 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             throw new ServiceNotFoundException("ID not provided for account status to be updated");
         }
     }
+
+    @Override
+    public Service updateService(Service selectedService, List<Long> tagsSelected, Long selectedCountry, Boolean requireVac) throws TagNotFoundException, ServiceNotFoundException, CountryNotFoundException {
+        Service serviceToUpdate = retrieveServiceById(selectedService.getServiceId());
+        List<Tag> tags = new ArrayList<>();
+        for (Long t : tagsSelected) {
+            tags.add(tagSessionBeanLocal.retrieveTagByTagId(t));
+        }
+        serviceToUpdate.setTags(tags);
+        serviceToUpdate.setCountry(countrySessionBeanLocal.retrieveCountryByCountryId(selectedCountry));
+        serviceToUpdate.setRequireVaccination(requireVac);
+        return serviceToUpdate;
+    }
 }

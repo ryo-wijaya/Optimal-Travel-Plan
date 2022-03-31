@@ -10,8 +10,10 @@ import java.util.List;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
 import util.exception.ConstraintViolationException;
+import util.exception.CountryNotFoundException;
 import util.exception.CreateNewServiceException;
 import util.exception.ServiceNotFoundException;
+import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateServiceException;
 
@@ -39,5 +41,6 @@ public interface ServiceSessionBeanLocal {
     public List<Service> retrieveAllServiceByBusinessId(Long businessId);
 
     public List<Service> retrieveAllEntertainment();
-    
+
+    public Service updateService(Service selectedService, List<Long> tagsSelected, Long selectedCountry, Boolean requireVac) throws TagNotFoundException, ServiceNotFoundException, CountryNotFoundException;
 }

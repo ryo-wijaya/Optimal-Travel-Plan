@@ -36,10 +36,16 @@ public class serviceRateManagementManagedBean implements Serializable {
     private Service selectedService;
     private ServiceRate serviceRateToUpdate;
     private List<ServiceRate> filteredServiceRates;
+    
     private List<RateType> allRateTypes;
-    private List<ChargeType> allChargeTypes;
     private RateType selectedRateType;
+    
+    private List<ChargeType> allChargeTypes;
     private ChargeType selectedChargeType;
+    
+    private Date start;
+    private Date end;
+    
     private List<Date> invalidDays;
 
     public serviceRateManagementManagedBean() {
@@ -103,15 +109,26 @@ public class serviceRateManagementManagedBean implements Serializable {
 
     public void doUpdateServiceRate(ActionEvent event) {
         serviceRateToUpdate = (ServiceRate) event.getComponent().getAttributes().get("serviceRateToUpdate");
+        selectedRateType = serviceRateToUpdate.getRateType();
+        selectedChargeType = serviceRateToUpdate.getChargeType();
+        start = serviceRateToUpdate.getStartDate();
+        end = serviceRateToUpdate.getEndDate();
         updateInvalidDates();
     }
 
     public void updateServiceRate(ActionEvent event) {
         try {
-            if (serviceRateToUpdate.getEndDate().after(serviceRateToUpdate.getStartDate())) {
+            if (end.before(start)) {
                 throw new Exception("End date cannot be before Start date!");
             }
-            ServiceRate t = serviceRateSessionBeanLocal.updateServiceRate(serviceRateToUpdate);
+            if(start.after(serviceRateToUpdate.getStartDate()) || end.before(serviceRateToUpdate.getEndDate())){
+                throw new Exception("Unable to change rate price! Please create a new rate and disable old one!");
+            }
+            serviceRateToUpdate.setRateType(selectedRateType);
+            serviceRateToUpdate.setChargeType(selectedChargeType);
+            serviceRateToUpdate.setStartDate(start);
+            serviceRateToUpdate.setEndDate(end);
+            serviceRateSessionBeanLocal.updateServiceRate(serviceRateToUpdate);
             updateInvalidDates();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Service Rate updated successfully", null));
         } catch (Exception ex) {
@@ -120,17 +137,15 @@ public class serviceRateManagementManagedBean implements Serializable {
     }
 
     private void updateInvalidDates() {
+        this.invalidDays = new ArrayList<>();
         if ((serviceRateToUpdate.getEndDate().getTime() - serviceRateToUpdate.getStartDate().getTime()) < 315360000000l) {
             this.invalidDays = new ArrayList<>();
             Date pointer = serviceRateToUpdate.getStartDate();
-            this.invalidDays.add(pointer);
             pointer = new Date(pointer.getTime() + 86400000l);
             while (pointer.before(serviceRateToUpdate.getEndDate())) {
                 this.invalidDays.add(pointer);
                 pointer = new Date(pointer.getTime() + 86400000l);
             }
-        } else {
-            this.invalidDays = new ArrayList<>();
         }
     }
 
@@ -145,6 +160,24 @@ public class serviceRateManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to toggle rate availability:" + ex.getMessage(), null));
         }
     }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+    
+    
 
     public Account getLoggedInAccount() {
         return loggedInAccount;
