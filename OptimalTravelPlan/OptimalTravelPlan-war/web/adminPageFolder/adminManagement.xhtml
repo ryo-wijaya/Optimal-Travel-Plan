@@ -73,12 +73,54 @@
                                 <p:outputLabel for="name" value="Staff Name: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:inputText id="name" value="#{staffManagementManagedBean.newStaff.name}" placeholder="Movie" required="true" requiredMessage="Staff Name is required" />
+                                <p:inputText id="name" value="#{staffManagementManagedBean.name}" placeholder="Staff" required="true" requiredMessage="Staff Name is required" />
                             </p:column>
                             <p:column>
                                 <p:message for="name" />
                             </p:column>
                         </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="username" value="Username: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="username" value="#{staffManagementManagedBean.username}" placeholder="username" required="true" requiredMessage="Username is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="username" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="password" value="Password: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="password" value="#{staffManagementManagedBean.password}" required="true" requiredMessage="Password is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="password" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="employeeRole" value="Employee Role: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="employeeRole" value="#{staffManagementManagedBean.employeeRole}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItems value="#{staffManagementManagedBean.employeeRoles}" 
+                                                   var="employeeRole" itemValue="#{employeeRole}"
+                                                   itemLabel="#{employeeRole}" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="employeeRole" />
+                            </p:column>
+                        </p:row>
+                        
                         <p:row>
                             <p:column colspan="3">
                                 <p:commandButton type="reset" value="Clear" />&nbsp;
