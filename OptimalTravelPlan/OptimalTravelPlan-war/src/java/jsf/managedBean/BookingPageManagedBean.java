@@ -78,13 +78,6 @@ public class BookingPageManagedBean implements Serializable {
         endDate = new Date();
     }
 
-    public String checkIfReviewHasReply() {
-        if (selectedReview.getBusinessReply() == null) {
-            return "No";
-        } else {
-            return "Yes";
-        }
-    }
 
     public void reviewReply() {
         try {
@@ -148,6 +141,11 @@ public class BookingPageManagedBean implements Serializable {
     public void editBooking() {
         System.out.println("Start edit method");
         System.out.println("selected booking" + selectedBooking.toString());
+        
+        if (selectedBooking.getStartDate().equals(startDate) && selectedBooking.getEndDate().equals(endDate)) {
+            // No change made!
+            return;
+        }
         
         // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
         selectedBooking.setStartDate(startDate);

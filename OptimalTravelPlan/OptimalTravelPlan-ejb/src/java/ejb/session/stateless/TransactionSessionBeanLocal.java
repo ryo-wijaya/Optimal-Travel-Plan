@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.PaymentTransaction;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.PaymentTransactionNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -21,8 +22,8 @@ public interface TransactionSessionBeanLocal {
 
     public List<PaymentTransaction> retrieveAllPaymentTransaction();
 
-    public PaymentTransaction createNewPaymentTransaction(PaymentTransaction paymentTransaction) throws ConstraintViolationException, UnknownPersistenceException;
-
     public PaymentTransaction retrievePaymentTransactionByTransactionId(Long transactionId) throws PaymentTransactionNotFoundException;
+
+    public PaymentTransaction createNewPaymentTransaction(PaymentTransaction paymentTransaction, Long bookingId) throws ConstraintViolationException, UnknownPersistenceException, BookingNotFoundException;
     
 }

@@ -5,13 +5,16 @@
  */
 package ejb.session.stateless;
 
+import entity.Booking;
 import entity.PaymentTransaction;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.PaymentTransactionNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -19,13 +22,22 @@ import util.exception.UnknownPersistenceException;
 @Stateless
 public class TransactionSessionBean implements TransactionSessionBeanLocal {
 
+    @EJB
+    private BookingSessionBeanLocal bookingSessionBeanLocal;
+
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
     
+    
+    
     @Override
-    public PaymentTransaction createNewPaymentTransaction(PaymentTransaction paymentTransaction) throws ConstraintViolationException, UnknownPersistenceException{
+    public PaymentTransaction createNewPaymentTransaction(PaymentTransaction paymentTransaction, Long bookingId) throws ConstraintViolationException, UnknownPersistenceException, BookingNotFoundException{
         try {
             em.persist(paymentTransaction);
+            
+            Booking bookingToAssociate = bookingSessionBeanLocal.retrieveBookingById(bookingId);
+            bookingToAssociate.setPaymentTransaction(paymentTransaction);
+            
             em.flush();
             return paymentTransaction;
         } catch (PersistenceException ex) {
@@ -38,7 +50,7 @@ public class TransactionSessionBean implements TransactionSessionBeanLocal {
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
-        }
+        } 
     }
     
     
