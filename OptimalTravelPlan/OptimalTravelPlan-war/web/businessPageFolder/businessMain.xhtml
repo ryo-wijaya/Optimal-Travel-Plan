@@ -39,14 +39,19 @@
         </script>
 
 
+
         <p:panel>
-            <p:menu>
-                <p:menuitem style="float:left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
-            </p:menu>
+            <h:form id="menuForm">
+                <p:menu>
+                    <p:menuitem style="float: left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
+                    <p:menuitem style="color: activeborder; background-color: activecaption" value="Refresh Page" ajax="false" icon="pi pi-refresh" 
+                                actionListener="#{bookingPageManagedBean.updatePage}" update="reviewForm bookingForm"/>
+                </p:menu>
+            </h:form>
         </p:panel>
 
 
-        <div id="reviews" style="width: 49.5%; float: right">
+        <div id="reviews" style="width: 39.5%; float: right">
             <h:form id="reviewForm">
 
 
@@ -73,13 +78,17 @@
                     </p:column>
 
                     <p:column headerText="Rating" sortBy="#{review.rating}" filterBy="#{review.rating}" filterMatchMode="contains">
-                        <h:outputText value="#{review.rating}" />
+                        <p:rating value="#{review.rating}" stars="5" disabled="true" />
                     </p:column>
 
                     <p:column headerText="Details">
-                        <p:commandLink oncomplete="PF('dialogReply').show()" update=":reviewForm:reviewBox">
+                        <p:commandButton oncomplete="PF('dialogReply').show()" icon="pi pi-search-plus" update="@form" value="View" actionListener="#{bookingPageManagedBean.debugMethod}">
                             <f:setPropertyActionListener value="#{review}" target="#{bookingPageManagedBean.selectedReview}"/>
-                        </p:commandLink>
+                            <f:setPropertyActionListener value="#{review.businessReply}" target="#{bookingPageManagedBean.selectedReviewReply}"/>
+                            <f:setPropertyActionListener value="#{review.content}" target="#{bookingPageManagedBean.selectedReviewContent}"/>
+                            <f:setPropertyActionListener value="#{review.rating}" target="#{bookingPageManagedBean.selectedReviewRating}"/>
+
+                        </p:commandButton>
                     </p:column>  
 
                 </p:dataTable>
@@ -89,16 +98,23 @@
                     <p:outputPanel id="reviewBox" style="text-align:center;">
                         <p:panelGrid columns="2">
 
-                            <h:outputText value="Review Body: " />
-                            <h:outputText value="#{bookingPageManagedBean.selectedReview.content}" />
+                            <h:outputText value="Review: " />
+                            <h:outputText value="#{bookingPageManagedBean.selectedReviewContent}" />
 
                             <h:outputText value="Rating:" />
-                            <h:outputText value="#{bookingPageManagedBean.selectedReview.rating}" />
+                            <p:rating value="#{bookingPageManagedBean.selectedReviewRating}" stars="5" disabled="true" />
 
                             <h:outputText value="Reply:" />
-                            <p:inputText value="#{bookingPageManagedBean.selectedReview.businessReply}" />
+                            <p:inputTextarea rows="5" cols="30" counter="display" maxlength="150" counterTemplate="{0} characters remaining" 
+                                             autoResize="false" value="#{bookingPageManagedBean.selectedReviewReply}"/>
 
                         </p:panelGrid>
+
+                        <p:panelGrid columns="1" style="width: 100%; text-align: center" >
+                            <h:outputText id="display" />
+                        </p:panelGrid>
+
+                        <br />
 
                         <p:commandButton value="Add/Edit Reply" actionListener="#{bookingPageManagedBean.reviewReply}" process="@form" update="@form" />
                     </p:outputPanel>
@@ -110,7 +126,7 @@
 
 
 
-        <div id="bookings" style="width: 49.5%; text-align: center">
+        <div id="bookings" style="width: 59.5%; text-align: center">
             <h:form id="bookingForm">
 
                 <p:messages id="messages" redisplay="false" closable="true" />
@@ -171,10 +187,17 @@
                     </p:column>
 
                     <p:column headerText="Edit">
-                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialogEditBooking').show()" update=":bookingForm:editBookingBox" value="Edit" actionListener="#{bookingPageManagedBean.debugMethod}">
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialogEditBooking').show()" update=":bookingForm:editBookingBox" value="Edit">
                             <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
                             <f:setPropertyActionListener value="#{booking.startDate}" target="#{bookingPageManagedBean.startDate}"/>
                             <f:setPropertyActionListener value="#{booking.endDate}" target="#{bookingPageManagedBean.endDate}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="View Review">
+                        <p:commandButton update=":reviewForm" value="View" icon="pi pi-search-plus" 
+                                         actionListener="#{bookingPageManagedBean.filterReview}">
+                            <f:setPropertyActionListener value="#{booking.review}" target="#{bookingPageManagedBean.selectedReview}"/>
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -189,8 +212,8 @@
                             <h:outputText value="Payment Date:" />
                             <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.dateOfPayment}" />
 
-                            <h:outputText value="Rate paid:" />
-                            <h:outputText value="#{bookingPageManagedBean.selectedBooking.paymentTransaction.prevailingRateAtPaymentDate}" />
+                            <h:outputText value="Rate paid: " />
+                            <h:outputText value="$#{bookingPageManagedBean.selectedBooking.paymentTransaction.prevailingRateAtPaymentDate}" />
                         </p:panelGrid>
                     </p:outputPanel>
                 </p:dialog>

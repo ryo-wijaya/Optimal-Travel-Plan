@@ -62,6 +62,11 @@ public class BookingPageManagedBean implements Serializable {
     private Service serviceMessage;
     private List<Booking> filteredBookings;
     
+    //Somehow if this is not done attributes of selectReview will be null
+    private String selectedReviewContent;
+    private Integer selectedReviewRating;
+    private String selectedReviewReply;
+    
     // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
     private Date startDate;
     private Date endDate;
@@ -81,23 +86,30 @@ public class BookingPageManagedBean implements Serializable {
 
     public void reviewReply() {
         try {
+            
+            if (selectedReview.getBusinessReply().equals(selectedReviewReply)) {
+                // No changes
+                System.out.println("no changes");
+                return;
+            }
+                System.out.println("yes changes");
+            selectedReview.setBusinessReply(selectedReviewReply);
             reviewSessionBeanLocal.updateReview(selectedReview);
         } catch (ReviewNotFoundException ex) {
             System.out.println("Error with review reply");
         }
     }
     
-    private void updatePage() {
+    public void updatePage() {
         bookings = bookingSessionBeanLocal.retrieveBookingsByBusinessId(business.getAccountId());
         reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
     }
 
-    /*
-    public void filterReviews() {
+    public void filterReview() {
         reviews.clear();
         reviews.add(selectedReview);
     }
-
+    /*
     public void filterBooking() {
         bookings.clear();
         bookings = bookingSessionBeanLocal.retrieveBookingsByServiceId(selectedService.getServiceId());
@@ -172,8 +184,34 @@ public class BookingPageManagedBean implements Serializable {
     
     public void debugMethod() {
         System.out.println("Start debug method");
-        System.out.println("selected Booking start date" + startDate.toString());
+        System.out.println("selected review content" + selectedReviewContent);
     }
+
+    public String getSelectedReviewContent() {
+        return selectedReviewContent;
+    }
+
+    public void setSelectedReviewContent(String selectedReviewContent) {
+        this.selectedReviewContent = selectedReviewContent;
+    }
+
+    public Integer getSelectedReviewRating() {
+        return selectedReviewRating;
+    }
+
+    public void setSelectedReviewRating(Integer selectedReviewRating) {
+        this.selectedReviewRating = selectedReviewRating;
+    }
+
+    public String getSelectedReviewReply() {
+        return selectedReviewReply;
+    }
+
+    public void setSelectedReviewReply(String selectedReviewReply) {
+        this.selectedReviewReply = selectedReviewReply;
+    }
+    
+    
 
     public List<Booking> getFilteredBookings() {
         return filteredBookings;

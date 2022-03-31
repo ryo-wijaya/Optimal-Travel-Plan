@@ -35,6 +35,8 @@ public class Review implements Serializable {
     public Review(Integer rating, String content) {
         this.rating = rating;
         this.content = content;
+        this.businessReply = "";
+        this.rating = 0;
     }
 
     public Integer getRating() {
