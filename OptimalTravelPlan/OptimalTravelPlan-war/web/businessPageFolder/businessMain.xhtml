@@ -51,7 +51,7 @@
         </p:panel>
 
 
-        <div id="reviews" style="width: 39.5%; float: right">
+        <div id="reviews" style="width: 39.5%; float: right; text-align: center">
             <h:form id="reviewForm">
 
 
@@ -63,13 +63,8 @@
                              rowsPerPageTemplate="10,20,50" rowKey="#{review.reviewId}" rowIndexVar="row">
 
                     <f:facet name="header">
-                        <p:outputPanel style="text-align: left; float: left">
-                            <h:outputText value="Reviews" style="font-size: 25" />
-                        </p:outputPanel>
-
-                        <p:outputPanel style="text-align: right">
-                            <h:outputText value="Search all fields:" />
-                            <p:inputText id="globalFilter" onkeyup="PF('reviewTable').filter()" style="width:300px" placeholder="Enter value"/>
+                        <p:outputPanel style="text-align: left;">
+                            <h:outputText value="Latest Reviews" style="font-size: 25" />
                         </p:outputPanel>
                     </f:facet>
 
@@ -89,7 +84,14 @@
                             <f:setPropertyActionListener value="#{review.rating}" target="#{bookingPageManagedBean.selectedReviewRating}"/>
 
                         </p:commandButton>
-                    </p:column>  
+                    </p:column>
+                    
+                    <p:column headerText="View Booking">
+                        <p:commandButton update=":bookingForm" value="View" icon="pi pi-search-plus" 
+                                         actionListener="#{bookingPageManagedBean.filterBooking}">
+                            <f:setPropertyActionListener value="#{review.booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
+                        </p:commandButton>
+                    </p:column>
 
                 </p:dataTable>
 
@@ -139,7 +141,7 @@
 
                     <f:facet name="header">
                         <p:outputPanel style="text-align: left; float: left">
-                            <h:outputText value="Newest Bookings" style="font-size: 25" />
+                            <h:outputText value="Latest Bookings" style="font-size: 25" />
                         </p:outputPanel>
 
                         <p:outputPanel style="text-align: right">
