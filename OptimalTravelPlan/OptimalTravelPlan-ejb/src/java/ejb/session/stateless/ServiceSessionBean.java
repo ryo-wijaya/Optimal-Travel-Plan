@@ -210,6 +210,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
     @Override
     public Service updateService(Service selectedService, List<Long> tagsSelected, Long selectedCountry, Boolean requireVac) throws TagNotFoundException, ServiceNotFoundException, CountryNotFoundException {
         Service serviceToUpdate = retrieveServiceById(selectedService.getServiceId());
+        serviceToUpdate.setServiceType(selectedService.getServiceType());
         List<Tag> tags = new ArrayList<>();
         for (Long t : tagsSelected) {
             tags.add(tagSessionBeanLocal.retrieveTagByTagId(t));
