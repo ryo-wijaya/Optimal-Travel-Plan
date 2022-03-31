@@ -88,7 +88,7 @@
                     
                     <p:column headerText="View Booking">
                         <p:commandButton update=":bookingForm" value="View" icon="pi pi-search-plus" 
-                                         actionListener="#{bookingPageManagedBean.filterBooking}">
+                                         actionListener="#{bookingPageManagedBean.filterBooking}" ajax="false">
                             <f:setPropertyActionListener value="#{review.booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
                         </p:commandButton>
                     </p:column>
@@ -198,7 +198,7 @@
 
                     <p:column headerText="View Review">
                         <p:commandButton update=":reviewForm" value="View" icon="pi pi-search-plus" 
-                                         actionListener="#{bookingPageManagedBean.filterReview}">
+                                         actionListener="#{bookingPageManagedBean.filterReview}" ajax="false">
                             <f:setPropertyActionListener value="#{booking.review}" target="#{bookingPageManagedBean.selectedReview}"/>
                         </p:commandButton>
                     </p:column>
