@@ -18,12 +18,9 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.primefaces.PrimeFaces;
 import util.exception.DeleteCountryException;
 
-/**
- *
- * @author Jorda
- */
 @Named(value = "countryManagementManagedBean")
 @ViewScoped
 public class countryManagementManagedBean implements Serializable {
@@ -33,40 +30,45 @@ public class countryManagementManagedBean implements Serializable {
 
     private List<Country> countries;
     private List<Country> filteredCountries;
-    
+
     private Country newCountry;
-    
+
     private Country selectedCountryToUpdate;
-    
-    
+
     /**
      * Creates a new instance of countryManagementManagedBean
      */
     public countryManagementManagedBean() {
         newCountry = new Country();
     }
-    
+
     @PostConstruct
     public void postConstruct() {
         setCountries(countrySessionBeanLocal.retrieveAllCountries());
+
+        Boolean addCountry = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("addNewCountry");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewCountry");
+        if (addCountry != null) {
+            PrimeFaces.current().executeScript("PF('dialogCreateNewCountry').show();");
+        }
     }
-    
+
     public void createNewCountry(ActionEvent event) {
         Country c = countrySessionBeanLocal.createNewCountry(getNewCountry());
         getCountries().add(c);
         setNewCountry(new Country());
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Country created successfully (Country: " + c.getName() + ")", null));
     }
-    
+
     public void doUpdateCountry(ActionEvent event) {
         setSelectedCountryToUpdate((Country) event.getComponent().getAttributes().get("countryEntityToUpdate"));
     }
-    
+
     public void updateCountry(ActionEvent event) {
         countrySessionBeanLocal.updateCountry(selectedCountryToUpdate);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Country updated successfully", null));
     }
-    
+
     public void deleteCountry(ActionEvent event) {
         try {
             Country countryToDelete = (Country) event.getComponent().getAttributes().get("countryEntityToDelete");
@@ -133,5 +135,5 @@ public class countryManagementManagedBean implements Serializable {
     public void setSelectedCountryToUpdate(Country selectedCountryToUpdate) {
         this.selectedCountryToUpdate = selectedCountryToUpdate;
     }
-    
+
 }

@@ -159,8 +159,12 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
     @Override
     public String getFormattedComment(String name) {
         Calendar today = Calendar.getInstance();
+        String hour = today.get(Calendar.HOUR) > 9 ? String.valueOf(today.get(Calendar.HOUR)) : "0" + today.get(Calendar.HOUR);
+        String minute = today.get(Calendar.MINUTE) > 9 ? String.valueOf(today.get(Calendar.MINUTE)) : "0" + today.get(Calendar.MINUTE);
+        String amPM = today.get(Calendar.AM_PM) == 0 ? "AM" : "PM";
+        
         return "(" + today.get(Calendar.MONTH) + "/" + today.get(Calendar.DAY_OF_MONTH) + "/"
-                + today.get(Calendar.YEAR) + " " + today.get(Calendar.HOUR) + ":" + today.get(Calendar.MINUTE) + " " + today.get(Calendar.AM_PM) + ") "
+                + today.get(Calendar.YEAR) + " " + hour + ":" + minute + " " + amPM + ") "
                 + name + ": ";
     }
 }

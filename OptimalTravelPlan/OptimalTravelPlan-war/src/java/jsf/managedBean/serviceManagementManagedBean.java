@@ -19,13 +19,12 @@ import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.primefaces.PrimeFaces;
 import util.enumeration.ServiceType;
 import util.exception.AccountNotFoundException;
 import util.exception.ServiceNotFoundException;
@@ -57,6 +56,7 @@ public class serviceManagementManagedBean implements Serializable {
     private Service selectedService;
     private List<ServiceType> allServiceTypes;
     private ServiceType selectedServiceType;
+    private Business businessToView;
 
     public serviceManagementManagedBean() {
         allServiceTypes = new ArrayList<>();
@@ -82,10 +82,17 @@ public class serviceManagementManagedBean implements Serializable {
             }
         }
 
+        businessToView = new Business();
         this.allCountries = countrySessionBeanLocal.retrieveAllCountries();
         this.allTags = tagSessionBeanLocal.retrieveAllTags();
         this.tagsSelected = new ArrayList<>();
         this.newService = new Service();
+
+        Boolean addNService = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("addNewService");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("addNewService");
+        if (addNService != null && addNService) {
+            PrimeFaces.current().executeScript("PF('dialogCreateNewService').show();");
+        }
     }
 
     public void refreshServicesList(ActionEvent event) {
@@ -99,12 +106,10 @@ public class serviceManagementManagedBean implements Serializable {
     }
 
     public void viewServiceOwner(ActionEvent event) throws IOException {
-        Business business = (Business) event.getComponent().getAttributes().get("businessToView");
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("businessToView", business);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("BusinessManagement.xhtml");
+        this.businessToView = (Business) event.getComponent().getAttributes().get("businessToView");
     }
 
-    public void toggleServiceActive(ActionEvent event) {
+    public void toggleServiceActive(ActionEvent event) throws ServiceNotFoundException {
         Service service = (Service) event.getComponent().getAttributes().get("serviceToToggle");
         Boolean temp = service.getActive();
         if (temp) {
@@ -112,6 +117,7 @@ public class serviceManagementManagedBean implements Serializable {
         } else {
             service.setActive(true);
         }
+        serviceSessionBeanLocal.toggleServiceActivation(service.getServiceId());
     }
 
     public void createNewNonBusinessService(ActionEvent event) {
@@ -214,6 +220,14 @@ public class serviceManagementManagedBean implements Serializable {
 
     public Boolean getRequireVac() {
         return requireVac;
+    }
+
+    public Business getBusinessToView() {
+        return businessToView;
+    }
+
+    public void setBusinessToView(Business businessToView) {
+        this.businessToView = businessToView;
     }
 
     public void setRequireVac(Boolean requireVac) {

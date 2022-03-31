@@ -16,7 +16,7 @@
                 <p:messages id="messages" redisplay="false" closable="true" />
 
                 <p:dataTable id="dataTableAllStaffs" widgetVar="dataTableAllStaffs" value="#{staffManagementManagedBean.staffs}" var="staff" rowKey="#{staff.staffId}" rowIndexVar="row"
-                             filteredValue="#{staffManagementManagedBean.filteredstaff}"
+                             filteredValue="#{staffManagementManagedBean.filteredStaffs}"
                              rows="10" paginator="true" 
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
                              rowsPerPageTemplate="10,20,50">

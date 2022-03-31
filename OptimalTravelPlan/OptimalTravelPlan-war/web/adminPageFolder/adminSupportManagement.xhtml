@@ -162,8 +162,7 @@
                                 <p:commandButton value="Add message" update="@form formAllSupportRequests formViewSupportRequest formUpdateSupportRequest" 
                                                  actionListener="#{adminSupportManagedBean.updateComment}" oncomplete="PF('dialogUpdateSupportRequest').show();" />
                                 <p:commandButton actionListener="#{adminSupportManagedBean.toggleSupportRequestResolved}" icon="pi pi-power-off" title="active" value="Toggle active"
-                                                 style="float: right;" update="@form formAllSupportRequests formViewSupportRequest formUpdateSupportRequest" 
-                                                 oncomplete="PF('dialogUpdateSupportRequest').show();" />
+                                                 style="float: right;" update="@form formAllSupportRequests formViewSupportRequest formUpdateSupportRequest" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>

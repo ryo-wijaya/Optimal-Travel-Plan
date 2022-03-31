@@ -58,7 +58,7 @@
                     <p:column headerText="Business Owner" sortBy="#{service.business}" filterBy="#{service.business}" filterMatchMode="contains">
                         <h:outputText value="#{service.business}" />
                         <p:commandButton actionListener="#{serviceManagementManagedBean.viewServiceOwner}" icon="pi pi-search-plus" title="business" value="View Business"
-                                         style="float: right;">
+                                         style="float: right;" update="dialogViewBusiness" oncomplete="PF('dialogViewBusiness').show()" >
                             <f:attribute name="businessToView" value="#{service.business}" />
                         </p:commandButton>
                     </p:column>
@@ -73,6 +73,58 @@
                 </p:dataTable>
             </h:form>
 
+            <p:dialog id="dialogViewBusiness" widgetVar="dialogViewBusiness" header="View Business" closable="true">
+                <p:panelGrid>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Business Id: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{serviceManagementManagedBean.businessToView.businessId}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Business Name: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{serviceManagementManagedBean.businessToView.companyName}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Company Email: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{serviceManagementManagedBean.businessToView.businessEmail}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Company Contact: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{serviceManagementManagedBean.businessToView.companyNumber}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Headquarter Address: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{serviceManagementManagedBean.businessToView.headquarterAddress}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Account enabled: " style="font-weight: bold;" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{serviceManagementManagedBean.businessToView.enabled}" />
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:dialog>
 
             <h:form id="formCreateNewService">
                 <p:dialog id="dialogCreateNewService" widgetVar="dialogCreateNewService" header="Create New Service" closable="true">

@@ -8,24 +8,23 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
- 
-        <p:button style="
-                  top:30%;
-                  left:25%;
-                  width:20%;
-                  height:40%;
-                  position:absolute;
-                  "
-                  value="Admin" outcome="adminManagement.xhtml" />
-        <p:button style="
-                  top:30%;
-                  left:55%;
-                  width:20%;
-                  height:40%;
-                  position:absolute;
-                  "
-                  value="Business" outcome="businessManagement.xhtml" />
-
+        <div style="text-align: center; padding: 20px;">
+            <p:button style="
+                      width:300px;
+                      height:200px;
+                      "
+                      value="Admin" outcome="adminManagement.xhtml" />
+            <p:button style="
+                      width:300px;
+                      height:200px;
+                      "
+                      value="Business" outcome="businessManagement.xhtml" />
+            <p:button style="
+                      width:300px;
+                      height:200px;
+                      "
+                      value="Customer" outcome="customerManagement.xhtml" />
+        </div>
     </ui:define>
 
 </ui:composition>
