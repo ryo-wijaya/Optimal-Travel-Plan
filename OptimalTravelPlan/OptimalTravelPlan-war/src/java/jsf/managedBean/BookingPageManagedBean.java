@@ -15,6 +15,7 @@ import entity.Business;
 import entity.Customer;
 import entity.Review;
 import entity.Service;
+import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
@@ -108,9 +109,10 @@ public class BookingPageManagedBean implements Serializable {
     public void filterReview() {
         reviews.clear();
         reviews.add(selectedReview);
+        
     }
 
-    public void filterBooking() {
+    public void filterBooking() throws IOException {
         bookings.clear();
         bookings.add(selectedBooking);
     }
