@@ -15,8 +15,6 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -138,86 +136,50 @@ public class adminSupportManagedBean implements Serializable {
         this.booking = bookingSessionBeanLocal.retrieveBookingBySupportRequest((Long) event.getComponent().getAttributes().get("serviceId"));
     }
 
-    /**
-     * @return the supportRequests
-     */
     public List<SupportRequest> getSupportRequests() {
         return supportRequests;
     }
 
-    /**
-     * @param supportRequests the supportRequests to set
-     */
     public void setSupportRequests(List<SupportRequest> supportRequests) {
         this.supportRequests = supportRequests;
     }
 
-    /**
-     * @return the filteredSupportRequests
-     */
     public List<SupportRequest> getFilteredSupportRequests() {
         return filteredSupportRequests;
     }
 
-    /**
-     * @param filteredSupportRequests the filteredSupportRequests to set
-     */
     public void setFilteredSupportRequests(List<SupportRequest> filteredSupportRequests) {
         this.filteredSupportRequests = filteredSupportRequests;
     }
 
-    /**
-     * @return the unresolvedSupportRequests
-     */
     public List<SupportRequest> getUnresolvedSupportRequests() {
         return unresolvedSupportRequests;
     }
 
-    /**
-     * @param unresolvedSupportRequests the unresolvedSupportRequests to set
-     */
     public void setUnresolvedSupportRequests(List<SupportRequest> unresolvedSupportRequests) {
         this.unresolvedSupportRequests = unresolvedSupportRequests;
     }
 
-    /**
-     * @return the supportRequestToView
-     */
     public SupportRequest getSupportRequestToView() {
         return supportRequestToView;
     }
 
-    /**
-     * @param supportRequestToView the supportRequestToView to set
-     */
     public void setSupportRequestToView(SupportRequest supportRequestToView) {
         this.supportRequestToView = supportRequestToView;
     }
 
-    /**
-     * @return the supportRequestToUpdate
-     */
     public SupportRequest getSupportRequestToUpdate() {
         return supportRequestToUpdate;
     }
 
-    /**
-     * @param supportRequestToUpdate the supportRequestToUpdate to set
-     */
     public void setSupportRequestToUpdate(SupportRequest supportRequestToUpdate) {
         this.supportRequestToUpdate = supportRequestToUpdate;
     }
 
-    /**
-     * @return the newComment
-     */
     public String getNewComment() {
         return newComment;
     }
 
-    /**
-     * @param newComment the newComment to set
-     */
     public void setNewComment(String newComment) {
         this.newComment = newComment;
     }
@@ -228,5 +190,13 @@ public class adminSupportManagedBean implements Serializable {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
+    }
+
+    public Staff getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Staff admin) {
+        this.admin = admin;
     }
 }

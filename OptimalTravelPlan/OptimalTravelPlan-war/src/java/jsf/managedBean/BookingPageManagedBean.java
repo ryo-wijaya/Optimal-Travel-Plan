@@ -9,35 +9,43 @@ import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.EmailSessionBeanLocal;
 import ejb.session.stateless.ReviewSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
-import entity.Account;
 import entity.Booking;
 import entity.Business;
 import entity.Customer;
 import entity.Review;
 import entity.Service;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.sql.DataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperRunManager;
 import util.exception.BookingNotFoundException;
 import util.exception.ReviewNotFoundException;
-import util.exception.ServiceNotFoundException;
 import util.exception.UpdateBookingException;
 
-/**
- *
- * @author ryo20
- */
 @Named(value = "bookingPageManagedBean")
 @ViewScoped
 public class BookingPageManagedBean implements Serializable {
+
+    @Resource(name = "optimalTravelPlanDataSource")
+    private DataSource optimalTravelPlanDataSource;
 
     @EJB
     private EmailSessionBeanLocal emailSessionBeanLocal;
@@ -62,12 +70,14 @@ public class BookingPageManagedBean implements Serializable {
     private Business business;
     private Service serviceMessage;
     private List<Booking> filteredBookings;
-    
+    private Date bookingSearchStartDate;
+    private Date bookingSearchEndDate;
+
     //Somehow if this is not done attributes of selectReview will be null
     private String selectedReviewContent;
     private Integer selectedReviewRating;
     private String selectedReviewReply;
-    
+
     // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
     private Date startDate;
     private Date endDate;
@@ -84,23 +94,56 @@ public class BookingPageManagedBean implements Serializable {
         endDate = new Date();
     }
 
+    public void generateReport(ActionEvent event) {
+
+        try {
+            String input = "initial value";
+            HashMap parameters = new HashMap();
+            try {
+                Calendar startingDateToSearch = Calendar.getInstance();
+                startingDateToSearch.setTime(bookingSearchStartDate);
+
+                Calendar endingDateToSearch = Calendar.getInstance();
+                endingDateToSearch.setTime(bookingSearchEndDate);
+
+                SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+                String startDateToSearch = month_date.format(bookingSearchStartDate);
+                String endDateToSearch = month_date.format(bookingSearchEndDate);
+
+                input = "Booking from " + startingDateToSearch.get(Calendar.DAY_OF_MONTH) + " " + startDateToSearch + " to "
+                        + endingDateToSearch.get(Calendar.DAY_OF_MONTH) + " " + endDateToSearch;
+            } catch (Exception ex) {
+                input = "Error in date";
+            }
+
+            parameters.put("date", input);
+            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperHeadache/recordreport.jasper");
+            OutputStream outputStream = FacesContext.getCurrentInstance().getExternalContext().getResponseOutputStream();
+
+            JasperRunManager.runReportToPdfStream(reportStream, outputStream, parameters, optimalTravelPlanDataSource.getConnection());
+
+        } catch (IOException | JRException | SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 
     public void reviewReply() {
         try {
-            
+
             if (selectedReview.getBusinessReply().equals(selectedReviewReply)) {
                 // No changes
                 System.out.println("no changes");
                 return;
             }
-                System.out.println("yes changes");
+            System.out.println("yes changes");
             selectedReview.setBusinessReply(selectedReviewReply);
             reviewSessionBeanLocal.updateReview(selectedReview);
         } catch (ReviewNotFoundException ex) {
             System.out.println("Error with review reply");
         }
     }
-    
+
     public void updatePage() {
         bookings = bookingSessionBeanLocal.retrieveBookingsByBusinessId(business.getAccountId());
         reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
@@ -109,7 +152,7 @@ public class BookingPageManagedBean implements Serializable {
     public void filterReview() {
         reviews.clear();
         reviews.add(selectedReview);
-        
+
     }
 
     public void filterBooking() throws IOException {
@@ -130,8 +173,7 @@ public class BookingPageManagedBean implements Serializable {
             reviews.add(booking.getReview());
         }
     }
-    */
-
+     */
     public void sendEmail(ActionEvent event) {
         if (!emailMessage.isEmpty()) {
             String message = "Dear " + selectedCustomer.getName() + ",\n\n"
@@ -152,30 +194,30 @@ public class BookingPageManagedBean implements Serializable {
         this.selectedCustomer = (Customer) event.getComponent().getAttributes().get("customerToView");
         this.serviceMessage = (Service) event.getComponent().getAttributes().get("serviceForMessage");
     }
-    
+
     public void editBooking() {
         System.out.println("Start edit method");
         System.out.println("selected booking" + selectedBooking.toString());
-        
+
         if (selectedBooking.getStartDate().equals(startDate) && selectedBooking.getEndDate().equals(endDate)) {
             // No change made!
             return;
         }
-        
+
         // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
         selectedBooking.setStartDate(startDate);
         selectedBooking.setEndDate(endDate);
         try {
             bookingSessionBeanLocal.updateBooking(selectedBooking);
-            
+
             Customer customer = selectedBooking.getTravelItinerary().getCustomer();
-            
+
             emailMessage = "The date of your booking has been changed to a start date of: " + startDate.toString() + " and an end date of: " + endDate.toString();
-            
+
             String message = "Dear " + customer.getName() + ",\n\n"
                     + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
                     + emailMessage + "\n\nThank you for using our booking services!\n\nOptimal Travel Plan\n\nThis is a system generated message. Please do not reply!";
-            
+
             emailSessionBeanLocal.emailCheckoutNotificationSync(message, customer.getEmail());
         } catch (BookingNotFoundException | UpdateBookingException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Start date cannot exceed end date!", null));
@@ -184,7 +226,7 @@ public class BookingPageManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to send email - coz no email address", null));
         }
     }
-    
+
     public void debugMethod() {
         System.out.println("Start debug method");
         System.out.println("selected review content" + selectedReviewContent);
@@ -213,8 +255,6 @@ public class BookingPageManagedBean implements Serializable {
     public void setSelectedReviewReply(String selectedReviewReply) {
         this.selectedReviewReply = selectedReviewReply;
     }
-    
-    
 
     public List<Booking> getFilteredBookings() {
         return filteredBookings;
@@ -302,6 +342,38 @@ public class BookingPageManagedBean implements Serializable {
 
     public void setSelectedCustomer(Customer selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
+    }
+
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
+    public Service getServiceMessage() {
+        return serviceMessage;
+    }
+
+    public void setServiceMessage(Service serviceMessage) {
+        this.serviceMessage = serviceMessage;
+    }
+
+    public Date getBookingSearchStartDate() {
+        return bookingSearchStartDate;
+    }
+
+    public void setBookingSearchStartDate(Date bookingSearchStartDate) {
+        this.bookingSearchStartDate = bookingSearchStartDate;
+    }
+
+    public Date getBookingSearchEndDate() {
+        return bookingSearchEndDate;
+    }
+
+    public void setBookingSearchEndDate(Date bookingSearchEndDate) {
+        this.bookingSearchEndDate = bookingSearchEndDate;
     }
 
 }
