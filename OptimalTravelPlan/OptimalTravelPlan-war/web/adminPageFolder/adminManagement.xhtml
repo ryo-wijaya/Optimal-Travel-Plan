@@ -37,9 +37,6 @@
                     <p:column headerText="Staff name" sortBy="#{staff.name}" filterBy="#{staff.name}" filterMatchMode="contains">
                         <h:outputText value="#{staff.name}" />
                     </p:column>
-                    <p:column headerText="Employee Role" sortBy="#{staff.employeeRole}" filterBy="#{staff.employeeRole}" filterMatchMode="contains">
-                        <h:outputText value="#{staff.employeeRole}" />
-                    </p:column>  
                     <p:column headerText="Username" sortBy="#{staff.username}" filterBy="#{staff.username}" filterMatchMode="contains">
                         <h:outputText value="#{staff.username}" />
                     </p:column>  
@@ -101,23 +98,6 @@
                             </p:column>
                             <p:column>
                                 <p:message for="password" />
-                            </p:column>
-                        </p:row>
-                        
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="employeeRole" value="Employee Role: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:selectOneMenu id="employeeRole" value="#{staffManagementManagedBean.employeeRole}">
-                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
-                                    <f:selectItems value="#{staffManagementManagedBean.employeeRoles}" 
-                                                   var="employeeRole" itemValue="#{employeeRole}"
-                                                   itemLabel="#{employeeRole}" />
-                                </p:selectOneMenu>
-                            </p:column>
-                            <p:column>
-                                <p:message for="employeeRole" />
                             </p:column>
                         </p:row>
                         
