@@ -40,9 +40,6 @@
                     <p:column headerText="Username" sortBy="#{staff.username}" filterBy="#{staff.username}" filterMatchMode="contains">
                         <h:outputText value="#{staff.username}" />
                     </p:column>  
-                    <p:column headerText="Password" sortBy="#{staff.password}" filterBy="#{staff.password}" filterMatchMode="contains">
-                        <h:outputText value="#{staff.password}" />
-                    </p:column>  
                     <p:column headerText="Action" >
                         <p:commandButton actionListener="#{staffManagementManagedBean.doUpdateStaff}" update="formUpdateStaff dataTableAllStaffs" oncomplete="PF('dialogUpdateStaff').show()" 
                                          value="Update Staff Name" icon="ui-icon-pencil" title="Update">

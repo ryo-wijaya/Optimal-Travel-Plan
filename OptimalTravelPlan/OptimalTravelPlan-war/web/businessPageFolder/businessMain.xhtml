@@ -40,7 +40,7 @@
 
 
 
-        <p:panel>
+        <p:panel style="width: 300px">
             <h:form id="menuForm">
                 <p:menu>
                     <p:menuitem style="float: left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
@@ -49,6 +49,19 @@
                 </p:menu>
             </h:form>
         </p:panel>
+
+        <div style="width: 200; text-align: right">
+            <h:form>
+                <p:messages id="messages" redisplay="false" closable="true" />
+                <h:outputLabel for="startDate" value="Start Date of Bookings " />
+                <p:datePicker id="startDate" value="#{bookingPageManagedBean.bookingSearchStartDate}" required="true" requiredMessage="Start Date is required for Report!"
+                              showTime="false" pattern="dd-MM-yyyy" />
+                <h:outputLabel for="startDate" value="End Date of Bookings " />
+                <p:datePicker id="endDate" value="#{bookingPageManagedBean.bookingSearchEndDate}" required="true" requiredMessage="Start Date is required for Report!"
+                              showTime="false" pattern="dd-MM-yyyy" />
+                <p:commandButton actionListener="#{bookingPageManagedBean.generateReport}" value="Generate Report" icon="pi pi-paperclip" ajax="false" />
+            </h:form>
+        </div>
 
 
         <div id="reviews" style="width: 39.5%; float: right; text-align: center">
@@ -85,7 +98,7 @@
 
                         </p:commandButton>
                     </p:column>
-                    
+
                     <p:column headerText="View Booking">
                         <p:commandButton update=":bookingForm" value="View" icon="pi pi-search-plus" 
                                          actionListener="#{bookingPageManagedBean.filterBooking}" ajax="false">
