@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Booking;
 import entity.Service;
+import entity.SupportRequest;
 import entity.TravelItinerary;
 import java.util.List;
 import javax.ejb.EJB;
@@ -20,12 +21,16 @@ import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
 import util.exception.ServiceNotFoundException;
+import util.exception.SupportRequestNotFoundException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateBookingException;
 
 @Stateless
 public class BookingSessionBean implements BookingSessionBeanLocal {
+
+    @EJB
+    private SupportRequestSessionBeanLocal supportRequestSessionBeanLocal;
 
     @EJB
     private TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal;
@@ -67,6 +72,14 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     }
 
     @Override
+    public Booking retrieveBookingBySupportRequest(Long supportRequestId) throws SupportRequestNotFoundException {
+        SupportRequest sq = supportRequestSessionBeanLocal.retrieveSupportRequestById(supportRequestId);
+        Query query = em.createQuery("SELECT b FROM Booking b WHERE b.supportRequest = :supportReq");
+        query.setParameter("supportReq", sq);
+        return (Booking) query.getSingleResult();
+    }
+
+    @Override
     public Booking retrieveBookingById(Long bookingId) throws BookingNotFoundException {
         Booking booking = em.find(Booking.class, bookingId);
         if (booking != null) {
@@ -90,7 +103,7 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
         query.setParameter("serviceId", serviceId);
         return query.getResultList();
     }
-    
+
     @Override
     public List<Booking> retrieveBookingsByBusinessId(Long businessId) {
         Query query = em.createQuery("SELECT b FROM Service s JOIN s.bookings b where s.business.accountId = :businessId");
@@ -110,16 +123,20 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
         em.remove(booking);
         em.flush();
     }
-    
+
     @Override
     public void updateBooking(Booking booking) throws BookingNotFoundException, UpdateBookingException {
         Booking bookingToUpdate = retrieveBookingById(booking.getBookingId());
-        
+
         if (booking.getStartDate().after(booking.getEndDate())) {
             throw new UpdateBookingException();
         }
-        
+
         bookingToUpdate.setStartDate(booking.getStartDate());
         bookingToUpdate.setEndDate(booking.getEndDate());
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 }

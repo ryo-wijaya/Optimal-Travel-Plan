@@ -31,6 +31,8 @@ public interface SupportRequestSessionBeanLocal {
 
     public void resolveSupportRequest(Long supportRequestId) throws SupportRequestNotFoundException, ResolveSupportRequestException;
 
-    public void updateSupportRequestDetails(Long supportRequestId, String comments) throws SupportRequestNotFoundException;
+    public SupportRequest updateSupportRequestDetails(Long supportRequestId, Long AccountId, String comments) throws SupportRequestNotFoundException;
+
+    public String getFormattedComment(String name);
     
 }

@@ -153,6 +153,10 @@ public class serviceManagementManagedBean implements Serializable {
             Long s = serviceSessionBeanLocal.createNewService(newService, loggedInAccount.getAccountId(), tagsSelected, selectedCountry);
             newService.setServiceId(s);
             this.services.add(newService);
+            newService = new Service();
+            selectedCountry = null;
+            tagsSelected = null;
+            requireVac = null;
 
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedService", newService);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewServiceRate", true);
@@ -172,9 +176,21 @@ public class serviceManagementManagedBean implements Serializable {
         }
     }
 
-    public void editService() {
+    public void doUpdateService(ActionEvent event) {
+        this.selectedService = (Service) event.getComponent().getAttributes().get("serviceToUpdate");
+        this.requireVac = selectedService.getRequireVaccination();
+        this.selectedCountry = selectedService.getCountry().getCountryId();
+        this.tagsSelected = new ArrayList<>();
+        for (Tag t : selectedService.getTags()) {
+            tagsSelected.add(t.getTagId());
+        }
+        this.selectedServiceType = selectedService.getServiceType();
+    }
+
+    public void updateService(ActionEvent event) {
         try {
             serviceSessionBeanLocal.updateService(selectedService);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Service Updated", null));
         } catch (AccountNotFoundException | ServiceNotFoundException | UpdateServiceException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Update Values!", null));
         }

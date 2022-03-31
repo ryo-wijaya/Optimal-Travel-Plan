@@ -49,10 +49,14 @@
                         <h:outputText value="#{serviceRate.chargeType}" />
                     </p:column>
                     <p:column headerText="Starts on" sortBy="#{serviceRate.startDate}" filterBy="#{serviceRate.startDate}" filterMatchMode="contains">
-                        <h:outputText value="#{serviceRate.startDate}" />
+                        <h:outputText value="#{serviceRate.startDate}" >
+                            <f:convertDateTime pattern="dd.MM.yyyy" />
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="Ends on" sortBy="#{serviceRate.endDate}" filterBy="#{serviceRate.endDate}" filterMatchMode="contains">
-                        <h:outputText value="#{serviceRate.endDate}" />
+                        <h:outputText value="#{serviceRate.endDate}" >
+                            <f:convertDateTime pattern="dd.MM.yyyy" />
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="Price" sortBy="#{serviceRate.price}" filterBy="#{serviceRate.price}" filterMatchMode="contains">
                         <h:outputText value="#{serviceRate.price}" />

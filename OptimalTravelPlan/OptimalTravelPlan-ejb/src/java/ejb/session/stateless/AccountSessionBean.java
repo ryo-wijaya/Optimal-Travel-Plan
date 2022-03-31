@@ -54,7 +54,8 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
         }
     }
 
-    private Account retrieveAccountById(Long accountId) throws AccountNotFoundException {
+    @Override
+    public Account retrieveAccountById(Long accountId) throws AccountNotFoundException {
         Account account = em.find(Account.class, accountId);
         if (account != null) {
             return account;

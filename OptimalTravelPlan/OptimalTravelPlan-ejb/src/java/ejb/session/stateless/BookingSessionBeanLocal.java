@@ -12,6 +12,7 @@ import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
+import util.exception.SupportRequestNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateBookingException;
 
@@ -35,5 +36,7 @@ public interface BookingSessionBeanLocal {
     public List<Booking> retrieveBookingsByBusinessId(Long businessId);
 
     public void updateBooking(Booking booking) throws BookingNotFoundException, UpdateBookingException;
+
+    public Booking retrieveBookingBySupportRequest(Long supportRequestId) throws SupportRequestNotFoundException;
     
 }

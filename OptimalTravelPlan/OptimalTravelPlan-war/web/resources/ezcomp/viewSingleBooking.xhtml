@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <cc:interface>
+    </cc:interface>
+    <cc:implementation>
+        <h:form id="formViewBooking">
+            <p:dialog id="dialogViewBooking" widgetVar="dialogViewBooking" header="View Booking" closable="true">
+                <p:panelGrid>
+                    
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Booking ID: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{singleBookingManagedBean.booking.bookingId}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Service: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{singleBookingManagedBean.booking.service.serviceName}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Start Date: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{singleBookingManagedBean.booking.startDate}" >
+                                <f:convertDateTime dateStyle="full" pattern="yyyy.MM.dd 'at' HH:mm" />
+                            </h:outputText>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="End Date " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{singleBookingManagedBean.booking.endDate}" >
+                                <f:convertDateTime dateStyle="full" pattern="yyyy.MM.dd 'at' HH:mm" />
+                            </h:outputText>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Customer: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{singleBookingManagedBean.booking.travelItinerary.customer.name}" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+    </cc:implementation>
+</html>

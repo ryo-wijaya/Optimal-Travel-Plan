@@ -5,15 +5,22 @@
  */
 package ejb.session.stateless;
 
+import entity.Account;
 import entity.Booking;
+import entity.Business;
+import entity.Staff;
 import entity.SupportRequest;
+import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AccountNotFoundException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateSupportRequestException;
@@ -23,6 +30,9 @@ import util.exception.UnknownPersistenceException;
 
 @Stateless
 public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal {
+
+    @EJB
+    private AccountSessionBeanLocal accountSessionBeanLocal;
 
     @EJB
     private EmailSessionBeanLocal emailSessionBeanLocal;
@@ -102,8 +112,8 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
         try {
             if (!supportRequest.getResolved()) {
                 supportRequest.setResolved(Boolean.TRUE);
-                emailSessionBeanLocal.emailCheckoutNotificationAsync("Support Request " + supportRequest.getSupportRequestId() + " from Booking ID " + 
-                        supportRequest.getBooking().getBookingId() + " is resolved.", supportRequest.getBooking().getTravelItinerary().getCustomer().getEmail());
+                emailSessionBeanLocal.emailCheckoutNotificationAsync("Support Request " + supportRequest.getSupportRequestId() + " from Booking ID "
+                        + supportRequest.getBooking().getBookingId() + " is resolved.", supportRequest.getBooking().getTravelItinerary().getCustomer().getEmail());
             } else {
                 throw new ResolveSupportRequestException("Support request is already resolved!");
             }
@@ -111,12 +121,46 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
             throw new ResolveSupportRequestException("SupportRequest resolved, email sending failed");
         }
     }
-    
+
     @Override
-    public void updateSupportRequestDetails(Long supportRequestId, String comments) throws SupportRequestNotFoundException {
-        SupportRequest supportRequest = retrieveSupportRequestById(supportRequestId);
-        SupportRequest supportRequestToUpdate = retrieveSupportRequestById(supportRequest.getSupportRequestId());
-        String details = supportRequestToUpdate.getRequestDetails() + "\n";
-        supportRequestToUpdate.setRequestDetails(details + comments);
+    public SupportRequest updateSupportRequestDetails(Long supportRequestId, Long accountId, String comments) throws SupportRequestNotFoundException {
+        Account acc;
+        String name;
+        try {
+            acc = this.accountSessionBeanLocal.retrieveAccountById(accountId);
+            if (acc instanceof Business) {
+                Business bus = (Business) acc;
+                name = bus.getCompanyName();
+            } else {
+                Staff staf = (Staff) acc;
+                name = staf.getName();
+            }
+        } catch (AccountNotFoundException ex) {
+            throw new SupportRequestNotFoundException("Unable to complete request : Hidden error!");
+        }
+
+        SupportRequest supportRequestToUpdate = retrieveSupportRequestById(supportRequestId);
+        
+        String formatDate = getFormattedComment(name);
+        
+        supportRequestToUpdate.setRequestDetails(supportRequestToUpdate.getRequestDetails() + formatDate + comments + "\n");
+        em.flush();
+        return supportRequestToUpdate;
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
+    }
+
+    public void persist1(Object object) {
+        em.persist(object);
+    }
+
+    @Override
+    public String getFormattedComment(String name) {
+        Calendar today = Calendar.getInstance();
+        return "(" + today.get(Calendar.MONTH) + "/" + today.get(Calendar.DAY_OF_MONTH) + "/"
+                + today.get(Calendar.YEAR) + " " + today.get(Calendar.HOUR) + ":" + today.get(Calendar.MINUTE) + " " + today.get(Calendar.AM_PM) + ") "
+                + name + ": ";
     }
 }

@@ -31,5 +31,7 @@ public interface AccountSessionBeanLocal {
     public void changePassword(String oldPassword, String newPassword, Long accountId) throws AccountNotFoundException, ChangePasswordException, PasswordNotAcceptedException;
 
     public String forgetPasswordChange(Long accountId);
+
+    public Account retrieveAccountById(Long accountId) throws AccountNotFoundException;
     
 }

@@ -10,6 +10,7 @@ import ejb.session.stateless.CountrySessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.ServiceRateSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
+import ejb.session.stateless.SupportRequestSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
 import ejb.session.stateless.TravelItinerarySessionBeanLocal;
 import entity.Booking;
@@ -19,12 +20,15 @@ import entity.Customer;
 import entity.Service;
 import entity.ServiceRate;
 import entity.Staff;
+import entity.SupportRequest;
 import entity.Tag;
 import entity.TravelItinerary;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -41,6 +45,7 @@ import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
 import util.exception.CreateNewServiceException;
 import util.exception.CreateNewServiceRateException;
+import util.exception.CreateSupportRequestException;
 import util.exception.PasswordNotAcceptedException;
 import util.exception.ServiceNotFoundException;
 import util.exception.TagAlreadyExistException;
@@ -51,6 +56,9 @@ import util.exception.UnknownPersistenceException;
 @LocalBean
 @Startup
 public class dataInitBean {
+
+    @EJB
+    private SupportRequestSessionBeanLocal supportRequestSessionBeanLocal;
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
@@ -72,6 +80,8 @@ public class dataInitBean {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
+    
+    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -190,8 +200,17 @@ public class dataInitBean {
                 System.out.println("travel Itin booking = " + travelItinerary1.getBookings().size());
                 List<Booking> list = travelItinerary1.getBookings();
                 
+                
+                
+                
+                
                 for (int i = 0; i < list.size(); i++) {
                     Booking booking = list.get(i);
+                    
+                    String dateFormat = supportRequestSessionBeanLocal.getFormattedComment(booking.getTravelItinerary().getCustomer().getName());
+                    SupportRequest supportRequest1 = new SupportRequest(dateFormat + "I am not happy with the world :'(\n", new Date(), booking);
+                    
+                    supportRequestSessionBeanLocal.createNewSupportRequest(supportRequest1, booking.getBookingId());
                     System.out.println("i = " + i + " list[i] = " + booking);
                     System.out.println("booking id = " + booking.getBookingId());
                     System.out.println("booking start = " + booking.getStartDate());
@@ -200,11 +219,7 @@ public class dataInitBean {
                     System.out.println("\n...");
                 }
 
-                Booking booking1 = new Booking(startDate, endDate, null, null);
-                Long book1 = bookingSessionBeanLocal.createBooking(booking1, service1, travel1);
-                em.flush();
-
-            } catch (TagNotFoundException | CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
+            } catch (CreateSupportRequestException | TagNotFoundException | CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
                 for (int i = 0; i < 30; i++) {
                     System.out.println("Error in init bean!" + ex.getMessage());
                 }

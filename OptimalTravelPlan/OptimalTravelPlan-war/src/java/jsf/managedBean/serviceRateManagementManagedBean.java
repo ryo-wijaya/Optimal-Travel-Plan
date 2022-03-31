@@ -108,6 +108,9 @@ public class serviceRateManagementManagedBean implements Serializable {
 
     public void updateServiceRate(ActionEvent event) {
         try {
+            if (serviceRateToUpdate.getEndDate().after(serviceRateToUpdate.getStartDate())) {
+                throw new Exception("End date cannot be before Start date!");
+            }
             ServiceRate t = serviceRateSessionBeanLocal.updateServiceRate(serviceRateToUpdate);
             updateInvalidDates();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Service Rate updated successfully", null));

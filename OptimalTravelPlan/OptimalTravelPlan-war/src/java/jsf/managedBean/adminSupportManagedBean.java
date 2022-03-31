@@ -5,7 +5,10 @@
  */
 package jsf.managedBean;
 
+import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.SupportRequestSessionBeanLocal;
+import entity.Booking;
+import entity.Staff;
 import entity.SupportRequest;
 import java.io.IOException;
 import javax.inject.Named;
@@ -30,77 +33,109 @@ import util.exception.SupportRequestNotFoundException;
 @ViewScoped
 public class adminSupportManagedBean implements Serializable {
 
+    @EJB(name = "BookingSessionBeanLocal")
+    private BookingSessionBeanLocal bookingSessionBeanLocal;
+
     @EJB
     private SupportRequestSessionBeanLocal supportRequestSessionBeanLocal;
 
     private List<SupportRequest> supportRequests;
     private List<SupportRequest> filteredSupportRequests;
     private List<SupportRequest> unresolvedSupportRequests;
-    
+
     private SupportRequest supportRequestToView;
-    
+
     private SupportRequest supportRequestToUpdate;
     private String newComment;
-    
+    private Booking booking;
+
+    private Staff admin;
+
     /**
      * Creates a new instance of adminSupportManagedBean
      */
     public adminSupportManagedBean() {
         supportRequestToView = new SupportRequest();
     }
-    
+
     @PostConstruct
     public void postConstruct() {
-        setSupportRequests(supportRequestSessionBeanLocal.retrieveAllSupportRequests());
-        setUnresolvedSupportRequests(supportRequestSessionBeanLocal.retrieveAllUnresolvedSupportRequests());
+        refreshList();
+        this.admin = (Staff) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInAccount");
     }
-    
+
+    private void refreshList() {
+        setUnresolvedSupportRequests(supportRequestSessionBeanLocal.retrieveAllUnresolvedSupportRequests());
+        setSupportRequests(supportRequestSessionBeanLocal.retrieveAllSupportRequests());
+    }
+
     public void viewSupportRequestService(ActionEvent event) throws IOException {
         SupportRequest selectedSupportRequest = (SupportRequest) event.getComponent().getAttributes().get("supportRequestToViewService");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("servicesToView", selectedSupportRequest.getBooking().getService());
         FacesContext.getCurrentInstance().getExternalContext().redirect("serviceManagement.xhtml");
     }
-    
+
     public void viewSupportRequestCustomer(ActionEvent event) throws IOException {
         SupportRequest selectedSupportRequest = (SupportRequest) event.getComponent().getAttributes().get("supportRequestToViewService");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("servicesToView", selectedSupportRequest.getBooking().getTravelItinerary().getCustomer());
         FacesContext.getCurrentInstance().getExternalContext().redirect("customerManagement.xhtml");
     }
-    
+
     public void viewSupportRequestBusiness(ActionEvent event) throws IOException {
         SupportRequest selectedSupportRequest = (SupportRequest) event.getComponent().getAttributes().get("supportRequestToViewService");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("servicesToView", selectedSupportRequest.getBooking().getService().getBusiness());
         FacesContext.getCurrentInstance().getExternalContext().redirect("businessManagement.xhtml");
     }
-    
+
     public void doUpdateSupportRequest(ActionEvent event) {
-        setSupportRequestToUpdate((SupportRequest) event.getComponent().getAttributes().get("supportRequestToUpdate"));
+        setSupportRequestToUpdate(this.supportRequestToView);
     }
-    
+
+    public void doViewSupportRequest(ActionEvent event) {
+        this.supportRequestToView = (SupportRequest) event.getComponent().getAttributes().get("supportRequestToView");
+    }
+
     public void updateComment(ActionEvent event) {
         try {
-            supportRequestSessionBeanLocal.updateSupportRequestDetails(getSupportRequestToUpdate().getSupportRequestId(), getNewComment());
+            this.supportRequestToUpdate = supportRequestSessionBeanLocal.updateSupportRequestDetails(getSupportRequestToUpdate().getSupportRequestId(), this.admin.getAccountId(), newComment);
+            newComment = "";
+            refreshList();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Comment updated!", null));
         } catch (SupportRequestNotFoundException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "An error has occurred while updating comment: " + ex.getMessage(), null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while updating comment: " + ex.getMessage(), null));
         }
     }
-    
+
     public void resolveSupportRequest(ActionEvent event) {
         try {
             supportRequestSessionBeanLocal.resolveSupportRequest(getSupportRequestToUpdate().getSupportRequestId());
+            refreshList();
         } catch (SupportRequestNotFoundException | ResolveSupportRequestException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "An error has occurred while resolving request: " + ex.getMessage(), null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while resolving request: " + ex.getMessage(), null));
         }
     }
-    
+
     public void toggleSupportRequestResolved(ActionEvent event) {
-        SupportRequest supportRequest = (SupportRequest) event.getComponent().getAttributes().get("supportRequestToToggle");
-        Boolean temp = supportRequest.getResolved();
-        if (temp) {
-            supportRequest.setResolved(false);
-        } else {
-            supportRequest.setResolved(true);
+        try {
+            Boolean temp = supportRequestToUpdate.getResolved();
+            if (temp) {
+                supportRequestToUpdate.setResolved(false);
+            } else {
+                supportRequestToUpdate.setResolved(true);
+            }
+            String tes = newComment;
+            newComment = "";
+            this.supportRequestToUpdate = supportRequestSessionBeanLocal.updateSupportRequestDetails(getSupportRequestToUpdate().getSupportRequestId(), this.admin.getAccountId(), tes);
+            supportRequestSessionBeanLocal.resolveSupportRequest(supportRequestToUpdate.getSupportRequestId());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marked issue resolved!", null));
+            refreshList();
+        } catch (SupportRequestNotFoundException | ResolveSupportRequestException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while resolving request: " + ex.getMessage(), null));
         }
+    }
+
+    public void retrieveBookingByRequest(ActionEvent event) throws SupportRequestNotFoundException {
+        this.booking = bookingSessionBeanLocal.retrieveBookingBySupportRequest((Long) event.getComponent().getAttributes().get("serviceId"));
     }
 
     /**
@@ -186,6 +221,12 @@ public class adminSupportManagedBean implements Serializable {
     public void setNewComment(String newComment) {
         this.newComment = newComment;
     }
-    
-    
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
 }
