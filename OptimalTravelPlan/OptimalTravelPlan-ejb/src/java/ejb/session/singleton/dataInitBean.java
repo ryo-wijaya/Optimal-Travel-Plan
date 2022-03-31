@@ -8,15 +8,21 @@ package ejb.session.singleton;
 import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.CountrySessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
+import ejb.session.stateless.PaymentAccountSessionBeanLocal;
+import ejb.session.stateless.ReviewSessionBeanLocal;
 import ejb.session.stateless.ServiceRateSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import ejb.session.stateless.SupportRequestSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
+import ejb.session.stateless.TransactionSessionBeanLocal;
 import ejb.session.stateless.TravelItinerarySessionBeanLocal;
 import entity.Booking;
 import entity.Business;
 import entity.Country;
 import entity.Customer;
+import entity.PaymentAccount;
+import entity.PaymentTransaction;
+import entity.Review;
 import entity.Service;
 import entity.ServiceRate;
 import entity.Staff;
@@ -38,9 +44,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.ChargeType;
 import util.enumeration.EmployeeRole;
+import util.enumeration.PaymentType;
 import util.enumeration.RateType;
 import util.enumeration.ServiceType;
 import util.exception.AccountNotFoundException;
+import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
 import util.exception.CreateNewServiceException;
@@ -56,6 +64,15 @@ import util.exception.UnknownPersistenceException;
 @LocalBean
 @Startup
 public class dataInitBean {
+
+    @EJB
+    private PaymentAccountSessionBeanLocal paymentAccountSessionBeanLocal;
+
+    @EJB
+    private TransactionSessionBeanLocal transactionSessionBeanLocal;
+
+    @EJB
+    private ReviewSessionBeanLocal reviewSessionBeanLocal;
 
     @EJB
     private SupportRequestSessionBeanLocal supportRequestSessionBeanLocal;
@@ -80,6 +97,12 @@ public class dataInitBean {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
+    
+    
+    
+    
+    
+    
     
     
 
@@ -202,7 +225,9 @@ public class dataInitBean {
                 
                 
                 
-                
+
+                PaymentAccount account = new PaymentAccount("accoutNumber", new Date(), "123", PaymentType.VISA, true);
+                paymentAccountSessionBeanLocal.createNewPaymentAccount(account);
                 
                 for (int i = 0; i < list.size(); i++) {
                     Booking booking = list.get(i);
@@ -210,7 +235,15 @@ public class dataInitBean {
                     String dateFormat = supportRequestSessionBeanLocal.getFormattedComment(booking.getTravelItinerary().getCustomer().getName());
                     SupportRequest supportRequest1 = new SupportRequest(dateFormat + "I am not happy with the world :'(\n", new Date(), booking);
                     
+                    Review review1 = new Review(5, "This is the review content");
+                    
+                    PaymentTransaction transaction = new PaymentTransaction(account, endDate, "transaction number", BigDecimal.TEN);
+                    
+                    reviewSessionBeanLocal.createNewReview(booking.getBookingId(), review1);
+                    transactionSessionBeanLocal.createNewPaymentTransaction(transaction, booking.getBookingId());
+                    
                     supportRequestSessionBeanLocal.createNewSupportRequest(supportRequest1, booking.getBookingId());
+                    
                     System.out.println("i = " + i + " list[i] = " + booking);
                     System.out.println("booking id = " + booking.getBookingId());
                     System.out.println("booking start = " + booking.getStartDate());
@@ -219,7 +252,7 @@ public class dataInitBean {
                     System.out.println("\n...");
                 }
 
-            } catch (CreateSupportRequestException | TagNotFoundException | CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
+            } catch (BookingNotFoundException | CreateSupportRequestException | TagNotFoundException | CreateNewBookingException | AccountNotFoundException | TagAlreadyExistException | UnknownPersistenceException | ConstraintViolationException | CreateNewServiceException | CreateNewServiceRateException | PasswordNotAcceptedException ex) {
                 for (int i = 0; i < 30; i++) {
                     System.out.println("Error in init bean!" + ex.getMessage());
                 }
