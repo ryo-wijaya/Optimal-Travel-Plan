@@ -14,14 +14,18 @@ import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.PrimeFaces;
+import util.enumeration.EmployeeRole;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteStaffException;
+import util.exception.PasswordNotAcceptedException;
 import util.exception.StaffAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateStaffException;
@@ -44,9 +48,18 @@ public class adminManagementManagedBean implements Serializable {
     private Boolean filtered;
     private Staff newStaff;
     private Staff staffToUpdate;
+    
+    private List<EmployeeRole> employeeRoles;
+    private String username;
+    private String password;
+    private String name;
+    private EmployeeRole employeeRole;
 
     public adminManagementManagedBean() {
         newStaff = new Staff();
+        employeeRoles = new ArrayList<EmployeeRole>();
+        employeeRoles.add(EmployeeRole.ADMINISTRATOR);
+        employeeRoles.add(EmployeeRole.CUSTOMER_SERVICE);
     }
 
     @PostConstruct
@@ -72,10 +85,18 @@ public class adminManagementManagedBean implements Serializable {
     }
 
     public void createNewStaff(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Staff t = staffSessionBeanLocal.retrieveStaffById(accountSessionBeanLocal.createNewAccount(getNewStaff()));
-        staffs.add(t);
-        newStaff = new Staff();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New staff created successfully (Staff ID: " + t.getStaffId() + ")", null));
+        try {
+            //Staff t = staffSessionBeanLocal.retrieveStaffById(accountSessionBeanLocal.createNewAccount(getNewStaff()));
+            //staffs.add(t);
+            //newStaff = new Staff();
+            
+            Staff newStaff = new Staff(username, password, name, employeeRole);
+            accountSessionBeanLocal.createNewAccount(newStaff);
+            
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New staff created successfully (Staff ID: " + newStaff.getStaffId() + ")", null));
+        } catch (PasswordNotAcceptedException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid Password!", null));
+        }
     }
 
     public void doUpdateStaff(ActionEvent event) {
@@ -136,5 +157,75 @@ public class adminManagementManagedBean implements Serializable {
 
     public void setFiltered(Boolean filtered) {
         this.filtered = filtered;
+    }
+
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the employeeRole
+     */
+    public EmployeeRole getEmployeeRole() {
+        return employeeRole;
+    }
+
+    /**
+     * @param employeeRole the employeeRole to set
+     */
+    public void setEmployeeRole(EmployeeRole employeeRole) {
+        this.employeeRole = employeeRole;
+    }
+
+    /**
+     * @return the employeeRoles
+     */
+    public List<EmployeeRole> getEmployeeRoles() {
+        return employeeRoles;
+    }
+
+    /**
+     * @param employeeRoles the employeeRoles to set
+     */
+    public void setEmployeeRoles(List<EmployeeRole> employeeRoles) {
+        this.employeeRoles = employeeRoles;
     }
 }
