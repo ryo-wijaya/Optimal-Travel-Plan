@@ -146,7 +146,7 @@
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" 
+                <p:dataTable id="bookingsTable" value="#{bookingPageManagedBean.bookings}" widgetVar="bookingsTable"
                              var="booking" tableStyle="font-size:15px" rows="10" paginator="true"
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="10,20,50" rowKey="#{booking.bookingId}" rowIndexVar="row"
@@ -211,8 +211,8 @@
 
                     <p:column headerText="View Review">
                         <p:commandButton update=":reviewForm" value="View" icon="pi pi-search-plus" 
-                                         actionListener="#{bookingPageManagedBean.filterReview}" ajax="false">
-                            <f:setPropertyActionListener value="#{booking.review}" target="#{bookingPageManagedBean.selectedReview}"/>
+                                         actionListener="#{bookingPageManagedBean.filterReview}">
+                            <f:attribute name ="selectedFilterReview" value="#{booking.review}" />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>

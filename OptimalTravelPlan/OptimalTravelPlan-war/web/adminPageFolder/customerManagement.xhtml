@@ -34,27 +34,24 @@
                     <p:column headerText="Customer ID" sortBy="#{customer.customerId}" filterBy="#{customer.customerId}" filterMatchMode="contains">
                         <h:outputText value="#{customer.customerId}" />
                     </p:column>
-                    <p:column headerText="Customer name" sortBy="#{customer.name}" filterBy="#{customer.name}" filterMatchMode="contains">
+                    <p:column headerText="Name" sortBy="#{customer.name}" filterBy="#{customer.name}" filterMatchMode="contains">
                         <h:outputText value="#{customer.name}" />
                     </p:column>
-                    <p:column headerText="Customer name" sortBy="#{customer.mobile}" filterBy="#{customer.mobile}" filterMatchMode="contains">
+                    <p:column headerText="Mobile" sortBy="#{customer.mobile}" filterBy="#{customer.mobile}" filterMatchMode="contains">
                         <h:outputText value="#{customer.mobile}" />
                     </p:column>
-                    <p:column headerText="Customer name" sortBy="#{customer.passportNumber}" filterBy="#{customer.passportNumber}" filterMatchMode="contains">
+                    <p:column headerText="Passport Number" sortBy="#{customer.passportNumber}" filterBy="#{customer.passportNumber}" filterMatchMode="contains">
                         <h:outputText value="#{customer.passportNumber}" />
                     </p:column>
-                    <p:column headerText="Customer name" sortBy="#{customer.email}" filterBy="#{customer.email}" filterMatchMode="contains">
+                    <p:column headerText="Email" sortBy="#{customer.email}" filterBy="#{customer.email}" filterMatchMode="contains">
                         <h:outputText value="#{customer.email}" />
                     </p:column>
-                    <p:column headerText="Customer name" sortBy="#{customer.vaccinationStatus}" filterBy="#{customer.vaccinationStatus}" filterMatchMode="exact">
+                    <p:column headerText="Vaccination Status" sortBy="#{customer.vaccinationStatus}" filterBy="#{customer.vaccinationStatus}" filterMatchMode="exact">
                         <h:outputText value="#{customer.vaccinationStatus}" />
                     </p:column>                    
                     <p:column headerText="Username" sortBy="#{customer.username}" filterBy="#{customer.username}" filterMatchMode="contains">
                         <h:outputText value="#{customer.username}" />
                     </p:column>  
-                    <p:column headerText="Password" sortBy="#{customer.password}" filterBy="#{customer.password}" filterMatchMode="contains">
-                        <h:outputText value="#{customer.password}" />
-                    </p:column> 
                     <p:column headerText="Number of payment accounts" sortBy="#{customer.paymentAccounts.size()}" filterBy="#{customer.paymentAccounts.size()}" filterMatchMode="contains">
                         <h:outputText value="#{customer.paymentAccounts.size()}" />
                         <p:commandButton actionListener="#{customerManagementManagedBean.viewCustomerPaymentAccounts}" icon="pi pi-search-plus" title="View" value="View payment accounts"

@@ -173,14 +173,16 @@ public class BookingPageManagedBean implements Serializable {
         reviews = reviewSessionBeanLocal.retrieveReviewsByBusinessId(business.getAccountId());
     }
 
-    public void filterReview() {
+    public void filterReview(ActionEvent event) {
         reviews.clear();
+        selectedReview = (Review) event.getComponent().getAttributes().get("selectedFilterReview");
         reviews.add(selectedReview);
 
     }
 
     public void filterBooking() throws IOException {
         bookings.clear();
+        //selectedBooking = (Booking) event.getComponent().getAttributes().get("selectedFilterBooking");
         bookings.add(selectedBooking);
     }
 
