@@ -101,8 +101,8 @@
 
                     <p:column headerText="View Booking">
                         <p:commandButton update=":bookingForm" value="View" icon="pi pi-search-plus" 
-                                         actionListener="#{bookingPageManagedBean.filterBooking}" ajax="false">
-                            <f:setPropertyActionListener value="#{review.booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
+                                         actionListener="#{bookingPageManagedBean.filterBooking}">
+                            <f:attribute name="selectedFilterBooking" value="#{review.booking}" />
                         </p:commandButton>
                     </p:column>
 

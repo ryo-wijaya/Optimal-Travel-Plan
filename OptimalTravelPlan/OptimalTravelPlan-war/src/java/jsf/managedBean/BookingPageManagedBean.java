@@ -180,9 +180,9 @@ public class BookingPageManagedBean implements Serializable {
 
     }
 
-    public void filterBooking() throws IOException {
+    public void filterBooking(ActionEvent event) throws IOException {
         bookings.clear();
-        //selectedBooking = (Booking) event.getComponent().getAttributes().get("selectedFilterBooking");
+        selectedBooking = (Booking) event.getComponent().getAttributes().get("selectedFilterBooking");
         bookings.add(selectedBooking);
     }
 
