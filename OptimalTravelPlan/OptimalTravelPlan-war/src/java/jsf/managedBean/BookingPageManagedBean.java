@@ -22,6 +22,10 @@ import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -97,27 +101,47 @@ public class BookingPageManagedBean implements Serializable {
     public void generateReport(ActionEvent event) {
 
         try {
-            String input = "initial value";
+            String description = "initial value";
             HashMap parameters = new HashMap();
-            try {
-                Calendar startingDateToSearch = Calendar.getInstance();
-                startingDateToSearch.setTime(bookingSearchStartDate);
 
-                Calendar endingDateToSearch = Calendar.getInstance();
-                endingDateToSearch.setTime(bookingSearchEndDate);
+            Calendar startingDateToSearch = Calendar.getInstance();
+            startingDateToSearch.setTime(bookingSearchStartDate);
 
-                SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
-                String startDateToSearch = month_date.format(bookingSearchStartDate);
-                String endDateToSearch = month_date.format(bookingSearchEndDate);
+            Calendar endingDateToSearch = Calendar.getInstance();
+            endingDateToSearch.setTime(bookingSearchEndDate);
 
-                input = "Booking from " + startingDateToSearch.get(Calendar.DAY_OF_MONTH) + " " + startDateToSearch + " to "
-                        + endingDateToSearch.get(Calendar.DAY_OF_MONTH) + " " + endDateToSearch;
-            } catch (Exception ex) {
-                input = "Error in date";
-            }
+            SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+            String startDateToSearch = month_date.format(bookingSearchStartDate);
+            String endDateToSearch = month_date.format(bookingSearchEndDate);
 
-            parameters.put("date", input);
-            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperHeadache/Booking_NoImage.jasper");
+            description = business.getCompanyName() + " - Booking from " + startingDateToSearch.get(Calendar.DAY_OF_MONTH) + " " + startDateToSearch + " to "
+                    + endingDateToSearch.get(Calendar.DAY_OF_MONTH) + " " + endDateToSearch;
+            System.out.println("startingDateToSearch = " + startingDateToSearch);
+            System.out.println("startingDateToSearch.get(Calendar.MONTH) = " + startingDateToSearch.get(Calendar.MONTH));
+            
+            ChronoLocalDateTime startDateFilter = LocalDateTime.of(
+                    startingDateToSearch.get(Calendar.YEAR), 
+                    Month.of(startingDateToSearch.get(Calendar.MONTH) + 1), 
+                    startingDateToSearch.get(Calendar.DAY_OF_MONTH), 
+                    startingDateToSearch.get(Calendar.HOUR_OF_DAY), 
+                    startingDateToSearch.get(Calendar.MINUTE));
+            
+            ChronoLocalDateTime endDateFilter = LocalDateTime.of(
+                    endingDateToSearch.get(Calendar.YEAR),
+                    Month.of(endingDateToSearch.get(Calendar.MONTH) + 1), 
+                    endingDateToSearch.get(Calendar.DAY_OF_MONTH), 
+                    endingDateToSearch.get(Calendar.HOUR_OF_DAY), 
+                    endingDateToSearch.get(Calendar.MINUTE));
+            
+            parameters.put("date", description);
+            parameters.put("description", description);
+            parameters.put("startDateFilter", startDateFilter);
+            parameters.put("endDateFilter", endDateFilter);
+            parameters.put("ServiceID", business.getAccountId());
+            parameters.put("BusinessID", business.getAccountId());
+            
+            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(
+                    "/jasperHeadache/Booking_BusinessID_date.jasper");
             OutputStream outputStream = FacesContext.getCurrentInstance().getExternalContext().getResponseOutputStream();
 
             JasperRunManager.runReportToPdfStream(reportStream, outputStream, parameters, optimalTravelPlanDataSource.getConnection());
