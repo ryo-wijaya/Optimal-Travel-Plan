@@ -117,13 +117,13 @@ public class BookingPageManagedBean implements Serializable {
             }
 
             parameters.put("date", input);
-            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperHeadache/recordreport.jasper");
+            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperHeadache/Booking_NoImage.jasper");
             OutputStream outputStream = FacesContext.getCurrentInstance().getExternalContext().getResponseOutputStream();
 
             JasperRunManager.runReportToPdfStream(reportStream, outputStream, parameters, optimalTravelPlanDataSource.getConnection());
 
-        } catch (IOException | JRException | SQLException ex) {
-            System.out.println(ex.getMessage());
+        } catch (IOException | JRException | SQLException | IllegalStateException ex) {
+            System.out.println("Exception thrown : " + ex.getMessage());
             ex.printStackTrace();
         }
     }
