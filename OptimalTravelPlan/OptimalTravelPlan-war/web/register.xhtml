@@ -37,25 +37,25 @@
                     
 
                     <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
-                    <p:inputText id="username" value="#{registerPageManagedBean.username}" />
+                    <p:inputText id="username" value="#{registerPageManagedBean.username}" required="true" requiredMessage="username is required"/>
 
                     <p:outputLabel for="password"><b>Password:</b></p:outputLabel>
-                    <p:password id="password" value="#{registerPageManagedBean.password}" />
+                    <p:password id="password" value="#{registerPageManagedBean.password}" required="true" feedback="true" requiredMessage="password is required"/>
 
                     <p:outputLabel for="companyName"><b>Company Name:</b></p:outputLabel>
-                    <p:inputText id="companyName" value="#{registerPageManagedBean.companyName}" />
+                    <p:inputText id="companyName" value="#{registerPageManagedBean.companyName}" required="true" requiredMessage="company name is required"/>
 
                     <p:outputLabel for="companySite"><b>Company Website:</b></p:outputLabel>
-                    <p:inputText id="companySite" value="#{registerPageManagedBean.companyWebsite}" />
+                    <p:inputText id="companySite" value="#{registerPageManagedBean.companyWebsite}" required="true" requiredMessage="company website is required"/>
 
                     <p:outputLabel for="companyNo"><b>Company Number:</b></p:outputLabel>
-                    <p:inputText id="companyNo" value="#{registerPageManagedBean.companyNumber}" />
+                    <p:inputText id="companyNo" value="#{registerPageManagedBean.companyNumber}" required="true" requiredMessage="company number is required"/>
 
                     <p:outputLabel for="companyAddress"><b>Company Address:</b></p:outputLabel>
-                    <p:inputText id="companyAddress" value="#{registerPageManagedBean.companyAddress}" />
+                    <p:inputText id="companyAddress" value="#{registerPageManagedBean.companyAddress}" required="true" requiredMessage="company address is required"/>
                     
                     <p:outputLabel for="businessEmail"><b>Business Email:</b></p:outputLabel>
-                    <p:inputText id="businessEmail" value="#{registerPageManagedBean.businessEmail}" />
+                    <p:inputText id="businessEmail" value="#{registerPageManagedBean.businessEmail}" required="true" requiredMessage="business email is required"/>
                 </p:panelGrid>
 
                 <br></br>

@@ -44,8 +44,8 @@ public class adminTemplateManagedBean {
     }
 
     public void redirectToAddAccountManagement() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewAccount", true);
-        redirectToAccountManagement();
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("addNewStaff", true);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("adminManagement.xhtml");
     }
 
     public void redirectToSupportManagement() throws IOException {

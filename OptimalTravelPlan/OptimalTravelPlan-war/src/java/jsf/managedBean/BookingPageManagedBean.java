@@ -67,8 +67,6 @@ public class BookingPageManagedBean implements Serializable {
     private Booking selectedBooking;
     private List<Review> reviews;
     private Review selectedReview;
-    private List<Service> services;
-    private Service selectedService;
     private Customer selectedCustomer;
     private String emailMessage;
     private Business business;
@@ -77,16 +75,15 @@ public class BookingPageManagedBean implements Serializable {
     private Date bookingSearchStartDate;
     private Date bookingSearchEndDate;
 
-    //Somehow if this is not done attributes of selectReview will be null
-    private String selectedReviewContent;
-    private Integer selectedReviewRating;
-    private String selectedReviewReply;
+
 
     // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
     private Date startDate;
     private Date endDate;
 
     public BookingPageManagedBean() {
+        selectedReview = new Review();
+        selectedBooking = new Booking();
     }
 
     @PostConstruct
@@ -154,15 +151,11 @@ public class BookingPageManagedBean implements Serializable {
 
     public void reviewReply() {
         try {
-
-            if (selectedReview.getBusinessReply().equals(selectedReviewReply)) {
-                // No changes
-                System.out.println("no changes");
-                return;
-            }
-            System.out.println("yes changes");
-            selectedReview.setBusinessReply(selectedReviewReply);
             reviewSessionBeanLocal.updateReview(selectedReview);
+            this.emailMessage = "The business has added/edited a reply to your review on booking" + selectedReview.getBooking().getBookingId()
+                    + "\n\nThe new/edited reply is:\n\n" + selectedReview.getBusinessReply();
+            this.selectedCustomer = selectedReview.getBooking().getTravelItinerary().getCustomer();
+            //this.sendEmail();
         } catch (ReviewNotFoundException ex) {
             System.out.println("Error with review reply");
         }
@@ -186,21 +179,7 @@ public class BookingPageManagedBean implements Serializable {
         bookings.add(selectedBooking);
     }
 
-    /*
-    public void filterByService(ActionEvent event) {
-
-        this.selectedService = (Service) event.getComponent().getAttributes().get("selectedService");
-
-        bookings.clear();
-        reviews.clear();
-        bookings = selectedService.getBookings();
-
-        for (Booking booking : bookings) {
-            reviews.add(booking.getReview());
-        }
-    }
-     */
-    public void sendEmail(ActionEvent event) {
+    public void sendEmail() {
         if (!emailMessage.isEmpty()) {
             String message = "Dear " + selectedCustomer.getName() + ",\n\n"
                     + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
@@ -221,66 +200,40 @@ public class BookingPageManagedBean implements Serializable {
         this.serviceMessage = (Service) event.getComponent().getAttributes().get("serviceForMessage");
     }
 
-    public void editBooking() {
-        System.out.println("Start edit method");
-        System.out.println("selected booking" + selectedBooking.toString());
+//    public void editBooking() {
+//        System.out.println("Start edit method");
+//        System.out.println("selected booking" + selectedBooking.toString());
+//
+//        if (selectedBooking.getStartDate().equals(startDate) && selectedBooking.getEndDate().equals(endDate)) {
+//            // No change made!
+//            return;
+//        }
+//
+//        // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
+//        selectedBooking.setStartDate(startDate);
+//        selectedBooking.setEndDate(endDate);
+//        try {
+//            bookingSessionBeanLocal.updateBooking(selectedBooking);
+//
+//            Customer customer = selectedBooking.getTravelItinerary().getCustomer();
+//
+//            emailMessage = "The date of your booking has been changed to a start date of: " + startDate.toString() + " and an end date of: " + endDate.toString();
+//
+//            String message = "Dear " + customer.getName() + ",\n\n"
+//                    + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
+//                    + emailMessage + "\n\nThank you for using our booking services!\n\nOptimal Travel Plan\n\nThis is a system generated message. Please do not reply!";
+//
+//            emailSessionBeanLocal.emailCheckoutNotificationSync(message, customer.getEmail());
+//        } catch (BookingNotFoundException | UpdateBookingException ex) {
+//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Start date cannot exceed end date!", null));
+//            this.updatePage();
+//        } catch (Exception ex) {
+//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to send email - coz no email address", null));
+//        }
+//    }
 
-        if (selectedBooking.getStartDate().equals(startDate) && selectedBooking.getEndDate().equals(endDate)) {
-            // No change made!
-            return;
-        }
 
-        // Somehow selectedBooking.startDate or endDate will be null during an setPropertyActionListener for selectedBooking, so gotta do dis way
-        selectedBooking.setStartDate(startDate);
-        selectedBooking.setEndDate(endDate);
-        try {
-            bookingSessionBeanLocal.updateBooking(selectedBooking);
-
-            Customer customer = selectedBooking.getTravelItinerary().getCustomer();
-
-            emailMessage = "The date of your booking has been changed to a start date of: " + startDate.toString() + " and an end date of: " + endDate.toString();
-
-            String message = "Dear " + customer.getName() + ",\n\n"
-                    + business.getCompanyName() + " have sent you the following message regarding " + serviceMessage.getServiceName() + ": \n\n"
-                    + emailMessage + "\n\nThank you for using our booking services!\n\nOptimal Travel Plan\n\nThis is a system generated message. Please do not reply!";
-
-            emailSessionBeanLocal.emailCheckoutNotificationSync(message, customer.getEmail());
-        } catch (BookingNotFoundException | UpdateBookingException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Start date cannot exceed end date!", null));
-            this.updatePage();
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to send email - coz no email address", null));
-        }
-    }
-
-    public void debugMethod() {
-        System.out.println("Start debug method");
-        System.out.println("selected review content" + selectedReviewContent);
-    }
-
-    public String getSelectedReviewContent() {
-        return selectedReviewContent;
-    }
-
-    public void setSelectedReviewContent(String selectedReviewContent) {
-        this.selectedReviewContent = selectedReviewContent;
-    }
-
-    public Integer getSelectedReviewRating() {
-        return selectedReviewRating;
-    }
-
-    public void setSelectedReviewRating(Integer selectedReviewRating) {
-        this.selectedReviewRating = selectedReviewRating;
-    }
-
-    public String getSelectedReviewReply() {
-        return selectedReviewReply;
-    }
-
-    public void setSelectedReviewReply(String selectedReviewReply) {
-        this.selectedReviewReply = selectedReviewReply;
-    }
+   
 
     public List<Booking> getFilteredBookings() {
         return filteredBookings;
@@ -346,22 +299,6 @@ public class BookingPageManagedBean implements Serializable {
         this.emailMessage = emailMessage;
     }
 
-    public List<Service> getServices() {
-        return services;
-    }
-
-    public void setServices(List<Service> services) {
-        this.services = services;
-    }
-
-    public Service getSelectedService() {
-        return selectedService;
-    }
-
-    public void setSelectedService(Service selectedService) {
-        this.selectedService = selectedService;
-    }
-
     public Customer getSelectedCustomer() {
         return selectedCustomer;
     }
@@ -401,5 +338,4 @@ public class BookingPageManagedBean implements Serializable {
     public void setBookingSearchEndDate(Date bookingSearchEndDate) {
         this.bookingSearchEndDate = bookingSearchEndDate;
     }
-
 }

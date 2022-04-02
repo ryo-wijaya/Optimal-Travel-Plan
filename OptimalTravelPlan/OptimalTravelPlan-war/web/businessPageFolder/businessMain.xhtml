@@ -90,12 +90,8 @@
                     </p:column>
 
                     <p:column headerText="Details">
-                        <p:commandButton oncomplete="PF('dialogReply').show()" icon="pi pi-search-plus" update="@form" value="View" actionListener="#{bookingPageManagedBean.debugMethod}">
+                        <p:commandButton oncomplete="PF('dialogReply').show()" icon="pi pi-search-plus" update="@form" value="View">
                             <f:setPropertyActionListener value="#{review}" target="#{bookingPageManagedBean.selectedReview}"/>
-                            <f:setPropertyActionListener value="#{review.businessReply}" target="#{bookingPageManagedBean.selectedReviewReply}"/>
-                            <f:setPropertyActionListener value="#{review.content}" target="#{bookingPageManagedBean.selectedReviewContent}"/>
-                            <f:setPropertyActionListener value="#{review.rating}" target="#{bookingPageManagedBean.selectedReviewRating}"/>
-
                         </p:commandButton>
                     </p:column>
 
@@ -114,14 +110,14 @@
                         <p:panelGrid columns="2">
 
                             <h:outputText value="Review: " />
-                            <h:outputText value="#{bookingPageManagedBean.selectedReviewContent}" />
+                            <h:outputText value="#{bookingPageManagedBean.selectedReview.content}" />
 
                             <h:outputText value="Rating:" />
-                            <p:rating value="#{bookingPageManagedBean.selectedReviewRating}" stars="5" disabled="true" />
+                            <p:rating value="#{bookingPageManagedBean.selectedReview.rating}" stars="5" disabled="true" />
 
                             <h:outputText value="Reply:" />
                             <p:inputTextarea rows="5" cols="30" counter="display" maxlength="150" counterTemplate="{0} characters remaining" 
-                                             autoResize="false" value="#{bookingPageManagedBean.selectedReviewReply}"/>
+                                             autoResize="false" value="#{bookingPageManagedBean.selectedReview.businessReply}"/>
 
                         </p:panelGrid>
 
@@ -201,14 +197,6 @@
                         </p:commandLink>
                     </p:column>
 
-                    <p:column headerText="Edit">
-                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialogEditBooking').show()" update=":bookingForm:editBookingBox" value="Edit">
-                            <f:setPropertyActionListener value="#{booking}" target="#{bookingPageManagedBean.selectedBooking}"/>
-                            <f:setPropertyActionListener value="#{booking.startDate}" target="#{bookingPageManagedBean.startDate}"/>
-                            <f:setPropertyActionListener value="#{booking.endDate}" target="#{bookingPageManagedBean.endDate}"/>
-                        </p:commandButton>
-                    </p:column>
-
                     <p:column headerText="View Review">
                         <p:commandButton update=":reviewForm" value="View" icon="pi pi-search-plus" 
                                          actionListener="#{bookingPageManagedBean.filterReview}">
@@ -233,23 +221,6 @@
                     </p:outputPanel>
                 </p:dialog>
 
-                <p:dialog header="Edit Booking" widgetVar="dialogEditBooking" showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
-                    <p:outputPanel id="editBookingBox" style="text-align:center;">
-                        <p:panelGrid  columns="2">
-
-                            <h:outputText value="Start Date: " />
-                            <p:calendar value="#{bookingPageManagedBean.startDate}" showOn="button" />
-
-                            <h:outputText value="End Date: " />
-                            <p:calendar value="#{bookingPageManagedBean.endDate}" showOn="button" />
-
-
-                        </p:panelGrid>
-
-                        <br/>
-                        <p:commandButton value="Save Changes" actionListener="#{bookingPageManagedBean.editBooking}" process="@form" update="@form" />
-                    </p:outputPanel>
-                </p:dialog>
             </h:form>
         </div>
 
@@ -294,7 +265,7 @@
                     </p:row>
                     <p:row>
                         <p:column>
-                            <h:outputText  value="Contact Number: " style="font-weight: bold;" />
+                            <h:outputText  value="Passport Number: " style="font-weight: bold;" />
                         </p:column>
                         <p:column>
                             <h:outputText value="#{bookingPageManagedBean.selectedCustomer.passportNumber}" />
