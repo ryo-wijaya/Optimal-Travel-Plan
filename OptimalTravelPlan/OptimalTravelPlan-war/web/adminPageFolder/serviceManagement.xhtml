@@ -56,7 +56,7 @@
                     </p:column>
 
                     <p:column headerText="Business Owner" sortBy="#{service.business}" filterBy="#{service.business}" filterMatchMode="contains">
-                        <h:outputText value="#{service.business}" />
+                        <h:outputText value="#{service.business.companyName}" />
                         <p:commandButton actionListener="#{serviceManagementManagedBean.viewServiceOwner}" icon="pi pi-search-plus" title="business" value="View Business"
                                          style="float: right;" update="dialogViewBusiness" oncomplete="PF('dialogViewBusiness').show()" >
                             <f:attribute name="businessToView" value="#{service.business}" />

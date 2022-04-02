@@ -22,8 +22,6 @@
                              rowsPerPageTemplate="10,20,50">
                     <f:facet name="header">
                         <p:outputPanel style="text-align: right;">
-                            <p:commandButton value="Create New Business" title="Create New Business" type="button" icon="pi pi-plus" onclick="PF('dialogCreateNewBusiness').show()"
-                                             style="float: left;" />
                             <p:commandButton value="View all latest Businesses" title="View all latest Businesses" 
                                              type="button" icon="pi pi-refresh" actionListener="#{businessManagementManagedBean.refreshBusinessesList}" 
                                              update="formAllBusinesses" rendered="#{businessManagementManagedBean.filtered}" />
@@ -55,16 +53,19 @@
                                          rendered="#{business.services.size() != 0}" style="float: right;">
                             <f:attribute name="businessToViewServices" value="#{business}" />
                         </p:commandButton>
-                    </p:column>                            
+                    </p:column>          
+                    <p:column headerText="Business Status" sortBy="#{business.enabled}" filterBy="#{business.enabled}" filterMatchMode="contains">
+                        <h:outputText value="#{business.enabled}" />
+                    </p:column>
                     <p:column headerText="Action" >
                         <p:commandButton actionListener="#{businessManagementManagedBean.doUpdateBusiness}" update="formUpdateBusiness dataTableAllBusinesses" oncomplete="PF('dialogUpdateBusiness').show()" 
                                          value="Update Business Name" icon="ui-icon-pencil" title="Update">
                             <f:attribute name="businessToUpdate" value="#{business}" />
                         </p:commandButton>
                         <p:commandButton icon="pi pi-power" actionListener="#{businessManagementManagedBean.deleteBusiness}" update="formAllBusinesses"
-                                         rendered="#{business.services.size() eq 0}" value="Delete Unused Business">
-                            <f:attribute name="Disable business" value="#{business}" />
-                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{business.companyName} (Business ID: #{business.businessId})?" icon="ui-icon-alert"  />
+                                         rendered="#{business.services.size() eq 0}" value="Toggle Business Status">
+                            <f:attribute name="businessToDelete" value="#{business}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to toggle #{business.companyName} status (Business ID: #{business.businessId})?" icon="ui-icon-alert"  />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -72,93 +73,6 @@
                     <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
-            </h:form>
-
-            <h:form id="formCreateNewBusiness">
-                <p:dialog id="dialogCreateNewBusiness" widgetVar="dialogCreateNewBusiness" header="Create New Business" closable="true">
-                    <p:messages id="messagesCreateNewBusiness" redisplay="false" />
-                    <p:panelGrid>
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="name" value="Business Name: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="name" value="#{businessManagementManagedBean.newBusiness.companyName}" placeholder="Bob's construction" required="true" requiredMessage="Business Name is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="name" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="number" value="Business Contact No: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="number" value="#{businessManagementManagedBean.newBusiness.companyNumber}" placeholder="91234567" required="true" requiredMessage="Business Contact is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="number" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="website" value="Business website: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="website" value="#{businessManagementManagedBean.newBusiness.companyWebsite}" placeholder="www.bob-the-builder.com" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="website" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="address" value="Business address(headquarter): " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="address" value="#{businessManagementManagedBean.newBusiness.headquarterAddress}" placeholder="bob road 1" required="true" requiredMessage="Headquarter address is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="address" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="username" value="Username: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="username" value="#{businessManagementManagedBean.newBusiness.username}" placeholder="username" required="true" requiredMessage="Username is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="username" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="password" value="Password: " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:password id="password" value="#{businessManagementManagedBean.newBusiness.password}" required="true" requiredMessage="Password is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="password" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column colspan="3">
-                                <p:commandButton type="reset" value="Clear" />&nbsp;
-                                <p:commandButton  value="Create New Business" update="@form formAllBusinesses:dataTableAllBusinesses" actionListener="#{businessManagementManagedBean.createNewBusiness}" 
-                                                  oncomplete="PF('dialogCreateNewBusiness').show();" />
-                            </p:column>
-                        </p:row>
-                    </p:panelGrid>
-                </p:dialog>
             </h:form>
 
             <h:form id="formUpdateBusiness">

@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.exception.AccountNotFoundException;
 import util.exception.DeletePaymentAccountException;
 import util.exception.PaymentAccountNotFoundException;
 
@@ -35,9 +36,12 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public PaymentAccount createNewPaymentAccount(PaymentAccount newPaymentAccount){
+    public PaymentAccount createNewPaymentAccount(Long CustomerId, PaymentAccount newPaymentAccount) throws AccountNotFoundException {
         em.persist(newPaymentAccount);
         em.flush();
+        Customer customer = customerSessionBean.retrieveCustomerById(CustomerId);
+        customer.getPaymentAccounts().add(newPaymentAccount);
+        
         return newPaymentAccount;
     }
     

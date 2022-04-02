@@ -53,6 +53,7 @@ public class Customer extends Account implements Serializable {
         this.vaccinationStatus = vaccinationStatus;
         this.favouriteTags = new ArrayList<>();
         this.travelItineraries = new ArrayList<>();
+        this.paymentAccounts = new ArrayList<>();
     }
 
     public Long getCustomerId() {

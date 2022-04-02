@@ -37,6 +37,8 @@ public class businessManagementManagedBean implements Serializable {
 
     @EJB
     private BusinessSessionBeanLocal businessSessionBeanLocal;
+    
+    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
 
     private List<Business> businesses;
@@ -94,13 +96,19 @@ public class businessManagementManagedBean implements Serializable {
     }
 
     public void deleteBusiness(ActionEvent event) throws AccountNotFoundException {
-        try {
-            Business businessToDelete = (Business) event.getComponent().getAttributes().get("businessToDelete");
-            businessSessionBeanLocal.deleteBusiness(businessToDelete.getBusinessId());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business disabled successfully", null));
-        } catch (DeleteBusinessException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
+        Business businessToDelete = (Business) event.getComponent().getAttributes().get("businessToDelete");
+        //businessSessionBeanLocal.deleteBusiness(businessToDelete.getBusinessId());
+        accountSessionBeanLocal.toggleAccountStatus(businessToDelete.getAccountId());
+        for(int i = 0; i < businesses.size(); i++) {
+            if(businesses.get(i) == businessToDelete) {
+                if(businesses.get(i).getEnabled() == true) {
+                    businesses.get(i).setEnabled(false);
+                } else {
+                    businesses.get(i).setEnabled(true);
+                }
+            }
         }
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Business disabled successfully", null));
     }
 
     public List<Business> getBusinesses() {

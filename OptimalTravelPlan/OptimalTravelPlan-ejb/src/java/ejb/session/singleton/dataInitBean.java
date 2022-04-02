@@ -227,7 +227,8 @@ public class dataInitBean {
                 
 
                 PaymentAccount account = new PaymentAccount("accoutNumber", new Date(), "123", PaymentType.VISA, true);
-                paymentAccountSessionBeanLocal.createNewPaymentAccount(account);
+                paymentAccountSessionBeanLocal.createNewPaymentAccount(customer1.getCustomerId(), account);
+                
                 
                 for (int i = 0; i < list.size(); i++) {
                     Booking booking = list.get(i);
