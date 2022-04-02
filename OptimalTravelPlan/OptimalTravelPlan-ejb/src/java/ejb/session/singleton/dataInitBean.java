@@ -117,10 +117,10 @@ public class dataInitBean {
         if (em.createQuery("SELECT s FROM Staff s").getResultList().size() < 1) {
             try {
                 //default manager
-                Staff manager = new Staff("manager1", "password", "admin1", EmployeeRole.ADMINISTRATOR);
+                Staff manager = new Staff("manager1", "password", "admin1");
                 em.persist(manager);
 
-                Staff customerService = new Staff("staff123", "password", "staff1", EmployeeRole.CUSTOMER_SERVICE);
+                Staff customerService = new Staff("staff123", "password", "staff1");
                 em.persist(customerService);
 
                 Business optimalTravelPlan = new Business("OTP themselves!", "www.OTP.com", "99999999", "OTP address", "optimal123", "password", "emailAdress");

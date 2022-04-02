@@ -40,6 +40,9 @@
                     <p:column headerText="Username" sortBy="#{staff.username}" filterBy="#{staff.username}" filterMatchMode="contains">
                         <h:outputText value="#{staff.username}" />
                     </p:column>  
+                    <p:column headerText="Account Status" sortBy="#{staff.enabled}" filterBy="#{staff.enabled}" filterMatchMode="contains">
+                        <h:outputText value="#{staff.enabled}" />
+                    </p:column>  
                     <p:column headerText="Action" >
                         <p:commandButton actionListener="#{staffManagementManagedBean.doUpdateStaff}" update="formUpdateStaff dataTableAllStaffs" oncomplete="PF('dialogUpdateStaff').show()" 
                                          value="Update Staff Name" icon="ui-icon-pencil" title="Update">
@@ -67,7 +70,7 @@
                                 <p:outputLabel for="name" value="Staff Name: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:inputText id="name" value="#{staffManagementManagedBean.name}" placeholder="Staff" required="true" requiredMessage="Staff Name is required" />
+                                <p:inputText id="name" value="#{staffManagementManagedBean.newStaff.name}" placeholder="Staff" required="true" requiredMessage="Staff Name is required" />
                             </p:column>
                             <p:column>
                                 <p:message for="name" />
@@ -79,7 +82,7 @@
                                 <p:outputLabel for="username" value="Username: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:inputText id="username" value="#{staffManagementManagedBean.username}" placeholder="username" required="true" requiredMessage="Username is required" />
+                                <p:inputText id="username" value="#{staffManagementManagedBean.newStaff.username}" placeholder="username" required="true" requiredMessage="Username is required" />
                             </p:column>
                             <p:column>
                                 <p:message for="username" />
@@ -91,7 +94,7 @@
                                 <p:outputLabel for="password" value="Password: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:password id="password" value="#{staffManagementManagedBean.password}" required="true" requiredMessage="Password is required" />
+                                <p:password id="password" value="#{staffManagementManagedBean.newStaff.password}" required="true" requiredMessage="Password is required" />
                             </p:column>
                             <p:column>
                                 <p:message for="password" />

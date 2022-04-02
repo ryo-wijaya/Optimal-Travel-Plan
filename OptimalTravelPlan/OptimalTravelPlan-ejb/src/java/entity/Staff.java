@@ -18,10 +18,10 @@ public class Staff extends Account implements Serializable {
     public Staff() {
     }
 
-    public Staff(String username, String password, String name, EmployeeRole employeeRole) throws PasswordNotAcceptedException {
+    public Staff(String username, String password, String name) throws PasswordNotAcceptedException {
         super(username, password);
         this.name = name;
-        this.employeeRole = employeeRole;
+        employeeRole = EmployeeRole.ADMINISTRATOR;
     }
 
     public Long getStaffId() {

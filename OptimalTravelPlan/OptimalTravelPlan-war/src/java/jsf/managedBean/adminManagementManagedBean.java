@@ -84,11 +84,11 @@ public class adminManagementManagedBean implements Serializable {
         this.filtered = false;
     }
 
-    public void createNewStaff(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException {
-        Staff t = staffSessionBeanLocal.retrieveStaffById(accountSessionBeanLocal.createNewAccount(getNewStaff()));
+    public void createNewStaff(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException, PasswordNotAcceptedException {
+        Staff t =  staffSessionBeanLocal.retrieveStaffById(accountSessionBeanLocal.createNewAccount(newStaff));
         staffs.add(t);
         newStaff = new Staff();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New staff created successfully (Staff ID: " + newStaff.getStaffId() + ")", null));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New staff created successfully (Staff ID: " + t.getStaffId() + ")", null));
     }
 
     public void doUpdateStaff(ActionEvent event) {
