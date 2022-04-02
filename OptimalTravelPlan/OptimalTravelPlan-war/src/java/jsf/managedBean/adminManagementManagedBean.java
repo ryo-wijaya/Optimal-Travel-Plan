@@ -41,6 +41,7 @@ public class adminManagementManagedBean implements Serializable {
 
     @EJB
     private StaffSessionBeanLocal staffSessionBeanLocal;
+    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
 
     private List<Staff> staffs;
@@ -85,7 +86,9 @@ public class adminManagementManagedBean implements Serializable {
     }
 
     public void createNewStaff(ActionEvent event) throws UsernameAlreadyExistException, UnknownPersistenceException, AccountNotFoundException, PasswordNotAcceptedException {
-        Staff t =  staffSessionBeanLocal.retrieveStaffById(accountSessionBeanLocal.createNewAccount(newStaff));
+        System.out.println(newStaff.getPassword());
+        long id = accountSessionBeanLocal.createNewAccount(newStaff);
+        Staff t =  staffSessionBeanLocal.retrieveStaffById(id);
         staffs.add(t);
         newStaff = new Staff();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New staff created successfully (Staff ID: " + t.getStaffId() + ")", null));
@@ -101,14 +104,19 @@ public class adminManagementManagedBean implements Serializable {
     }
 
     public void deleteStaff(ActionEvent event) throws AccountNotFoundException {
-        try {
-            Staff staffToDelete = (Staff) event.getComponent().getAttributes().get("staffToDelete");
-            staffSessionBeanLocal.deleteStaff(staffToDelete.getStaffId());
-            staffs.remove(staffToDelete);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Staff disabled successfully", null));
-        } catch (DeleteStaffException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
+        Staff staffToDelete = (Staff) event.getComponent().getAttributes().get("staffToDelete");
+        accountSessionBeanLocal.toggleAccountStatus(staffToDelete.getStaffId());
+        for(int i = 0; i < staffs.size(); i++) {
+            if(staffs.get(i) == staffToDelete) {
+                if(staffs.get(i).getEnabled() == true) {
+                    staffs.get(i).setEnabled(false);
+                } else {
+                    staffs.get(i).setEnabled(true);
+                }
+            }
         }
+        //staffSessionBeanLocal.deleteStaff(staffToDelete.getStaffId());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Staff disabled successfully", null));
     }
 
     public List<Staff> getStaffs() {

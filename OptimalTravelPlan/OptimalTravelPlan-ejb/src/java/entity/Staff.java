@@ -16,6 +16,7 @@ public class Staff extends Account implements Serializable {
     private EmployeeRole employeeRole;
 
     public Staff() {
+        employeeRole = EmployeeRole.ADMINISTRATOR;
     }
 
     public Staff(String username, String password, String name) throws PasswordNotAcceptedException {
