@@ -8,6 +8,7 @@ package jsf.managedBean;
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import entity.Customer;
+import entity.PaymentAccount;
 import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -20,6 +21,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.PrimeFaces;
+import sun.security.krb5.internal.PaPacOptions;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteCustomerException;
 import util.exception.CustomerAlreadyExistException;
@@ -44,9 +46,12 @@ public class customerManagementManagedBean implements Serializable {
     private Boolean filtered;
     private Customer newCustomer;
     private Customer customerToUpdate;
+    
+    private List<PaymentAccount> selectedPaymentAccounts;
 
     public customerManagementManagedBean() {
         newCustomer = new Customer();
+        selectedPaymentAccounts = new ArrayList<PaymentAccount> ();
     }
 
     @PostConstruct
@@ -97,7 +102,11 @@ public class customerManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }
     }
-
+    
+    public void viewPaymentAccounts() {
+        System.out.println(selectedPaymentAccounts.isEmpty());
+    }
+    
     public List<Customer> getCustomers() {
         return customers;
     }
@@ -136,5 +145,13 @@ public class customerManagementManagedBean implements Serializable {
 
     public void setFiltered(Boolean filtered) {
         this.filtered = filtered;
+    }
+
+    public List<PaymentAccount> getSelectedPaymentAccounts() {
+        return selectedPaymentAccounts;
+    }
+
+    public void setSelectedPaymentAccounts(List<PaymentAccount> selectedPaymentAccounts) {
+        this.selectedPaymentAccounts = selectedPaymentAccounts;
     }
 }

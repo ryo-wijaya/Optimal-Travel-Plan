@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.PaymentAccount;
 import javax.ejb.Local;
+import util.exception.AccountNotFoundException;
 import util.exception.DeletePaymentAccountException;
 import util.exception.PaymentAccountNotFoundException;
 
@@ -17,7 +18,7 @@ import util.exception.PaymentAccountNotFoundException;
 @Local
 public interface PaymentAccountSessionBeanLocal {
 
-    public PaymentAccount createNewPaymentAccount(PaymentAccount newPaymentAccount);
+    public PaymentAccount createNewPaymentAccount(Long CustomerId, PaymentAccount newPaymentAccount) throws AccountNotFoundException;
 
     public PaymentAccount retrievePaymentAccountByPaymentAccountId(Long paymentAccountId) throws PaymentAccountNotFoundException;
 
