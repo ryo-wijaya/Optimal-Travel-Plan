@@ -54,22 +54,26 @@
                         <h:outputText value="#{customer.paymentAccounts.size()}" />
                         <p:commandButton icon="pi pi-search-plus" title="View" value="View payment accounts"
                                          rendered="#{customer.paymentAccounts.size() != 0}" style="float: right;" oncomplete="PF('dialogViewPaymentAccounts').show()"
-                                         update="formAllCustomers">
-                            <f:setPropertyActionListener value="#{customer.paymentAccounts}" target="#{customerManagementManagedBean.selectedPaymentAccounts}"/>
+                                         update="paymentBoxForm">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerManagementManagedBean.selectedCustomer}"/>
                         </p:commandButton>
                     </p:column>      
                     <p:column headerText="Number of favourite tags" sortBy="#{customer.paymentAccounts.size()}" filterBy="#{customer.paymentAccounts.size()}" filterMatchMode="contains">
                         <h:outputText value="#{customer.favouriteTags.size()}" />
-                        <p:commandButton actionListener="#{customerManagementManagedBean.viewCustomerFavouriteTags}" icon="pi pi-search-plus" title="View" value="View favourite tags"
-                                         rendered="#{customer.favouriteTags.size() != 0}" style="float: right;">
-                            <f:attribute name="customerToViewFavouriteTags" value="#{customer}" />
+                        <p:commandButton icon="pi pi-search-plus" title="View" value="View favourite tags"
+                                         rendered="#{customer.favouriteTags.size() != 0}" style="float: right;" 
+                                         update="formFavouriteTags"
+                                         oncomplete="PF('dialogFavouriteTags').show()">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerManagementManagedBean.selectedCustomer}"/>
                         </p:commandButton>
                     </p:column> 
                     <p:column headerText="Number of travel itineraries" sortBy="#{customer.travelItineraries.size()}" filterBy="#{customer.travelItineraries.size()}" filterMatchMode="contains">
                         <h:outputText value="#{customer.travelItineraries.size()}" />
-                        <p:commandButton actionListener="#{customerManagementManagedBean.viewCustomerTravelItineraries}" icon="pi pi-search-plus" title="View" value="View travel itineraries"
-                                         rendered="#{customer.travelItineraries.size() != 0}" style="float: right;">
-                            <f:attribute name="customerToViewTravelItineraries" value="#{customer}" />
+                        <p:commandButton icon="pi pi-search-plus" title="View" value="View travel itineraries"
+                                         rendered="#{customer.travelItineraries.size() != 0}" style="float: right;" 
+                                         update="formTravelItineraries"
+                                         oncomplete="PF('dialogTravelItineraries').show()">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerManagementManagedBean.selectedCustomer}"/>
                         </p:commandButton>
                     </p:column> 
                     <p:column headerText="Action" >
@@ -90,22 +94,57 @@
                 </p:confirmDialog>
             </h:form>
 
-            <p:dialog id="viewPaymentAccounts" widgetVar="dialogViewPaymentAccounts" header="View Payment Accounts" closable="true">
-                <p:commandButton action="#{customerManagementManagedBean.viewPaymentAccounts}" value="test">
-                    
-                </p:commandButton>
-                <p:dataTable value="#{customerManagementManagedBean.selectedPaymentAccounts}" var="paymentAccount" >
-                    <p:column headerText="Account Number">
-                        <h:outputText value="#{paymentAccount.accountNumber}"/>
-                    </p:column>
-                    <p:column headerText="Payment Type">
-                        <h:outputText value="#{paymentAccount.paymentType}"/>
-                    </p:column>
-                    <p:column headerText="Enable">
-                        <h:outputText value="#{paymentAccount.enabled}"/>
-                    </p:column>
-                </p:dataTable>
-            </p:dialog>
+            <h:form id="paymentBoxForm">
+                <p:dialog widgetVar="dialogViewPaymentAccounts" header="View Payment Accounts" closable="true">
+                    <p:dataTable id="paymentAccDataTable" value="#{customerManagementManagedBean.selectedCustomer.paymentAccounts}" var="paymentAccount" >
+                        <p:column headerText="Account Number">
+                            <h:outputText value="#{paymentAccount.accountNumber}"/>
+                        </p:column>
+                        <p:column headerText="Payment Type">
+                            <h:outputText value="#{paymentAccount.paymentType}"/>
+                        </p:column>
+                        <p:column headerText="Enable">
+                            <h:outputText value="#{paymentAccount.enabled}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="formFavouriteTags">
+                <p:dialog widgetVar="dialogFavouriteTags" header="View Favourite Tags" closable="true">
+                    <p:dataTable id="paymentAccDataTable" value="#{customerManagementManagedBean.selectedCustomer.favouriteTags}" var="tag" >
+                        <p:column headerText="Tag ID">
+                            <h:outputText value="#{tag.tagId}"/>
+                        </p:column>
+                        <p:column headerText="Name">
+                            <h:outputText value="#{tag.name}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="formTravelItineraries">
+                <p:dialog widgetVar="dialogTravelItineraries" header="View Travel Itineraries" closable="true">
+                    <p:dataTable id="paymentAccDataTable" value="#{customerManagementManagedBean.selectedCustomer.travelItineraries}" var="iti">
+                        <p:column headerText="Travel Itinerary ID">
+                            <h:outputText value="#{iti.travelItineraryId}"/>
+                        </p:column>
+                        <p:column headerText="Country">
+                            <h:outputText value="#{iti.country.name}"/>
+                        </p:column>
+                        <p:column headerText="Start Date">
+                            <h:outputText value="#{iti.startDate}">
+                                <f:convertDateTime type="both" />
+                            </h:outputText> 
+                        </p:column>
+                        <p:column headerText="End Date">
+                            <h:outputText value="#{iti.endDate}">
+                                <f:convertDateTime type="both" />
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
 
             <h:form id="formUpdateCustomer">
                 <p:dialog id="dialogUpdateCustomer" widgetVar="dialogUpdateCustomer" header="Update Customer" closable="true">

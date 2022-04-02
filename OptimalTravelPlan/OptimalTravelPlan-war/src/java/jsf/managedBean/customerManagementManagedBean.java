@@ -46,12 +46,13 @@ public class customerManagementManagedBean implements Serializable {
     private Boolean filtered;
     private Customer newCustomer;
     private Customer customerToUpdate;
+    private Customer selectedCustomer;
     
-    private List<PaymentAccount> selectedPaymentAccounts;
+    //private List<PaymentAccount> selectedPaymentAccounts;
 
     public customerManagementManagedBean() {
         newCustomer = new Customer();
-        selectedPaymentAccounts = new ArrayList<PaymentAccount> ();
+        //selectedPaymentAccounts = new ArrayList<PaymentAccount> ();
     }
 
     @PostConstruct
@@ -103,8 +104,16 @@ public class customerManagementManagedBean implements Serializable {
         }
     }
     
-    public void viewPaymentAccounts() {
-        System.out.println(selectedPaymentAccounts.isEmpty());
+//    public void viewPaymentAccounts() {
+//        System.out.println(selectedPaymentAccounts.isEmpty());
+//    }
+
+    public Customer getSelectedCustomer() {
+        return selectedCustomer;
+    }
+
+    public void setSelectedCustomer(Customer selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
     }
     
     public List<Customer> getCustomers() {
@@ -147,11 +156,11 @@ public class customerManagementManagedBean implements Serializable {
         this.filtered = filtered;
     }
 
-    public List<PaymentAccount> getSelectedPaymentAccounts() {
-        return selectedPaymentAccounts;
-    }
-
-    public void setSelectedPaymentAccounts(List<PaymentAccount> selectedPaymentAccounts) {
-        this.selectedPaymentAccounts = selectedPaymentAccounts;
-    }
+//    public List<PaymentAccount> getSelectedPaymentAccounts() {
+//        return selectedPaymentAccounts;
+//    }
+//
+//    public void setSelectedPaymentAccounts(List<PaymentAccount> selectedPaymentAccounts) {
+//        this.selectedPaymentAccounts = selectedPaymentAccounts;
+//    }
 }
