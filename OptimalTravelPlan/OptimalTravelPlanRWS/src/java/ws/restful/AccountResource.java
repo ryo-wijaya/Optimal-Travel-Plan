@@ -8,7 +8,10 @@ package ws.restful;
 import ejb.session.stateless.AccountSessionBeanLocal;
 import entity.Account;
 import entity.Booking;
+import entity.Country;
 import entity.Customer;
+import entity.Service;
+import entity.Tag;
 import entity.TravelItinerary;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,24 +60,39 @@ public class AccountResource {
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
             customer.setPassword(null);
-            List<TravelItinerary> travelItins = customer.getTravelItineraries();
-            for (TravelItinerary ti : travelItins) {
-                List<Booking> bookings = ti.getBookings();
-                ti.setCustomer(null);
-                ti.getCountry().setServices(new ArrayList<>());
-                for (Booking booking : bookings) {
-                    booking.setTravelItinerary(null);
-                    booking.getSupportRequest().setBooking(null);
-                    booking.getReview().setBooking(null);
-                    booking.getService().setBookings(new ArrayList<>());
-                    booking.getService().setCountry(null);
-                    booking.getService().setTags(new ArrayList<>());
-                    booking.getService().setBusiness(null);
+            
+            for (TravelItinerary ti : customer.getTravelItineraries()) {
+
+                ti.getCountry().getServices().clear();
+                
+                for (Service service : ti.getCountry().getServices()) {
+                    service.setCountry(null);
                 }
+                ti.getCountry().getServices().clear();
+                
+                for (Booking booking : ti.getBookings()) {
+                    booking.getService().getBookings().clear();
+                    booking.setService(null);
+                    
+                    booking.getReview().setBooking(null);
+                    booking.setReview(null);
+                    
+                    booking.getSupportRequest().setBooking(null);
+                    booking.setSupportRequest(null);
+                    
+                    booking.setPaymentTransaction(null);
+                }
+            }
+            
+            for (Tag tag : customer.getFavouriteTags()) {
+                for (Service service : tag.getServices()) {
+                    service.getTags().clear();
+                }
+                tag.getServices().clear();
             }
 
             return Response.status(Status.OK).entity(customer).build();
-        } catch (InvalidLoginCredentialException ex) {
+        } catch (InvalidLoginCredentialException | AccountDisabledException | PasswordNotAcceptedException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
