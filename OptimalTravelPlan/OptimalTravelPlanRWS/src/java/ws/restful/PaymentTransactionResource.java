@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author sucram
  */
-@Path("Resource")
+@Path("PaymentTransaction")
 public class PaymentTransactionResource {
 
     @Context
