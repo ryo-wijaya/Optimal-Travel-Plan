@@ -25,16 +25,9 @@ public class TravelItineraryResource {
     @Context
     private UriInfo context;
 
-    /**
-     * Creates a new instance of TravelItineraryResource
-     */
     public TravelItineraryResource() {
     }
 
-    /**
-     * Retrieves representation of an instance of ws.restful.TravelItineraryResource
-     * @return an instance of java.lang.String
-     */
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String getXml() {
@@ -42,10 +35,6 @@ public class TravelItineraryResource {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * PUT method for updating or creating an instance of TravelItineraryResource
-     * @param content representation for the resource
-     */
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     public void putXml(String content) {

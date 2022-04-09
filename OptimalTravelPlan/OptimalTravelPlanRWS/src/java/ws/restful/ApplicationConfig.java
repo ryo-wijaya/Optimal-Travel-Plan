@@ -22,15 +22,10 @@ public class ApplicationConfig extends Application {
         return resources;
     }
 
-    /**
-     * Do not modify addRestResourceClasses() method.
-     * It is automatically populated with
-     * all resources defined in the project.
-     * If required, comment out calling this method in getClasses().
-     */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(ws.restful.AccountResource.class);
         resources.add(ws.restful.BookingResource.class);
+        resources.add(ws.restful.CorsFilter.class);
         resources.add(ws.restful.PaymentAccountResource.class);
         resources.add(ws.restful.PaymentTransactionResource.class);
         resources.add(ws.restful.ReviewResource.class);
@@ -38,5 +33,4 @@ public class ApplicationConfig extends Application {
         resources.add(ws.restful.SupportRequestResource.class);
         resources.add(ws.restful.TravelItineraryResource.class);
     }
-    
 }

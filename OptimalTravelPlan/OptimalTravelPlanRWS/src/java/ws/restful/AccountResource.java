@@ -42,8 +42,7 @@ public class AccountResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response customerLogin(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response customerLogin(@QueryParam("username") String username, @QueryParam("password") String password) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
