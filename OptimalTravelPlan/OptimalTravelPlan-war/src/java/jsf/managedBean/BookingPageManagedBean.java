@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,9 +39,7 @@ import javax.faces.event.ActionEvent;
 import javax.sql.DataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
-import util.exception.BookingNotFoundException;
 import util.exception.ReviewNotFoundException;
-import util.exception.UpdateBookingException;
 
 @Named(value = "bookingPageManagedBean")
 @ViewScoped
