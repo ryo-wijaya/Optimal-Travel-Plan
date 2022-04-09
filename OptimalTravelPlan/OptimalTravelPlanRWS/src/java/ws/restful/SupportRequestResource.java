@@ -6,10 +6,13 @@
 package ws.restful;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
+import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.SupportRequestSessionBeanLocal;
+import entity.Booking;
 import entity.Customer;
 import entity.SupportRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
@@ -36,12 +40,15 @@ import util.exception.InvalidLoginCredentialException;
 @Path("SupportRequest")
 public class SupportRequestResource {
 
+    BookingSessionBeanLocal bookingSessionBean = lookupBookingSessionBeanLocal();
+
     AccountSessionBeanLocal accountSessionBean = lookupAccountSessionBeanLocal();
     
     CustomerSessionBeanLocal customerSessionBean = lookupCustomerSessionBeanLocal();
 
     SupportRequestSessionBeanLocal supportRequestSessionBean = lookupSupportRequestSessionBeanLocal();
 
+    
     
     @Context
     private UriInfo context;
@@ -58,7 +65,7 @@ public class SupportRequestResource {
             Customer customer = (Customer) accountSessionBean.login(username, password);
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
-            List<SupportRequest> supportRequests = supportRequestSessionBean.retrieveAllSupportRequests();
+            List<SupportRequest> supportRequests = supportRequestSessionBean.retriveSupportRequestsByCustomerId(customer.getAccountId());
             
             for(SupportRequest sr : supportRequests) {
                 sr.setBooking(null);
@@ -76,6 +83,30 @@ public class SupportRequestResource {
         catch(Exception ex)
         {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+    
+    @Path("createSupportrequest")
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createSupportRequest(@QueryParam("username") String username, @QueryParam("password") String password,
+            @QueryParam("requestDetails") String requestDetails, @QueryParam("booking") Long bookingId) {
+        {
+            try {
+                Customer customer = (Customer) accountSessionBean.login(username, password);
+                System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
+
+                Booking booking = bookingSessionBean.retrieveBookingById(bookingId);
+                Long supportRequestId = supportRequestSessionBean.createNewSupportRequest(new SupportRequest(requestDetails, new Date(), booking), booking.getBookingId());
+                //SupportRequest supportRequest = supportRequestSessionBean.retrieveSupportRequestById(supportRequestId);
+                
+                return Response.status(Response.Status.OK).entity(supportRequestId).build();
+            } catch (InvalidLoginCredentialException ex) {
+                return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+            } catch (Exception ex) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            }
         }
     }
     
@@ -109,6 +140,16 @@ public class SupportRequestResource {
         try {
             javax.naming.Context c = new InitialContext();
             return (AccountSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/AccountSessionBean!ejb.session.stateless.AccountSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private BookingSessionBeanLocal lookupBookingSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (BookingSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/BookingSessionBean!ejb.session.stateless.BookingSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

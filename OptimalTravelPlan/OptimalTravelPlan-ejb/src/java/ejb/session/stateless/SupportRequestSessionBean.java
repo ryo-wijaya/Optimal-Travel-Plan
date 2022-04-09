@@ -85,6 +85,15 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
             throw new SupportRequestNotFoundException();
         }
     }
+    
+    @Override
+    public List<SupportRequest> retriveSupportRequestsByCustomerId(Long customerId) {
+        //Query query = em.createQuery("SELECT r FROM Review r JOIN r.booking b JOIN b.service s WHERE s.business.accountId = :businessId");
+        Query query = em.createQuery("SELECT sr FROM SupportRequest sr JOIN sr.booking b JOIN b.travelItinerary ti WHERE ti.customer.accountId =:inCustomerId");
+        query.setParameter("inCustomerId", customerId);
+        List<SupportRequest> supportRequests = query.getResultList();
+        return supportRequests;
+    }
 
     @Override
     public List<SupportRequest> retrieveAllSupportRequests() {
