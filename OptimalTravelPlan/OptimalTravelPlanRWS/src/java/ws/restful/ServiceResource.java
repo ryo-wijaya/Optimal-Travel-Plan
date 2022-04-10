@@ -216,7 +216,6 @@ public class ServiceResource {
                     booking.setService(null);
                 }
                 service.getBookings().clear();
-                
                 for (Tag tag : service.getTags()) {
                     tag.getServices().clear();
                 }
