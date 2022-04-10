@@ -83,9 +83,8 @@ public class ServiceResource {
                 service.getCountry().getServices().clear();
                 service.getBusiness().getServices().clear();
             }
-            
             GenericEntity<List<Service>> genericEntityServices = new GenericEntity<List<Service>>(services) {};
-
+            
             return Response.status(Response.Status.OK).entity(genericEntityServices).build();
         } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();

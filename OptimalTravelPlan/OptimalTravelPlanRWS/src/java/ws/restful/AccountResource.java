@@ -64,14 +64,22 @@ public class AccountResource {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
-            customer.setPassword(null);
-
+            System.out.println("test: " + customer.getAccountId());
+            //throws error
+            customer.setPassword(null); 
+            
+            System.out.println("0: " + customer.getAccountId());
             for (TravelItinerary ti : customer.getTravelItineraries()) {
+                
+                System.out.println("1: " + customer.getAccountId());
 
                 ti.getCountry().getServices().clear();
                 ti.setCustomer(null);
 
+                System.out.println("2: " + customer.getAccountId());
                 for (Booking booking : ti.getBookings()) {
+                    
+                    System.out.println("3: " + customer.getAccountId());
                     booking.setTravelItinerary(null);
                     booking.setService(null);
                     booking.setReview(null);
@@ -79,10 +87,14 @@ public class AccountResource {
                     booking.setPaymentTransaction(null);
                 }
             }
+            
+            System.out.println("4: " + customer.getAccountId());
 
             for (Tag tag : customer.getFavouriteTags()) {
                 tag.getServices().clear();
             }
+            
+            System.out.println("5: " + customer.getAccountId());
 
             return Response.status(Status.OK).entity(customer).build();
         } catch (InvalidLoginCredentialException | AccountDisabledException | PasswordNotAcceptedException ex) {
