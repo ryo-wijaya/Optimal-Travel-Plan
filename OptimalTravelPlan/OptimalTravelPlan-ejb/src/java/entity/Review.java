@@ -106,4 +106,12 @@ public class Review implements Serializable {
         this.booking = booking;
     }
     
+     public void cleanRelationships() {
+        try {
+            this.booking.cleanSelf();     
+        } catch (Exception e) {
+            System.out.println("Cleaning error!");
+        }
+    }
+    
 }
