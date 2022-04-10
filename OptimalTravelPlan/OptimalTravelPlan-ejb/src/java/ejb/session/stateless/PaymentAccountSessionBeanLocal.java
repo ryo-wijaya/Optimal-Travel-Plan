@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.PaymentAccount;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
 import util.exception.DeletePaymentAccountException;
@@ -25,5 +26,7 @@ public interface PaymentAccountSessionBeanLocal {
     public void deletePaymentAccount(Long paymentAccountId) throws DeletePaymentAccountException;
 
     public void updatePaymentAccount(PaymentAccount paymentAccount) throws PaymentAccountNotFoundException;
+
+    public List<PaymentAccount> retrieveAllCustomerPaymentAccounts(Long customerId) throws AccountNotFoundException;
     
 }
