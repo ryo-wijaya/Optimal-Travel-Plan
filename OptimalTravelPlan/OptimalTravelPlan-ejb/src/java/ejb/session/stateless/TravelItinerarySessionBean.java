@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.Booking;
 import entity.Country;
 import entity.Customer;
+import entity.PaymentAccount;
+import entity.PaymentTransaction;
 import entity.Service;
 import entity.ServiceRate;
 import entity.Tag;
@@ -39,6 +41,9 @@ import util.exception.UpdateTravelItineraryException;
 @Stateless
 public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLocal {
 
+    @EJB(name = "PaymentAccountSessionBeanLocal")
+    private PaymentAccountSessionBeanLocal paymentAccountSessionBeanLocal;
+
     @EJB(name = "CustomerSessionBeanLocal")
     private CustomerSessionBeanLocal customerSessionBeanLocal;
 
@@ -50,6 +55,8 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
     @EJB(name = "BookingSessionBeanLocal")
     private BookingSessionBeanLocal bookingSessionBeanLocal;
+    
+    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -88,6 +95,8 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             }
         }
     }
+    
+
 
     @Override
     public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {
@@ -536,14 +545,12 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         BigDecimal totalPrice = new BigDecimal(0);
         if (travelItinerary.getBookings() != null) {
             for (Booking booking : travelItinerary.getBookings()) {
-                Service service = booking.getService();
-                ServiceRate lowestRate = service.getRates().get(0);
-                for (ServiceRate currentRate : service.getRates()) {
-                    if (currentRate.getStartDate().compareTo(booking.getStartDate()) >= 0 && currentRate.getEndDate().compareTo(booking.getEndDate()) <= 0 && currentRate.compareTo(lowestRate) <= 0) {
-                        lowestRate = currentRate;
-                    }
+                try {
+                BigDecimal price = bookingSessionBeanLocal.getPricingOfBooking(booking.getBookingId(), booking.getStartDate(), booking.getEndDate());
+                totalPrice = totalPrice.add(price);
+                } catch(Exception exception){
+                    System.out.println("This should not happen " + exception.getMessage());
                 }
-                totalPrice = totalPrice.add(lowestRate.getPrice());
             }
         }
         return totalPrice;

@@ -8,8 +8,10 @@ package ejb.session.stateless;
 import entity.PaymentTransaction;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.AccountNotFoundException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
+import util.exception.PaymentAccountNotFoundException;
 import util.exception.PaymentTransactionNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -26,4 +28,7 @@ public interface TransactionSessionBeanLocal {
 
     public PaymentTransaction createNewPaymentTransaction(PaymentTransaction paymentTransaction, Long bookingId) throws ConstraintViolationException, UnknownPersistenceException, BookingNotFoundException;
     
+    public PaymentTransaction makePayment(Long bookingId, Long paymentAccountId) throws BookingNotFoundException, PaymentAccountNotFoundException, ConstraintViolationException, UnknownPersistenceException;
+
+    public List<PaymentTransaction> retrievePaymentTransactionsByCustomerId(Long customerId) throws AccountNotFoundException;
 }
