@@ -50,7 +50,7 @@ public class PaymentAccountResource {
     public PaymentAccountResource() {
     }
 
-    @Path("Create")
+    @Path("CreatePaymentAccount")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -58,10 +58,11 @@ public class PaymentAccountResource {
         if (objHandler != null) {
             try {
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
+ 
                 if (!verifyPaymentAccountToCustomer(customer, objHandler.getPaymentAccount())) {
                     throw new CustomerNotMatchException("Please ensure customer owns this payment account!");
                 }
-                PaymentAccount paymentAccount = paymentAccountSessionBeanLocal.createNewPaymentAccount(objHandler.getCustomer().getCustomerId(), objHandler.getPaymentAccount());
+                PaymentAccount paymentAccount = paymentAccountSessionBeanLocal.createNewPaymentAccount(customer.getCustomerId(), objHandler.getPaymentAccount());
                 return Response.status(Response.Status.OK).entity(paymentAccount.getPaymenetAccountId()).build();
             } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -88,7 +89,7 @@ public class PaymentAccountResource {
         }
     }
 
-    @Path("Update")
+    @Path("UpdatePaymentAccount")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -109,7 +110,7 @@ public class PaymentAccountResource {
         }
     }
 
-    @Path("Delete/{paymentAccountId}")
+    @Path("DeletePaymentAccount")
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
