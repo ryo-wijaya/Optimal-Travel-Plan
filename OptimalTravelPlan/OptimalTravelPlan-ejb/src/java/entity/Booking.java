@@ -48,6 +48,14 @@ public class Booking implements Serializable {
 
     public Booking() {
     }
+    
+    public void cleanSelf(){
+        this.travelItinerary = new TravelItinerary();
+        this.paymentTransaction = new PaymentTransaction();
+        this.supportRequest = new SupportRequest();
+        this.review = new Review();
+        this.service = new Service();
+    }
 
     public Booking(Date startDate, Date endDate, TravelItinerary travelItinerary, Service service) {
         this();

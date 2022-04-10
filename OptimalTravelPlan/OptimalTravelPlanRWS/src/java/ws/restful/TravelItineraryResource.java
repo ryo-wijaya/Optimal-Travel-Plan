@@ -28,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import util.exception.AccountDisabledException;
 import util.exception.CustomerNotMatchException;
@@ -91,6 +92,8 @@ public class TravelItineraryResource {
                 if (!travelItinerary.getCustomer().getAccountId().equals(customer.getAccountId())) {
                     throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
                 }
+
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()" + travelItinerary.getTravelItineraryId());
                 travelItinerary = travelItinerarySessionBeanLocal.updateTravelItinerary(travelItinerary);
                 travelItinerary.cleanRelationships();
 
@@ -126,7 +129,7 @@ public class TravelItineraryResource {
         }
     }
 
-    @Path("RecommendTravelItinerary")
+    @Path("RecommendTravelItinerary/{travelItineraryId}")
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,12 +142,17 @@ public class TravelItineraryResource {
                 throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
             }
             TravelItinerary ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId);
-            travelItinerarySessionBeanLocal.recommendTravelItinerary(ti);
+            ti = travelItinerarySessionBeanLocal.recommendTravelItinerary(ti);
             ti.cleanRelationships();
-            return Response.status(Status.OK).entity(ti).build();
+            ResponseBuilder r = Response.status(Status.OK);
+            r = r.entity(ti);
+            Response k = r.build();
+            return k;
         } catch (InvalidLoginCredentialException ex) {
+            System.out.println("ws.restful.TravelItineraryResource.recommendTravelItinerary() error = " + ex.getMessage());
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
+            System.out.println("ws.restful.TravelItineraryResource.recommendTravelItinerary() error = " + ex.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }

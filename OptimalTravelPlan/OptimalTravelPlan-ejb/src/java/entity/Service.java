@@ -73,6 +73,13 @@ public class Service implements Serializable {
         this.address = address;
         this.serviceName = serviceName;
     }
+    public void cleanSelf(){
+        this.business = new Business();
+        this.bookings.clear();
+        this.rates.clear();
+        this.tags.clear();
+        this.country = new Country();
+    }
 
     public Integer getRating() {
         return rating;
