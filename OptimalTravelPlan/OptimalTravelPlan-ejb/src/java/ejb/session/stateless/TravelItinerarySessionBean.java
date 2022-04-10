@@ -34,9 +34,13 @@ import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateTravelItineraryException;
 
 @Stateless
 public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLocal {
+
+    @EJB(name = "CustomerSessionBeanLocal")
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
 
     @EJB(name = "TagSessionBeanLocal")
     private TagSessionBeanLocal tagSessionBeanLocal;
@@ -83,6 +87,38 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                 throw new UnknownPersistenceException(ex.getMessage());
             }
         }
+    }
+
+    @Override
+    public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {
+        TravelItinerary travelItineraryToUpdate = retrieveTravelItineraryById(travelItinerary.getTravelItineraryId());
+        if (travelItineraryToUpdate.getBookings() == null || travelItineraryToUpdate.getBookings().size() == 0) {
+            travelItineraryToUpdate.setCountry(travelItinerary.getCountry());
+            return travelItineraryToUpdate;
+        } else if (!travelItinerary.getCountry().getCountryId().equals(travelItineraryToUpdate.getCountry().getCountryId())) {
+            throw new UpdateTravelItineraryException("Unable to change country due to existing bookings!");
+        }
+        if (travelItinerary.getStartDate().after(travelItinerary.getEndDate())) {
+            throw new UpdateTravelItineraryException("Start Date must be after End date!");
+        }
+        for (Booking booking : travelItineraryToUpdate.getBookings()) {
+            if (booking.getStartDate().before(travelItinerary.getStartDate())
+                    || booking.getEndDate().after(travelItinerary.getEndDate())) {
+                throw new UpdateTravelItineraryException("Booking outside travel itinerary found!");
+
+            }
+        }
+        travelItineraryToUpdate.setStartDate(travelItinerary.getStartDate());
+        travelItineraryToUpdate.setEndDate(travelItinerary.getEndDate());
+        return travelItineraryToUpdate;
+    }
+
+    @Override
+    public List<TravelItinerary> retrieveAllCustomerTravelItinerary(Long customerId) throws AccountNotFoundException {
+        Customer customer = customerSessionBeanLocal.retrieveCustomerById(customerId);
+        Query query = em.createQuery("SELECT ti FROM TravelItinerary ti WHERE ti.customer = :cus");
+        query.setParameter("cus", customer);
+        return query.getResultList();
     }
 
     @Override
@@ -137,7 +173,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         }
         
         sortByMostMatches(result, tags);*/
-        
+
         List<Service> services = new ArrayList<>();
 
         if (result.size() < 3) {
@@ -231,7 +267,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
     private void addHotels(TravelItinerary ti, Calendar day, List<Service> hotels) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         System.out.println("ejb.session.stateless.TravelItinerarySessionBean.addHotels()");
-        
+
         for (Booking booking : ti.getBookings()) {
             Calendar formatter = Calendar.getInstance();
             formatter.setTime(booking.getStartDate());
@@ -313,7 +349,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             noon.set(Calendar.HOUR_OF_DAY, 12);
             //System.out.println("checking for lunch overlap = " + lunchOverlap);
             if (!lunchOverlap) {
-                
+
                 Service lunch = meals.remove(0);
                 meals.add(lunch);
                 Calendar lunchS = Calendar.getInstance();
@@ -334,7 +370,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                     Calendar formatter2 = Calendar.getInstance();
                     formatter2.setTime(sameDay.get(i).getEndDate());
                     if (i == 0 && lunchStart.getTimeInMillis() + HOUR_IN_MILLISECONDS <= formatter.getTimeInMillis()) {
-                        
+
                         Service lunch = meals.remove(0);
                         meals.add(lunch);
                         Date endDate = (Date) sameDay.get(i).getStartDate().clone();
@@ -527,10 +563,10 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
                 }
             }
         }
-        List<Entry<Service,Integer>> newList = new ArrayList<>(map.entrySet());
-        newList.sort((a,b) -> a.getValue().compareTo(b.getValue()));
+        List<Entry<Service, Integer>> newList = new ArrayList<>(map.entrySet());
+        newList.sort((a, b) -> a.getValue().compareTo(b.getValue()));
         List<Service> output = new LinkedList<>();
-        for (Entry<Service,Integer> entry:newList){
+        for (Entry<Service, Integer> entry : newList) {
             output.add(entry.getKey());
         }
         return output;
