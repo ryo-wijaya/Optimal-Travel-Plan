@@ -53,7 +53,7 @@ public class TravelItineraryResource {
     public TravelItineraryResource() {
     }
 
-    @Path("createCustomerAccount")
+    @Path("Create")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,6 +79,7 @@ public class TravelItineraryResource {
         }
     }
 
+    @Path("Update")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -103,22 +104,21 @@ public class TravelItineraryResource {
         }
     }
 
+    @Path("RetrieveCustomerTravelItinerary")
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllTravelItinerary(TravelItineraryHandler objHandler) {
+    public Response retrieveAllTravelItinerary(@QueryParam("username") String username,
+            @QueryParam("password") String password,
+            @PathParam("travelItineraryId") Long travelItineraryId) {
         try {
-            Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             List<TravelItinerary> list = travelItinerarySessionBeanLocal.retrieveAllCustomerTravelItinerary(customer.getCustomerId());
-
             for (TravelItinerary ti : list) {
                 ti.cleanRelationships();
             }
-
             GenericEntity<List<TravelItinerary>> genericEntity = new GenericEntity<List<TravelItinerary>>(list) {
             };
-
             return Response.status(Status.OK).entity(genericEntity).build();
         } catch (InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
@@ -127,18 +127,42 @@ public class TravelItineraryResource {
         }
     }
 
-    @Path("{travelItineraryId}")
+    @Path("RecommendTravelItinerary")
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response recommendTravelItinerary(@QueryParam("username") String username,
+            @QueryParam("password") String password,
+            @PathParam("travelItineraryId") Long travelItineraryId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            if (!customer.getCustomerId().equals(travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId).getCustomer().getCustomerId())) {
+                throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
+            }
+            TravelItinerary ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId);
+            travelItinerarySessionBeanLocal.recommendTravelItinerary(ti);
+            ti.cleanRelationships();
+            return Response.status(Status.OK).entity(ti).build();
+        } catch (InvalidLoginCredentialException ex) {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("Delete/{travelItineraryId}")
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteProduct(@QueryParam("username") String username,
+    public Response deleteTravelItinerary(@QueryParam("username") String username,
             @QueryParam("password") String password,
-            @PathParam("travelItineraryId") Long productId) {
+            @PathParam("travelItineraryId") Long travelItineraryId) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-
-            travelItinerarySessionBeanLocal.deleteTravelItinerary(productId);
-
+            if (!customer.getCustomerId().equals(travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId).getCustomer().getCustomerId())) {
+                throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
+            }
+            travelItinerarySessionBeanLocal.deleteTravelItinerary(travelItineraryId);
             return Response.status(Status.OK).build();
         } catch (Exception ex) {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();

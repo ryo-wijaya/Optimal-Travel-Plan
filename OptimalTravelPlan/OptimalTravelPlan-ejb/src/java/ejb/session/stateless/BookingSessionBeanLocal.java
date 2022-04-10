@@ -38,5 +38,4 @@ public interface BookingSessionBeanLocal {
     public void updateBooking(Booking booking) throws BookingNotFoundException, UpdateBookingException;
 
     public Booking retrieveBookingBySupportRequest(Long supportRequestId) throws SupportRequestNotFoundException;
-    
 }
