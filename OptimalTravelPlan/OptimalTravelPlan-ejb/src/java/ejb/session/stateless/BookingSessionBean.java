@@ -7,8 +7,12 @@ package ejb.session.stateless;
 
 import entity.Booking;
 import entity.Service;
+import entity.ServiceRate;
 import entity.SupportRequest;
 import entity.TravelItinerary;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.enumeration.ChargeType;
+import util.enumeration.RateType;
 import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
@@ -41,6 +47,8 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
 
+    private static Long MILLISECONDS_PER_HOUR;
+    
     @Override
     public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         System.out.println("ejb.session.stateless.BookingSessionBean.createBooking()");
@@ -71,6 +79,29 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
         }
     }
 
+    @Override
+    public BigDecimal getPricingOfBooking(Long bookingId, Date startDate, Date endDate) throws BookingNotFoundException{
+        Booking booking = retrieveBookingById(bookingId);
+        List<ServiceRate> rates = booking.getService().getRates();
+        if (rates.isEmpty()){
+            return new BigDecimal(0);
+        }
+        List<ServiceRate> list = new ArrayList<>();
+        for (ServiceRate rate : rates){
+            if (rate.getStartDate().before(startDate) && rate.getEndDate().after(startDate)){
+                list.add(rate);
+            }
+        }
+        list.sort((a,b)-> {return a.compareTo(b);});
+        ServiceRate serviceRate = list.get(list.size()-1);
+        if (serviceRate.getChargeType().equals(ChargeType.ENTRY)) {
+            return serviceRate.getPrice();
+        }
+        BigDecimal hourly = serviceRate.getPrice();
+        hourly = hourly.multiply(new BigDecimal(Math.floor((endDate.getTime() - startDate.getTime() + MILLISECONDS_PER_HOUR/2) / MILLISECONDS_PER_HOUR)));
+        return hourly;
+    }
+    
     @Override
     public Booking retrieveBookingBySupportRequest(Long supportRequestId) throws SupportRequestNotFoundException {
         SupportRequest sq = supportRequestSessionBeanLocal.retrieveSupportRequestById(supportRequestId);

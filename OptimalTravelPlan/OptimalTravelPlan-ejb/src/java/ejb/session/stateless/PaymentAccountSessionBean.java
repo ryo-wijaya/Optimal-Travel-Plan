@@ -26,6 +26,8 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
 
     @EJB
     private TransactionSessionBeanLocal transactionSessionBean;
+    
+    
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBean;
@@ -43,6 +45,12 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
         customer.getPaymentAccounts().add(newPaymentAccount);
         
         return newPaymentAccount;
+    }
+    
+    @Override
+    public List<PaymentAccount> retrieveAllCustomerPaymentAccounts(Long customerId) throws AccountNotFoundException{
+        Customer customer = customerSessionBean.retrieveCustomerById(customerId);
+        return customer.getPaymentAccounts();
     }
     
     @Override

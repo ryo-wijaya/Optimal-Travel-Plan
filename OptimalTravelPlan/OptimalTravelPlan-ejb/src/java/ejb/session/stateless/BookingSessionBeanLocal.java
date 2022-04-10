@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Booking;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.BookingAlreadyConfirmedException;
@@ -39,4 +41,5 @@ public interface BookingSessionBeanLocal {
 
     public Booking retrieveBookingBySupportRequest(Long supportRequestId) throws SupportRequestNotFoundException;
     
+    public BigDecimal getPricingOfBooking(Long bookingId, Date startDate, Date endDate) throws BookingNotFoundException;
 }

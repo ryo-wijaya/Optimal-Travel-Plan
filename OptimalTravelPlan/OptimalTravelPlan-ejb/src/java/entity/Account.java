@@ -85,6 +85,12 @@ public abstract class Account implements Serializable {
     }
 
     public void setPassword(String password) throws PasswordNotAcceptedException {
+        
+        if (password == null) {
+            this.password = null;
+            return;
+        }
+        
         if (password.length() < 8){
             throw new PasswordNotAcceptedException("Password length must be at least 8 characters!");
         }

@@ -161,10 +161,48 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
         return query.getResultList();
     }
+    
+    @Override
+    public List<Service> retrieveAllActiveServiceByCountry(Long countryId) {
+        Country country = em.find(Country.class, countryId);
+        Query query = em.createQuery("SELECT s FROM Service s WHERE s.active = true AND s.country = :country");
+        query.setParameter("country", country);
 
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<Service> retrieveAllActiveServiceByTags(List<Long> tagIds) {
+        
+        List<Service> services = new ArrayList<>();
+        
+        if (tagIds == null || tagIds.isEmpty()) {
+            return services;
+        } else {
+            Query query = em.createQuery("SELECT DISTINCT s FROM Service s, IN (s.tags) t WHERE t.tagId IN :inTagIds and s.active = true");
+            query.setParameter("inTagIds", tagIds);
+            return query.getResultList();
+        }
+    }
+    
     @Override
     public List<Service> retrieveAllServiceByBusinessId(Long businessId) {
         Query query = em.createQuery("SELECT s FROM Service s WHERE s.business.accountId = :inBusiness");
+        query.setParameter("inBusiness", businessId);
+        List<Service> services = query.getResultList();
+        for (Service service : services) {
+            service.getBookings().size(); //lazy loading
+            service.getBusiness();
+            service.getRates().size();
+            service.getCountry();
+            service.getTags().size();
+        }
+        return services;
+    }
+    
+    @Override
+    public List<Service> retrieveAllActiveServiceByBusinessId(Long businessId) {
+        Query query = em.createQuery("SELECT s FROM Service s WHERE s.active = true AND s.business.accountId = :inBusiness");
         query.setParameter("inBusiness", businessId);
         List<Service> services = query.getResultList();
         for (Service service : services) {
