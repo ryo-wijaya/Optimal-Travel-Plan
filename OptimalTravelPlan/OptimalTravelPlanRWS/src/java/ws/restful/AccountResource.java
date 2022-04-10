@@ -135,7 +135,7 @@ public class AccountResource {
             accountSessionBeanLocal.changePassword(password, newPassword, customer.getAccountId());
             System.out.println("Changed password occured at customer account: " + customer.getAccountId() + " remotely via web service");
 
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
         } catch (InvalidLoginCredentialException | AccountDisabledException | ChangePasswordException | AccountNotFoundException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (PasswordNotAcceptedException ex) {
@@ -149,7 +149,7 @@ public class AccountResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response forgetPasswordChange(@QueryParam("username") String username, @QueryParam("password") String password) {
+    public Response forgetPasswordChange(@QueryParam("username") String username, @QueryParam("email") String password) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
 
@@ -176,7 +176,7 @@ public class AccountResource {
             customerSessionBeanLocal.associateTagToCustomer(customer.getAccountId(), tagId);
             System.out.println("Tag " + tagId + "associated to customer " + customer.getAccountId() + " remotely via web service");
 
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
         } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (AccountNotFoundException | TagNotFoundException ex) {
@@ -197,7 +197,7 @@ public class AccountResource {
             customerSessionBeanLocal.updateCustomer(customer);
             System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");
 
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
         } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (AccountNotFoundException | UpdateCustomerException ex) {
