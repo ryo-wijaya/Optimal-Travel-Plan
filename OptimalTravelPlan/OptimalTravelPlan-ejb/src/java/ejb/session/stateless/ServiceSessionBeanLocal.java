@@ -43,4 +43,10 @@ public interface ServiceSessionBeanLocal {
     public List<Service> retrieveAllEntertainment();
 
     public Service updateService(Service selectedService, List<Long> tagsSelected, Long selectedCountry, Boolean requireVac) throws TagNotFoundException, ServiceNotFoundException, CountryNotFoundException;
+
+    public List<Service> retrieveAllActiveServiceByCountry(Long countryId);
+
+    public List<Service> retrieveAllActiveServiceByTags(List<Long> tagIds);
+
+    public List<Service> retrieveAllActiveServiceByBusinessId(Long businessId);
 }
