@@ -1,0 +1,7 @@
+{
+  "name": "DemoIonic",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
