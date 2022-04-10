@@ -69,30 +69,18 @@ public class AccountResource {
             for (TravelItinerary ti : customer.getTravelItineraries()) {
 
                 ti.getCountry().getServices().clear();
-
-                for (Service service : ti.getCountry().getServices()) {
-                    service.setCountry(null);
-                }
-                ti.getCountry().getServices().clear();
+                ti.setCustomer(null);
 
                 for (Booking booking : ti.getBookings()) {
-                    booking.getService().getBookings().clear();
+                    booking.setTravelItinerary(null);
                     booking.setService(null);
-
-                    booking.getReview().setBooking(null);
                     booking.setReview(null);
-
-                    booking.getSupportRequest().setBooking(null);
                     booking.setSupportRequest(null);
-
                     booking.setPaymentTransaction(null);
                 }
             }
 
             for (Tag tag : customer.getFavouriteTags()) {
-                for (Service service : tag.getServices()) {
-                    service.getTags().clear();
-                }
                 tag.getServices().clear();
             }
 
