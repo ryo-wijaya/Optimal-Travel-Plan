@@ -37,7 +37,7 @@ public class TravelItinerary implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
-    
+
     @ManyToOne
     private Country country;
 
@@ -49,6 +49,12 @@ public class TravelItinerary implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.country = country;
+    }
+    
+    public void cleanSelf(){
+        this.customer = new Customer();
+        this.country = new Country();
+        this.bookings.clear();
     }
 
     public Long getTravelItineraryId() {
@@ -128,20 +134,15 @@ public class TravelItinerary implements Serializable {
         this.country = country;
     }
 
-    public void cleanRelationships(){
-        this.customer.getPaymentAccounts().clear();
-        this.customer.getFavouriteTags().clear();
-        this.customer.getTravelItineraries().clear();
-        this.country.getServices().clear();
-        
-        for(Booking bk : this.bookings){
-            bk.setTravelItinerary(null);
-            bk.getService().getBookings().clear();
-            bk.getService().setBusiness(null);
-            bk.getService().setCountry(null);
-            bk.getService().getTags().clear();
-            bk.getReview().setBooking(null);
-            bk.getSupportRequest().setBooking(null);
+    public void cleanRelationships() {
+        try {
+            this.customer.cleanSelf();
+            this.country.getServices().clear();
+            for (Booking bk : this.bookings) {
+                bk.cleanSelf();
+            }
+        } catch (Exception e) {
+            System.out.println("Cleaning error!");
         }
     }
 }

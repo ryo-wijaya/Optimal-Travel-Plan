@@ -51,9 +51,12 @@ public class Customer extends Account implements Serializable {
         this.favouriteTags = new ArrayList<>();
         this.travelItineraries = new ArrayList<>();
         this.paymentAccounts = new ArrayList<>();
-        this.favouriteTags = new ArrayList<>();
-        this.travelItineraries = new ArrayList<>();
-        this.paymentAccounts = new ArrayList<>();
+    }
+    
+    public void cleanSelf(){
+        this.favouriteTags.clear();
+        this.paymentAccounts.clear();
+        this.travelItineraries.clear();
     }
 
     public Long getCustomerId() {
