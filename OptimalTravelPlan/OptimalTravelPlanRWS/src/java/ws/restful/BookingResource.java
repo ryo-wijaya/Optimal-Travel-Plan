@@ -92,13 +92,13 @@ public class BookingResource {
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteProduct(@QueryParam("username") String username,
+    public Response deleteBooking(@QueryParam("username") String username,
             @QueryParam("password") String password,
             @PathParam("bookingId") Long bookingId) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             if (!customer.getCustomerId().equals(bookingSessionBeanLocal.retrieveBookingById(bookingId).getTravelItinerary().getCustomer().getCustomerId())) {
-                throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
+                throw new CustomerNotMatchException("Please ensure booking matches customer!");
             }
             bookingSessionBeanLocal.deleteBookingById(bookingId);
             return Response.status(Status.OK).build();
