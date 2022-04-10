@@ -40,7 +40,7 @@ import ws.DataModel.ReviewHandler;
  * @author sucram
  */
 
-//ReviewSessionBean: createNewReview, deleteReview, retrieveReviewByServiceId, updateReview
+//ReviewSessionBean: retrieveReviewByServiceId
 @Path("Review")
 public class ReviewResource {
 
