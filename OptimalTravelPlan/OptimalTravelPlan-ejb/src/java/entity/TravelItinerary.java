@@ -128,4 +128,20 @@ public class TravelItinerary implements Serializable {
         this.country = country;
     }
 
+    public void cleanRelationships(){
+        this.customer.getPaymentAccounts().clear();
+        this.customer.getFavouriteTags().clear();
+        this.customer.getTravelItineraries().clear();
+        this.country.getServices().clear();
+        
+        for(Booking bk : this.bookings){
+            bk.setTravelItinerary(null);
+            bk.getService().getBookings().clear();
+            bk.getService().setBusiness(null);
+            bk.getService().setCountry(null);
+            bk.getService().getTags().clear();
+            bk.getReview().setBooking(null);
+            bk.getSupportRequest().setBooking(null);
+        }
+    }
 }

@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.TravelItinerary;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.AccountNotFoundException;
 import util.exception.BookingAlreadyConfirmedException;
@@ -15,6 +16,7 @@ import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateTravelItineraryException;
 
 /**
  *
@@ -33,5 +35,10 @@ public interface TravelItinerarySessionBeanLocal {
 
     public BigDecimal calculateTotalItineraryPrice(TravelItinerary travelItinerary);
 
+    public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException;
+
+    public List<TravelItinerary> retrieveAllCustomerTravelItinerary(Long customerId) throws AccountNotFoundException;
+
+    
 
 }
