@@ -109,8 +109,7 @@ public class TravelItineraryResource {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllTravelItinerary(@QueryParam("username") String username,
-            @QueryParam("password") String password,
-            @PathParam("travelItineraryId") Long travelItineraryId) {
+            @QueryParam("password") String password) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             List<TravelItinerary> list = travelItinerarySessionBeanLocal.retrieveAllCustomerTravelItinerary(customer.getCustomerId());
