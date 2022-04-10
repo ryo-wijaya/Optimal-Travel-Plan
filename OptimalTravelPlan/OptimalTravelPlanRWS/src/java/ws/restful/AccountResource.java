@@ -6,6 +6,7 @@
 package ws.restful;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
+import ejb.session.stateless.CustomerSessionBeanLocal;
 import entity.Account;
 import entity.Booking;
 import entity.Country;
@@ -36,11 +37,15 @@ import util.exception.AccountNotFoundException;
 import util.exception.ChangePasswordException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PasswordNotAcceptedException;
+import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateCustomerException;
 import util.exception.UsernameAlreadyExistException;
 
 @Path("Account")
 public class AccountResource {
+
+    CustomerSessionBeanLocal customerSessionBeanLocal = lookupCustomerSessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
 
@@ -60,30 +65,30 @@ public class AccountResource {
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
             customer.setPassword(null);
-            
+
             for (TravelItinerary ti : customer.getTravelItineraries()) {
 
                 ti.getCountry().getServices().clear();
-                
+
                 for (Service service : ti.getCountry().getServices()) {
                     service.setCountry(null);
                 }
                 ti.getCountry().getServices().clear();
-                
+
                 for (Booking booking : ti.getBookings()) {
                     booking.getService().getBookings().clear();
                     booking.setService(null);
-                    
+
                     booking.getReview().setBooking(null);
                     booking.setReview(null);
-                    
+
                     booking.getSupportRequest().setBooking(null);
                     booking.setSupportRequest(null);
-                    
+
                     booking.setPaymentTransaction(null);
                 }
             }
-            
+
             for (Tag tag : customer.getFavouriteTags()) {
                 for (Service service : tag.getServices()) {
                     service.getTags().clear();
@@ -139,7 +144,7 @@ public class AccountResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
+
     @Path("forgetPasswordChange")
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
@@ -159,10 +164,64 @@ public class AccountResource {
         }
     }
 
+    @Path("associateTagToCustomer")
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response associateTagToCustomer(@QueryParam("username") String username, @QueryParam("password") String password,
+            @QueryParam("tagId") Long tagId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+
+            customerSessionBeanLocal.associateTagToCustomer(customer.getAccountId(), tagId);
+            System.out.println("Tag " + tagId + "associated to customer " + customer.getAccountId() + " remotely via web service");
+
+            return Response.status(Response.Status.OK).build();
+        } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        } catch (AccountNotFoundException | TagNotFoundException ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+    
+    @Path("updateCustomer")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateCustomer(Customer customer) {
+        try {
+            Customer customerLoginCheck = (Customer) accountSessionBeanLocal.login(customer.getUsername(), customer.getPassword());
+
+            customerSessionBeanLocal.updateCustomer(customer);
+            System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");
+
+            return Response.status(Response.Status.OK).build();
+        } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        } catch (AccountNotFoundException | UpdateCustomerException ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+    
+
     private AccountSessionBeanLocal lookupAccountSessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
             return (AccountSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/AccountSessionBean!ejb.session.stateless.AccountSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private CustomerSessionBeanLocal lookupCustomerSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (CustomerSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/CustomerSessionBean!ejb.session.stateless.CustomerSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
