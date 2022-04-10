@@ -53,7 +53,7 @@ public class PaymentTransactionResource {
     public PaymentTransactionResource() {
     }
 
-    @Path("Create")
+    @Path("CreatePaymentTransaction")
     @PUT
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
