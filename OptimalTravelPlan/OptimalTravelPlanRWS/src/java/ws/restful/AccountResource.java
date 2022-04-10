@@ -64,37 +64,37 @@ public class AccountResource {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
-            customer.setPassword(null);
-
+            System.out.println("test: " + customer.getAccountId());
+            //throws error
+            customer.setPassword(null); 
+            
+            System.out.println("0: " + customer.getAccountId());
             for (TravelItinerary ti : customer.getTravelItineraries()) {
+                
+                System.out.println("1: " + customer.getAccountId());
 
                 ti.getCountry().getServices().clear();
+                ti.setCustomer(null);
 
-                for (Service service : ti.getCountry().getServices()) {
-                    service.setCountry(null);
-                }
-                ti.getCountry().getServices().clear();
-
+                System.out.println("2: " + customer.getAccountId());
                 for (Booking booking : ti.getBookings()) {
-                    booking.getService().getBookings().clear();
+                    
+                    System.out.println("3: " + customer.getAccountId());
+                    booking.setTravelItinerary(null);
                     booking.setService(null);
-
-                    booking.getReview().setBooking(null);
                     booking.setReview(null);
-
-                    booking.getSupportRequest().setBooking(null);
                     booking.setSupportRequest(null);
-
                     booking.setPaymentTransaction(null);
                 }
             }
+            
+            System.out.println("4: " + customer.getAccountId());
 
             for (Tag tag : customer.getFavouriteTags()) {
-                for (Service service : tag.getServices()) {
-                    service.getTags().clear();
-                }
                 tag.getServices().clear();
             }
+            
+            System.out.println("5: " + customer.getAccountId());
 
             return Response.status(Status.OK).entity(customer).build();
         } catch (InvalidLoginCredentialException | AccountDisabledException | PasswordNotAcceptedException ex) {

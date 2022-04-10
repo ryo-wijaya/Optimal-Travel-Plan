@@ -39,9 +39,6 @@ public class Customer extends Account implements Serializable {
     private Boolean vaccinationStatus;
 
     public Customer() {
-        this.favouriteTags = new ArrayList<>();
-        this.travelItineraries = new ArrayList<>();
-        this.paymentAccounts = new ArrayList<>();
     }
 
     public Customer(String name, String mobile, String passportNumber, String email, Boolean vaccinationStatus, String username, String password) throws PasswordNotAcceptedException {
@@ -51,6 +48,9 @@ public class Customer extends Account implements Serializable {
         this.passportNumber = passportNumber;
         this.email = email;
         this.vaccinationStatus = vaccinationStatus;
+        this.favouriteTags = new ArrayList<>();
+        this.travelItineraries = new ArrayList<>();
+        this.paymentAccounts = new ArrayList<>();
         this.favouriteTags = new ArrayList<>();
         this.travelItineraries = new ArrayList<>();
         this.paymentAccounts = new ArrayList<>();
