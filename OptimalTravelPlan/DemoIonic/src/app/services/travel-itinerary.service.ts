@@ -64,7 +64,6 @@ export class TravelItineraryService {
   }
 
   retrieveAllCountrys(): Observable<Country[]> {
-    console.log("retrieveAllCountrys called!");
     return this.httpClient.get<Country[]>(this.baseUrl + "/RetrieveAllCountries").pipe
       (
         catchError(this.handleError)
