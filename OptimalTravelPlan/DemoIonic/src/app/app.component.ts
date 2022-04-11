@@ -10,18 +10,18 @@ export class AppComponent {
 
   public userPages = [
     { title: 'Login', url: '/login', icon: 'home' },
-    { title: 'Register', url: '/registration', icon: 'clipboard-outline' }
+    { title: 'Register', url: '/registration', icon: 'clipboard' }
   ];
 
   public customerPages = [
-    { title: 'My Account', url: '/client/accountDetails', icon: 'apps-outline' },
-    { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'apps-outline' },
-    { title: 'My Support Requests', url: '/client/supportRequests', icon: 'apps-outline' }
+    { title: 'My Account', url: '/client/accountDetails', icon: 'apps' },
+    { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'apps' },
+    { title: 'My Support Requests', url: '/client/supportRequests', icon: 'apps' }
   ];
 
   public appPages = [
-    { title: 'Make a Travel Itinerary', url: 'travelItineraryDetails', icon: 'apps-outline' },
-    { title: 'View services', url: '/client/accountDetails', icon: 'apps-outline' }
+    { title: 'Make a Travel Itinerary', url: 'travelItineraryDetails', icon: 'apps' },
+    { title: 'View services', url: '/client/services', icon: 'apps' }
   ]
 
   constructor(private router:Router) { }

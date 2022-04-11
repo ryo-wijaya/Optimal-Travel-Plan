@@ -20,6 +20,7 @@ export class ServiceService {
   constructor(private httpClient: HttpClient) { }
 
   retrieveAllActiveServices(username: string, password: string): Observable<Service[]> {
+    console.log("retrieve services user = " + username + " password = " + password);
     return this.httpClient.get<Service[]>(this.baseUrl + "/retrieveAllActiveServices?username=" + username + "&password=" + password).pipe
       (
         catchError(this.handleError)
