@@ -1,9 +1,103 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="index"></ion-back-button>
+    </ion-buttons>
     <ion-title>Registration</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <form #createCustomerForm="ngForm" (ngSubmit)="create(createCustomerForm)">
+    <ion-card>
+      <ion-card-content>
+        <div *ngIf="resultSuccess == true" style="color: blue;">
+          {{message}}
+        </div>
+
+        <div *ngIf="resultError == true" style="color: red;">
+          {{message}}
+        </div>
+
+        <div style="color:red;">
+
+          <div *ngIf="name.invalid && (name.dirty || name.touched || submitted)" class="errorText">
+            <div *ngIf="name.errors.required">
+              Name is required.
+            </div>
+          </div>
+        </div>
+        <ion-list>
+
+          <ion-item>
+            <ion-label><b>Name</b></ion-label>
+            <ion-input type="text" id="name" name="name" [(ngModel)]="newCustomer.name" required="true" #name="ngModel">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label><b>Username</b></ion-label>
+            <ion-input type="text" id="username" name="username" [(ngModel)]="newCustomer.username" required="true" #name="ngModel">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label><b>Password</b></ion-label>
+            <ion-input type="Password" id="password" name="password" [(ngModel)]="newCustomer.password" required="true" #name="ngModel">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label><b>Mobile</b></ion-label>
+            <ion-input type="text" id="mobile" name="mobile" [(ngModel)]="newCustomer.mobile" required="true" #name="ngModel">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label><b>Passport Number</b></ion-label>
+            <ion-input type="text" id="passportNumber" name="mobile" [(ngModel)]="newCustomer.passportNumber" required="true" #name="ngModel">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label><b>email</b></ion-label>
+            <ion-input type="email" id="email" name="email" [(ngModel)]="newCustomer.email" required="true" #name="ngModel">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label><b>Vacination Status</b></ion-label>
+            <ion-select id="vacinationStatus" name="vacinationStatus" #category="ngModel" [(ngModel)]="newCustomer.vacinationStatus" required="true">
+              <ion-select-option value="true">True</ion-select-option>
+              <ion-select-option value="false">False</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-list>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card style="text-align: center;">
+
+      <ion-card-content>
+        <ion-button (click)="clear()">
+          Clear
+        </ion-button>
+        <ion-button type="submit" ion-button block>
+          Create
+        </ion-button>
+      </ion-card-content>
+
+    </ion-card>
+
+
+  </form>
 
 </ion-content>
+
+<ion-footer>
+
+  &copy; OTP private limited
+
+</ion-footer>
