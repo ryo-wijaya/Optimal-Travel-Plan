@@ -21,28 +21,36 @@ const routes: Routes = [
     loadChildren: () => import('./registration/registration.module').then(m => m.RegistrationPageModule)
   },
   {
-    path: 'home',
+    path: 'client/home',
     loadChildren: () => import('./Client/home/home.module').then( m => m.HomePageModule),
     canActivate: [AuthGuard]
   },
   {
-    path: 'travel-itineraries',
+    path: 'client/travelItineraries',
     loadChildren: () => import('./Client/travel-itineraries/travel-itineraries.module').then( m => m.TravelItinerariesPageModule),
     canActivate: [AuthGuard]
   },
   {
-    path: 'support-requests',
+    path: 'client/supportRequests',
     loadChildren: () => import('./Client/support-requests/support-requests.module').then( m => m.SupportRequestsPageModule),
     canActivate: [AuthGuard]
   },
   {
-    path: 'services',
+    path: 'client/services',
     loadChildren: () => import('./Client/services/services.module').then( m => m.ServicesPageModule),
     canActivate: [AuthGuard]
   },
   {
-    path: 'access-denied',
+    path: 'accessDenied',
     loadChildren: () => import('./access-denied/access-denied.module').then( m => m.AccessDeniedPageModule)
+  },
+  {
+    path: 'client/accountDetails',
+    loadChildren: () => import('./Client/account-details/account-details.module').then( m => m.AccountDetailsPageModule)
+  },
+  {
+    path: 'travelItineraryDetails',
+    loadChildren: () => import('./travel-itinerary-details/travel-itinerary-details.module').then( m => m.TravelItineraryDetailsPageModule)
   }
 ];
 
