@@ -6,6 +6,7 @@ import { TravelItineraryService } from 'src/app/services/travel-itinerary.servic
 import { Country } from 'src/app/models/country';
 import { Tag } from 'src/app/models/tag';
 import { TravelItinerary } from 'src/app/models/travel-itinerary';
+import { Customer } from 'src/app/models/customer';
 
 @Component({
   selector: 'app-home',
@@ -16,15 +17,19 @@ export class HomePage implements OnInit {
 
   countries: Country[];
   tags: Tag[];
-  travelItinerary: TravelItinerary[];
+  travelItineraries: TravelItinerary[];
+  customer: Customer;
+  password: string;
 
   constructor(private router: Router,
     private travelItineraryService: TravelItineraryService) { }
 
   ngOnInit() {
+    this.customer = JSON.parse(sessionStorage['customer']);
+    this.password = sessionStorage['password'];
     this.refreshCountries();
     this.refreshTags();
-    //this.refreshTravelItineraries()
+    this.refreshTravelItineraries()
   }
 
   refreshCountries() {
@@ -49,17 +54,17 @@ export class HomePage implements OnInit {
     })
   }
 
-  /*
+  
   refreshTravelItineraries() {
-    this.travelItineraryService.retrieveAllTravelItinerary().subscribe({
+    this.travelItineraryService.retrieveAllTravelItinerary(this.customer.username, this.password).subscribe({
       next:(response)=>{
-        this.travelItinerary = response;
+        this.travelItineraries = response;
       },
       error:(error)=>{
         console.log('***************** view all Travel Itinerary ' + error);
       }
     })
   }
-  */
+  
 
 }
