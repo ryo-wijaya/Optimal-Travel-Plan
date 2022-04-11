@@ -19,7 +19,13 @@
     "@angular/platform-browser": "~13.2.2",
     "@angular/platform-browser-dynamic": "~13.2.2",
     "@angular/router": "~13.2.2",
+    "@fullcalendar/angular": "^5.11.0",
+    "@fullcalendar/daygrid": "^5.11.0",
+    "@fullcalendar/interaction": "^5.11.0",
+    "@fullcalendar/timegrid": "^5.11.0",
     "@ionic/angular": "^6.0.0",
+    "primeicons": "^5.0.0",
+    "primeng": "^13.3.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
