@@ -12,8 +12,10 @@
     <ion-card-content>
       Services
       <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name"></p-dropdown>
+      <p-multiSelect [options]="tags" [(ngModel)]="selTag" optionLabel="name"></p-multiSelect>
+      <ion-button (click)="filter()">Filter</ion-button>
       <ion-list>
-        <ion-item *ngFor="let service of services" (click)="viewServiceDetails($event, service)">
+        <ion-item *ngFor="let service of filteredServices" (click)="viewServiceDetails($event, service)">
           <ion-icon slot="start" name="arrow-forward"></ion-icon>
           {{service.serviceName}} - {{service.serviceType}}
         </ion-item>

@@ -10,6 +10,7 @@ import interactionPlugin from '@fullcalendar/interaction'; // a plugin!
 import { CalendarOptions } from '@fullcalendar/angular'; // useful for typechecking
 import {DropdownModule} from 'primeng/dropdown';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,7 +23,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, HttpClientModule, FullCalendarModule, DropdownModule, BrowserAnimationsModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, HttpClientModule, 
+    FullCalendarModule, DropdownModule, BrowserAnimationsModule, MultiSelectModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

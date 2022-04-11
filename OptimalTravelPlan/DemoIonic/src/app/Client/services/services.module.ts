@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {DropdownModule} from 'primeng/dropdown';
 import { IonicModule } from '@ionic/angular';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 import { ServicesPageRoutingModule } from './services-routing.module';
 
@@ -14,7 +15,8 @@ import { ServicesPage } from './services.page';
     FormsModule,
     IonicModule,
     ServicesPageRoutingModule,
-    DropdownModule
+    DropdownModule,
+    MultiSelectModule
   ],
   declarations: [ServicesPage]
 })
