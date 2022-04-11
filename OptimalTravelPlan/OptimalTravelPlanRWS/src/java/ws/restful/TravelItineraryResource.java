@@ -210,6 +210,7 @@ public class TravelItineraryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCountries() {
         try {
+            System.out.println("ws.restful.TravelItineraryResource.retrieveAllCountries()");
             List<Country> countries = countrySessionBeanLocal.retrieveAllCountries();
             for(Country t : countries){
                 t.cleanRelationships();

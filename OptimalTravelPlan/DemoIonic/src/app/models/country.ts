@@ -3,9 +3,9 @@ import { Service } from "./service";
 export class Country {
     name: string | undefined;
     services: Service[] | undefined;
-    countryId: Number | undefined;
+    countryId: number | undefined;
 
-    constructor(countryId?: Number, name?: string) {
+    constructor(countryId?: number, name?: string) {
             this.countryId = countryId;
             this.name = name;
     }
