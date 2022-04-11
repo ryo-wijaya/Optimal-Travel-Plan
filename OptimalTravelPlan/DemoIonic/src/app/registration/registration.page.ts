@@ -49,8 +49,8 @@ export class RegistrationPage implements OnInit {
   create(createCustomerForm: NgForm) {
     this.submitted = true;
     if(createCustomerForm.valid) {
-      this.accountService.createNewCustomer(this.username, this.password, this.name,
-        this.mobile, this.passportNumber, this.email, this.vaccinationStatus).subscribe({
+      this.accountService.createNewCustomer(this.newCustomer.username, this.newCustomer.password, this.newCustomer.name,
+        this.newCustomer.mobile, this.newCustomer.passportNumber, this.newCustomer.email, this.newCustomer.vaccinationStatus).subscribe({
           next:(response)=>{
             let newCustomerId: number = response;
             this.resultSuccess = true;
