@@ -49,10 +49,11 @@ export class AccountService {
     );
   }
 
-  updateCustomer(customer: Customer): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.baseUrl + "/updateCustomer", customer, httpOptions).pipe(
-      catchError(this.handleError)
-    );
+  updateCustomer(username: string, password: string, name: string, mobile: string, passportNumber: string, email: string, vaccinationStatus: boolean): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.baseUrl + "/updateCustomer?username=" + username + "&password=" + password
+      + "&name=" + name + "&mobile=" + mobile + "&passportNumber=" + passportNumber + "&email=" + email + "&vaccinationStatus=" + vaccinationStatus, null).pipe(
+        catchError(this.handleError)
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

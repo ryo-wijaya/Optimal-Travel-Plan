@@ -188,11 +188,19 @@ public class AccountResource {
     
     @Path("updateCustomer")
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCustomer(Customer customer) {
+    public Response updateCustomer(@QueryParam("username") String username, @QueryParam("password") String password,
+            @QueryParam("name") String name, @QueryParam("mobile") String mobile, @QueryParam("passportNumber") String passportNumber,
+            @QueryParam("email") String email, @QueryParam("vaccinationStatus") Boolean vaccinationStatus) {
         try {
-            Customer customerLoginCheck = (Customer) accountSessionBeanLocal.login(customer.getUsername(), customer.getPassword());
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            
+            customer.setName(name);
+            customer.setEmail(email);
+            customer.setMobile(mobile);
+            customer.setVaccinationStatus(vaccinationStatus);
+            customer.setPassportNumber(passportNumber);
 
             customerSessionBeanLocal.updateCustomer(customer);
             System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");

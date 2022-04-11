@@ -1,9 +1,128 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>AccountDetails</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title>My Account Details</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card>
+    <ion-card-content>
+      <h2>Profile Details:</h2>
 
+      <form #accountDetailsForm="ngForm" (ngSubmit)="updateDetails(accountDetailsForm)">
+
+        <div *ngIf="resultSuccess == true" style="color: blue;">
+          {{message}}
+        </div>
+
+        <div *ngIf="resultError == true" style="color: red;">
+          {{message}}
+        </div>
+
+        <div style="color:red;">
+          <div *ngIf="inName.invalid && (inName.dirty || inName.touched || submitted)" class="errorText">
+            <div *ngIf="inName.errors.required">
+              Name is required.
+            </div>
+          </div>
+        </div>
+
+        <div style="color:red;">
+          <div *ngIf="inMobile.invalid && (inMobile.dirty || inMobile.touched || submitted)" class="errorText">
+            <div *ngIf="inMobile.errors.required">
+              Mobile is required.
+            </div>
+          </div>
+        </div>
+
+        <div style="color:red;">
+          <div *ngIf="inPassportNumber.invalid && (inPassportNumber.dirty || inPassportNumber.touched || submitted)" class="errorText">
+            <div *ngIf="inPassportNumber.errors.required">
+              Passport Number is required.
+            </div>
+          </div>
+        </div>
+
+        <div style="color:red;">
+          <div *ngIf="inEmail.invalid && (inEmail.dirty || inEmail.touched || submitted)" class="errorText">
+            <div *ngIf="inEmail.errors.required">
+              Email is required.
+            </div>
+          </div>
+        </div>
+
+        <div style="color:red;">
+          <div *ngIf="inEmail.invalid && (inEmail.dirty || inEmail.touched || submitted)" class="errorText">
+            <div *ngIf="inEmail.errors.required">
+              Email is required.
+            </div>
+          </div>
+        </div>
+
+        <ion-list>
+
+          <ion-item>
+            <ion-label fixed>Name: </ion-label>
+            <ion-input type="text" id="name" name="name" [(ngModel)]="name" minlength="2" maxlength="32"
+              required="true" #inName="ngModel"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label fixed>Mobile: </ion-label>
+            <ion-input type="text" id="mobile" name="mobile" [(ngModel)]="mobile" minlength="6" maxlength="20"
+              required="true" #inMobile="ngModel"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label fixed>Passport Number: </ion-label>
+            <ion-input type="text" id="passportNumber" name="passportNumber" [(ngModel)]="passportNumber" minlength="6" maxlength="20"
+              required="true" #inPassportNumber="ngModel"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label fixed>Email: </ion-label>
+            <ion-input type="email" id="email" name="email" [(ngModel)]="email" minlength="6" maxlength="20"
+              required="true" #inEmail="ngModel"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label fixed>Vaccinated: </ion-label>
+            <ion-select id="vaccinated" name="vaccinated" #inVacStatus="ngModel" [(ngModel)]="vaccinationStatus" required="true">
+              <ion-select-option [value]="true">Yes</ion-select-option>
+              <ion-select-option [value]="false">No</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            {{customer.favouriteTags[0].name}}
+          </ion-item>
+
+          <ion-item>
+            <ion-button type="submit" ion-button block>
+              Edit
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <h2>Favourite Tags:</h2>
+      <ion-list>
+        <ion-item>
+          <ion-select multiple="true">
+            <ion-select-option *ngFor="let tag of customer.favouriteTags" value="{{tag.name}}">{{tag.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+
+    </ion-card-content>
+  </ion-card>
 </ion-content>

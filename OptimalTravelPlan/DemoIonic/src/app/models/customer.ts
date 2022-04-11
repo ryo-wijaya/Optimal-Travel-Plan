@@ -10,7 +10,7 @@ export class Customer {
     mobile: string | undefined;
     passportNumber: string | undefined;
     email: string | undefined;
-    vaccinationstatus: boolean | undefined;
+    vaccinationStatus: boolean | undefined;
     username: string | undefined;
     password: string | undefined;
 
@@ -21,7 +21,7 @@ export class Customer {
             this.mobile = mobile;
             this.passportNumber = passportNumber;
             this.email = email;
-            this.vaccinationstatus = vaccinationStatus;
+            this.vaccinationStatus = vaccinationStatus;
             this.username = username;
             this.password = password;
     }
