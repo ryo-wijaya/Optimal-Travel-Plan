@@ -21,9 +21,9 @@ public class Tag implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
-    
+
     private String name;
-    
+
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Service> services;
 
@@ -32,6 +32,16 @@ public class Tag implements Serializable {
 
     public Tag(String name) {
         this.name = name;
+    }
+
+    public void cleanSelf() {
+        this.services.clear();
+    }
+    
+    public void cleanRelationships() {
+        for (Service s : services){
+            s.cleanSelf();
+        }
     }
 
     public Long getTagId() {
@@ -84,7 +94,5 @@ public class Tag implements Serializable {
     public void setServices(List<Service> services) {
         this.services = services;
     }
-    
-    
-    
+
 }

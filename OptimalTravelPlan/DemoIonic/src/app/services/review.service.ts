@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ReviewHandler } from '../models/review-handler';
+import { Review } from '../models/review';
 
 
 const httpOptions = {
@@ -13,26 +15,40 @@ const httpOptions = {
 })
 export class ReviewService {
 
+  baseUrl: string = "/api/Review";
+
   constructor(private httpClient: HttpClient) { }
 
   createReview(objHandler: ReviewHandler): Observable<number> {
-    return this.httpClient.get<number>(this.baseUrl + "/createReview?username=" + objHandler.customer.username, null).pipe
+    return this.httpClient.put<number>(this.baseUrl + "/Create", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)
       );
   }
 
-  updateReview(objHandler: ReviewHandler): Observable<boolean> {
-    return this.httpClient.get<boolean>(this.baseUrl + "/updateReview?username=" + objHandler, null).pipe
+  updateReview(objHandler: ReviewHandler): Observable<Review> {
+    return this.httpClient.post<Review>(this.baseUrl + "/Update", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)
       );
   }
 
-  deleteReview(objHandler: ReviewHandler): Observable<boolean> {
-    return this.httpClient.get<boolean>(this.baseUrl + "/deleteReview?username=" + objHandler, null).pipe
+  deleteReview(username: string, password: string, reviewId: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(this.baseUrl + "/Delete/" + reviewId + "?username=" + username + "&password=" + password).pipe
       (
         catchError(this.handleError)
       );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage: string = "";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = "An unknown error has occurred: " + error.error;
+    }
+    else {
+      errorMessage = "A HTTP error has occurred: " + `HTTP ${error.status}: ${error.error}`;
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }

@@ -5,9 +5,11 @@
  */
 package ws.restful;
 
+import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.ReviewSessionBeanLocal;
 import entity.Booking;
+import entity.Customer;
 import entity.Review;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,24 +41,22 @@ import ws.DataModel.ReviewHandler;
  *
  * @author sucram
  */
-
 //ReviewSessionBean: retrieveReviewByServiceId
 @Path("Review")
 public class ReviewResource {
 
+    AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
+
     @Context
     private UriInfo context;
 
-    /**
-     * Creates a new instance of ReviewResource
-     */
     public ReviewResource() {
     }
-    
+
     ReviewSessionBeanLocal reviewSessionBeanLocal = lookupReviewSessionBeanLocal();
 
     BookingSessionBeanLocal bookingSessionBeanLocal = lookupBookingSessionBeanLocal();
-    
+
     @Path("Create")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -72,7 +72,6 @@ public class ReviewResource {
 
                 return Response.status(Response.Status.OK).entity(reviewId).build();
 
-            
             } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
@@ -106,22 +105,20 @@ public class ReviewResource {
         }
     }
 
-   
-
-
     @Path("Delete/{reviewId}")
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteReview(ReviewHandler objHandler,
+    public Response deleteReview(@QueryParam("username") String username,
+            @QueryParam("password") String password,
             @PathParam("reviewId") Long reviewId) {
         try {
-             Booking booking = (Booking) objHandler.getBooking();
-            if (!booking.getBookingId().equals(reviewSessionBeanLocal.retrieveReviewByReviewId(reviewId).getBooking().getBookingId())) {
-                throw new BookingNotMatchException("Please ensure travel itinerary matches booking!");
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            if (!reviewSessionBeanLocal.retrieveReviewByReviewId(reviewId).getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                throw new BookingNotMatchException("Please ensure this booking belongs to customer!");
             }
             reviewSessionBeanLocal.deleteReview(reviewId);
-            return Response.status(Status.OK).build();
+            return Response.status(Status.OK).entity(Boolean.TRUE).build();
         } catch (Exception ex) {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
         }
@@ -147,5 +144,14 @@ public class ReviewResource {
         }
     }
 
-    
+    private AccountSessionBeanLocal lookupAccountSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (AccountSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/AccountSessionBean!ejb.session.stateless.AccountSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
 }

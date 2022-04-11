@@ -101,7 +101,7 @@ public class PaymentAccountResource {
                     throw new CustomerNotMatchException("Please ensure customer owns this payment account!");
                 }
                 paymentAccountSessionBeanLocal.updatePaymentAccount(objHandler.getPaymentAccount());
-                return Response.status(Response.Status.OK).entity("Updated!").build();
+                return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
             } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
@@ -110,7 +110,7 @@ public class PaymentAccountResource {
         }
     }
 
-    @Path("DeletePaymentAccount")
+    @Path("DeletePaymentAccount/{paymentAccountId}")
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)

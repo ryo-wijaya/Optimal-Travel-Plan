@@ -16,20 +16,17 @@ export class AccountService {
 
   baseUrl: string = "/api/Account";
 
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) { }
 
   customerLogin(username: string, password: string): Observable<Customer> {
-    return this.httpClient.get<Customer>(this.baseUrl + "/customerLogin?username=" + username + "&password=" + password).pipe
-      (
+    return this.httpClient.get<Customer>(this.baseUrl + "/customerLogin?username=" + username + "&password=" + password).pipe(
         catchError(this.handleError)
       );
   }
 
   createNewCustomer(username: string, password: string, name: string, module: string, passportNumber: string, email: string, vaccinationStatus: boolean): Observable<number> {
     return this.httpClient.put<number>(this.baseUrl + "/createCustomerAccount?username=" + username + "&password=" + password
-      + "&name=" + name + "&module=" + module + "&passportNumber=" + passportNumber + "&email" + email + "&vaccinationStatus" + vaccinationStatus, null).pipe
-      (
+      + "&name=" + name + "&module=" + module + "&passportNumber=" + passportNumber + "&email" + email + "&vaccinationStatus" + vaccinationStatus, null).pipe(
         catchError(this.handleError)
       );
   }

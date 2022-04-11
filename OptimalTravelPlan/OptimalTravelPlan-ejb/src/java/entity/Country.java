@@ -21,9 +21,9 @@ public class Country implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long countryId;
-    
+
     private String name;
-    
+
     @OneToMany(mappedBy = "country")
     private List<Service> services;
 
@@ -33,6 +33,16 @@ public class Country implements Serializable {
     public Country(String name) {
         this.name = name;
         this.services = new ArrayList<>();
+    }
+
+    public void cleanSelf() {
+        this.services.clear();
+    }
+
+    public void cleanRelationships() {
+        for (Service s : services) {
+            s.cleanSelf();
+        }
     }
 
     public Long getCountryId() {
@@ -89,5 +99,5 @@ public class Country implements Serializable {
     public void setServices(List<Service> services) {
         this.services = services;
     }
-    
+
 }

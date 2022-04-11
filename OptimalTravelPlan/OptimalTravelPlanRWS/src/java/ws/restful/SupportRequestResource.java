@@ -53,11 +53,11 @@ public class SupportRequestResource {
     @Context
     private UriInfo context;
 
-    @Path("retrieveSupportRequest")
+    @Path("RetrieveSupportRequest")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllTags(@QueryParam("username") String username, 
+    public Response retrieveSupportRequest(@QueryParam("username") String username, 
                                         @QueryParam("password") String password)
     {
         try
@@ -68,7 +68,7 @@ public class SupportRequestResource {
             List<SupportRequest> supportRequests = supportRequestSessionBean.retriveSupportRequestsByCustomerId(customer.getAccountId());
             
             for(SupportRequest sr : supportRequests) {
-                sr.setBooking(null);
+                sr.getBooking().cleanSelf();
             }
             
             GenericEntity<List<SupportRequest>> genericEntity = new GenericEntity<List<SupportRequest>>(supportRequests) {
@@ -86,12 +86,12 @@ public class SupportRequestResource {
         }
     }
     
-    @Path("createSupportrequest")
+    @Path("CreateSupportrequest")
     @PUT
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createSupportRequest(@QueryParam("username") String username, @QueryParam("password") String password,
-            @QueryParam("requestDetails") String requestDetails, @QueryParam("booking") Long bookingId) {
+            @QueryParam("requestDetails") String requestDetails, @QueryParam("bookingId") Long bookingId) {
         {
             try {
                 Customer customer = (Customer) accountSessionBean.login(username, password);
@@ -110,9 +110,6 @@ public class SupportRequestResource {
         }
     }
     
-    /**
-     * Creates a new instance of SupportRequestResource
-     */
     public SupportRequestResource() {
     }
 

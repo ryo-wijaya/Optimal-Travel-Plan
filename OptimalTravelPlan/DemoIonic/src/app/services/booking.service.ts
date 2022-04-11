@@ -14,25 +14,39 @@ const httpOptions = {
 })
 export class BookingService {
 
+  baseUrl: string = "/api/Booking";
+
   constructor(private httpClient: HttpClient) { }
 
   createBooking(objHandler: BookingHandler): Observable<number> {
-    return this.httpClient.get<number>(this.baseUrl + "/createBooking?objHandler=" + objHandler, null).pipe
+    return this.httpClient.put<number>(this.baseUrl + "/Create", objHandler,httpOptions).pipe
       (
         catchError(this.handleError)
       );
   }
 
   updateCustomer(objHandler: BookingHandler): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.baseUrl + "/updateCustomer", objHandler, httpOptions).pipe(
+    return this.httpClient.post<boolean>(this.baseUrl + "/Update", objHandler, httpOptions).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteBooking(username: string, password: string, bookingId: number): Observable<boolean> {
-    return this.httpClient.put<boolean>(this.baseUrl + "/deleteBooking?username=" + username + "&password=" + password + "&bookingId=" + bookingId, httpOptions).pipe
+    return this.httpClient.delete<boolean>(this.baseUrl + "/Delete/"+ bookingId +"?username=" + username + "&password=" + password).pipe
       (
         catchError(this.handleError)
       );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage: string = "";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = "An unknown error has occurred: " + error.error;
+    }
+    else {
+      errorMessage = "A HTTP error has occurred: " + `HTTP ${error.status}: ${error.error}`;
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }

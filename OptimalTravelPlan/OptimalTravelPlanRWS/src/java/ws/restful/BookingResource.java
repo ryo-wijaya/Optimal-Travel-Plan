@@ -78,7 +78,7 @@ public class BookingResource {
                 bookingSessionBeanLocal.updateBooking(objHandler.getBooking());
                 
 
-                return Response.status(Response.Status.OK).entity("Updated!").build();
+                return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
 
             } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -101,7 +101,7 @@ public class BookingResource {
                 throw new CustomerNotMatchException("Please ensure booking matches customer!");
             }
             bookingSessionBeanLocal.deleteBookingById(bookingId);
-            return Response.status(Status.OK).build();
+            return Response.status(Status.OK).entity(Boolean.TRUE).build();
         } catch (Exception ex) {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
         }

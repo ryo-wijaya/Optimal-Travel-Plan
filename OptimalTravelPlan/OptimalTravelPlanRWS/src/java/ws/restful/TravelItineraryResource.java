@@ -6,8 +6,12 @@
 package ws.restful;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
+import ejb.session.stateless.CountrySessionBeanLocal;
+import ejb.session.stateless.TagSessionBeanLocal;
 import ejb.session.stateless.TravelItinerarySessionBeanLocal;
+import entity.Country;
 import entity.Customer;
+import entity.Tag;
 import entity.TravelItinerary;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,9 +48,15 @@ import ws.DataModel.TravelItineraryHandler;
 @Path("TravelItinerary")
 public class TravelItineraryResource {
 
+    CountrySessionBeanLocal countrySessionBeanLocal = lookupCountrySessionBeanLocal();
+
+    TagSessionBeanLocal tagSessionBeanLocal = lookupTagSessionBeanLocal();
+
     TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal = lookupTravelItinerarySessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
+    
+    
 
     @Context
     private UriInfo context;
@@ -170,9 +180,45 @@ public class TravelItineraryResource {
                 throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
             }
             travelItinerarySessionBeanLocal.deleteTravelItinerary(travelItineraryId);
-            return Response.status(Status.OK).build();
+            return Response.status(Status.OK).entity(Boolean.TRUE).build();
         } catch (Exception ex) {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("RetrieveAllTags")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllTags() {
+        try {
+            List<Tag> tags = tagSessionBeanLocal.retrieveAllTags();
+            for(Tag t : tags){
+                t.cleanRelationships();
+            }
+            GenericEntity<List<Tag>> genericEntity = new GenericEntity<List<Tag>>(tags) {
+            };
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("RetrieveAllCountries")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllCountries() {
+        try {
+            List<Country> countries = countrySessionBeanLocal.retrieveAllCountries();
+            for(Country t : countries){
+                t.cleanRelationships();
+            }
+            GenericEntity<List<Country>> genericEntity = new GenericEntity<List<Country>>(countries) {
+            };
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
 
@@ -190,6 +236,26 @@ public class TravelItineraryResource {
         try {
             javax.naming.Context c = new InitialContext();
             return (TravelItinerarySessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/TravelItinerarySessionBean!ejb.session.stateless.TravelItinerarySessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private TagSessionBeanLocal lookupTagSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (TagSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/TagSessionBean!ejb.session.stateless.TagSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private CountrySessionBeanLocal lookupCountrySessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (CountrySessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/CountrySessionBean!ejb.session.stateless.CountrySessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

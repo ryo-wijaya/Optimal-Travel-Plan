@@ -11,7 +11,6 @@ import entity.Booking;
 import entity.Customer;
 import entity.Service;
 import entity.Tag;
-import entity.TravelItinerary;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,14 +24,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import util.exception.AccountDisabledException;
 import util.exception.InvalidLoginCredentialException;
-import util.exception.PasswordNotAcceptedException;
 import ws.DataModel.ServiceByTagHandler;
 
 
