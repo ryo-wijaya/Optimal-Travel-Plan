@@ -3,7 +3,7 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
 
-        <ion-list *ngIf="!getIsLogin()" >  <!---->
+        <ion-list *ngIf="!getIsLogin()" >
           <ion-list-header>
             <ion-label>Account</ion-label>
           </ion-list-header>
@@ -16,10 +16,14 @@
           </ion-menu-toggle>
         </ion-list>
 
-        <ion-list *ngIf="getIsLogin()"> <!---->
+        <ion-list *ngIf="getIsLogin()"> 
           <ion-list-header>
             <ion-label>Menu</ion-label>
           </ion-list-header>
+          <ion-button (click)="logout()" >
+            <ion-icon slot="start" [ios]="'home' + '-outline'" [md]="'home' + '-sharp'"></ion-icon>
+            Logout
+          </ion-button>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of customerPages; let i = index">
             <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
               routerLinkActive="selected">

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Customer } from './models/customer';
 @Component({
   selector: 'app-root',
@@ -13,7 +14,6 @@ export class AppComponent {
   ];
 
   public customerPages = [
-    { title: 'Logout', url: '/login', icon: 'home' },//need fix
     { title: 'My Account', url: '/client/accountDetails', icon: 'apps-outline' },
     { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'apps-outline' },
     { title: 'My Support Requests', url: '/client/supportRequests', icon: 'apps-outline' }
@@ -24,7 +24,12 @@ export class AppComponent {
     { title: 'View services', url: '/client/accountDetails', icon: 'apps-outline' }
   ]
 
-  constructor() { }
+  constructor(private router:Router) { }
+
+  public logout(){
+    sessionStorage.clear();
+    this.router.navigate(['/login']);
+  }
 
   public getIsLogin(): boolean {
     let customer: null | string;
