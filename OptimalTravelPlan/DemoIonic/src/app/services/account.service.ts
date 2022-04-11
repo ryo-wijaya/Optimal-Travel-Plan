@@ -26,7 +26,7 @@ export class AccountService {
 
   createNewCustomer(username: string, password: string, name: string, mobile: string, passportNumber: string, email: string, vaccinationStatus: boolean): Observable<number> {
     return this.httpClient.put<number>(this.baseUrl + "/createCustomerAccount?username=" + username + "&password=" + password
-      + "&name=" + name + "&mobile=" + mobile + "&passportNumber=" + passportNumber + "&email" + email + "&vaccinationStatus" + vaccinationStatus, null).pipe(
+      + "&name=" + name + "&mobile=" + mobile + "&passportNumber=" + passportNumber + "&email=" + email + "&vaccinationStatus=" + vaccinationStatus, null).pipe(
         catchError(this.handleError)
       );
   }
