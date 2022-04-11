@@ -21,7 +21,7 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Make a Travel Itinerary', url: 'travelItineraryDetails', icon: 'apps-outline' },
-    { title: 'View services', url: '/client/accountDetails', icon: 'apps-outline' }
+    { title: 'View services', url: '/client/services', icon: 'apps-outline' }
   ]
 
   constructor(private router:Router) { }

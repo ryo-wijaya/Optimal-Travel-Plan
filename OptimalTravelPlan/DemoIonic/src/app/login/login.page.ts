@@ -44,7 +44,7 @@ export class LoginPage implements OnInit {
 
 					if (customer != null) 
           {
-						sessionStorage['customer'] = customer;
+						sessionStorage['customer'] = JSON.stringify(customer);
             sessionStorage['password'] = this.password;
 						this.loginError = false;
             this.router.navigate(['/client/home']);

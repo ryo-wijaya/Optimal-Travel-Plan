@@ -56,7 +56,6 @@ public class ServiceResource {
     public ServiceResource() {
     }
     
-    @JsonbTransient
     @Path("retrieveAllActiveServices")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -64,7 +63,7 @@ public class ServiceResource {
     public Response retrieveAllActiveServices(@QueryParam("username") String username, @QueryParam("password") String password) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-            
+            System.out.println("ws.restful.ServiceResource.retrieveAllActiveServices()");
             List<Service> services = serviceSessionBeanLocal.retrieveAllActiveServices();
             
             for (Service service : services) {
