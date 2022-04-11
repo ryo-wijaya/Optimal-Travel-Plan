@@ -109,4 +109,8 @@ public class SupportRequest implements Serializable {
         return "entity.SupportRequest[ id=" + supportRequestId + " ]";
     }
 
+    public void cleanSelf() {
+        this.booking = null;
+    }
+
 }

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BookingHandler } from '../models/booking-handler';
+import { Booking } from '../models/booking';
 
 
 const httpOptions = {
@@ -23,6 +24,13 @@ export class BookingService {
       (
         catchError(this.handleError)
       );
+  }
+
+  retrieveBookingById(username: string, password: string, bookingId: number): Observable<Booking> {
+    return this.httpClient.get<Booking>(this.baseUrl + "/RetrieveBookingById/"+ bookingId +"?username=" + username + "&password=" + password).pipe
+    (
+      catchError(this.handleError)
+    );
   }
 
   updateCustomer(objHandler: BookingHandler): Observable<boolean> {

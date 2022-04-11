@@ -50,11 +50,23 @@ public class TravelItinerary implements Serializable {
         this.endDate = endDate;
         this.country = country;
     }
-    
-    public void cleanSelf(){
+
+    public void cleanSelf() {
         this.customer = new Customer();
         this.country = new Country();
         this.bookings.clear();
+    }
+
+    public void cleanRelationships() {
+        try {
+            this.customer.cleanSelf();
+            this.country.getServices().clear();
+            for (Booking bk : this.bookings) {
+                bk.cleanSelf();
+            }
+        } catch (Exception e) {
+            System.out.println("Cleaning error!");
+        }
     }
 
     public Long getTravelItineraryId() {
@@ -134,15 +146,4 @@ public class TravelItinerary implements Serializable {
         this.country = country;
     }
 
-    public void cleanRelationships() {
-        try {
-            this.customer.cleanSelf();
-            this.country.getServices().clear();
-            for (Booking bk : this.bookings) {
-                bk.cleanSelf();
-            }
-        } catch (Exception e) {
-            System.out.println("Cleaning error!");
-        }
-    }
 }

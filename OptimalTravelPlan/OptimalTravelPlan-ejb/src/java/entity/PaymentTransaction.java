@@ -104,5 +104,9 @@ public class PaymentTransaction implements Serializable {
     public void setPrevailingRateAtPaymentDate(BigDecimal prevailingRateAtPaymentDate) {
         this.prevailingRateAtPaymentDate = prevailingRateAtPaymentDate;
     }
+
+    void cleanSelf() {
+        //does nothing since payment account is not a problem
+    }
     
 }

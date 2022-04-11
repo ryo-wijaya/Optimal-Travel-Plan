@@ -113,5 +113,9 @@ public class Review implements Serializable {
             System.out.println("Cleaning error!");
         }
     }
+
+    void cleanSelf() {
+        this.booking = null;
+    }
     
 }

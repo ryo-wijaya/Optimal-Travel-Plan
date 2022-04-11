@@ -7,6 +7,7 @@ package ws.restful;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.BookingSessionBeanLocal;
+import entity.Booking;
 import entity.Customer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
@@ -64,6 +66,27 @@ public class BookingResource {
         }
     }
 
+    @Path("RetrieveBookingById/{bookingId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveBookingById(@QueryParam("username") String username, @QueryParam("password") String password,
+            @PathParam("bookingId") Long bookingId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
+            Booking booking = bookingSessionBeanLocal.retrieveBookingById(bookingId);
+            if(!booking.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())){
+                throw new CustomerNotMatchException("Please ensure booking matches customer!");
+            }
+            booking.cleanRelationships();
+
+            return Response.status(Status.OK).entity(booking).build();
+        } catch (Exception ex) {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        }
+    }
+
     @Path("Update")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -72,11 +95,10 @@ public class BookingResource {
         if (objHandler != null) {
             try {
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-                if (!objHandler.getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())){
+                if (!objHandler.getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }
                 bookingSessionBeanLocal.updateBooking(objHandler.getBooking());
-                
 
                 return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
 

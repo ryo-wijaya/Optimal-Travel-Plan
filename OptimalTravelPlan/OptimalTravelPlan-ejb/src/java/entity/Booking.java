@@ -64,6 +64,14 @@ public class Booking implements Serializable {
         this.travelItinerary = travelItinerary;
         this.service = service;
     }
+    
+    public void cleanRelationships(){
+        this.travelItinerary.cleanSelf();
+        this.paymentTransaction.cleanSelf();
+        this.supportRequest.cleanSelf();
+        this.review.cleanSelf();
+        this.service.cleanSelf();
+    }
 
     public Long getBookingId() {
         return bookingId;
