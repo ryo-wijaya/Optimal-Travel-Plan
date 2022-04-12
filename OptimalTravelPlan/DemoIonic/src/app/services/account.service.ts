@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { Customer } from '../models/customer'
+import { CustomerHandler } from '../models/customer-handler';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -49,9 +50,8 @@ export class AccountService {
     );
   }
 
-  updateCustomer(username: string, password: string, name: string, mobile: string, passportNumber: string, email: string, vaccinationStatus: boolean): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.baseUrl + "/updateCustomer?username=" + username + "&password=" + password
-      + "&name=" + name + "&mobile=" + mobile + "&passportNumber=" + passportNumber + "&email=" + email + "&vaccinationStatus=" + vaccinationStatus, null).pipe(
+  updateCustomer(customerHandler: CustomerHandler): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.baseUrl + "/updateCustomer", customerHandler, httpOptions).pipe(
         catchError(this.handleError)
       );
   }

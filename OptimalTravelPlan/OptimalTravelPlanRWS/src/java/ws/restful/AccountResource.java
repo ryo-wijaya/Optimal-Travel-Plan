@@ -41,6 +41,7 @@ import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateCustomerException;
 import util.exception.UsernameAlreadyExistException;
+import ws.DataModel.CustomerHandler;
 
 @Path("Account")
 public class AccountResource {
@@ -188,19 +189,11 @@ public class AccountResource {
     
     @Path("updateCustomer")
     @POST
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCustomer(@QueryParam("username") String username, @QueryParam("password") String password,
-            @QueryParam("name") String name, @QueryParam("mobile") String mobile, @QueryParam("passportNumber") String passportNumber,
-            @QueryParam("email") String email, @QueryParam("vaccinationStatus") Boolean vaccinationStatus) {
+    public Response updateCustomer(CustomerHandler wrapper) {
         try {
-            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-            
-            customer.setName(name);
-            customer.setEmail(email);
-            customer.setMobile(mobile);
-            customer.setVaccinationStatus(vaccinationStatus);
-            customer.setPassportNumber(passportNumber);
+            Customer customer = (Customer) accountSessionBeanLocal.login(wrapper.getCustomer().getUsername(), wrapper.getPassword());
 
             customerSessionBeanLocal.updateCustomer(customer);
             System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");
