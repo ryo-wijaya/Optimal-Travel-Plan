@@ -43,6 +43,17 @@ public class Business extends Account implements Serializable {
         this.businessEmail = email;
         this.services = new ArrayList<>();
     }
+    
+    public void cleanRelationships() {
+        for(Service s : services){
+            s.cleanSelf();
+        }
+        
+    }
+    
+    public void cleanSelf(){
+        this.services = new ArrayList<>();
+    }
 
     public Long getBusinessId() {
         return getAccountId();

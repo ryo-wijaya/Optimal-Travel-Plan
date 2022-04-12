@@ -13,6 +13,7 @@ import entity.Country;
 import entity.Customer;
 import entity.Tag;
 import entity.TravelItinerary;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +72,9 @@ public class TravelItineraryResource {
     public Response createTravelItinerary(TravelItineraryHandler objHandler) {
         if (objHandler != null) {
             try {
+                System.out.println("ws.restful.TravelItineraryResource.createTravelItinerary()");
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
+                objHandler.getTravelItinerary().getBookings().clear();
                 Long travelItineraryId
                         = travelItinerarySessionBeanLocal.createNewTravelItinerary(
                                 objHandler.getTravelItinerary(),
@@ -97,8 +100,17 @@ public class TravelItineraryResource {
     public Response updateTravelItinerary(TravelItineraryHandler objHandler) {
         if (objHandler != null) {
             try {
+                
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
                 TravelItinerary travelItinerary = objHandler.getTravelItinerary();
+                
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() customer " + objHandler.getCustomer().getCustomerId());
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()country id " + objHandler.getTravelItinerary().getCountry().getCountryId());
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()obj " + travelItinerary);
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()id " + travelItinerary.getTravelItineraryId());
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() end date " + travelItinerary.getEndDate());
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()start date " + travelItinerary.getStartDate());
+                
                 if (!travelItinerary.getCustomer().getAccountId().equals(customer.getAccountId())) {
                     throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
                 }
@@ -147,6 +159,8 @@ public class TravelItineraryResource {
             @QueryParam("password") String password,
             @PathParam("travelItineraryId") Long travelItineraryId) {
         try {
+            
+            System.out.println("ws.restful.TravelItineraryResource.recommendTravelItinerary()");
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             if (!customer.getCustomerId().equals(travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId).getCustomer().getCustomerId())) {
                 throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");

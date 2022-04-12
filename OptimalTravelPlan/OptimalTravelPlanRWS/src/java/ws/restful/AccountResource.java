@@ -41,6 +41,7 @@ import util.exception.TagNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateCustomerException;
 import util.exception.UsernameAlreadyExistException;
+import ws.DataModel.CustomerHandler;
 
 @Path("Account")
 public class AccountResource {
@@ -64,22 +65,11 @@ public class AccountResource {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
-            System.out.println("test: " + customer.getAccountId());
-            //throws error
-            customer.setPassword(null); 
-            
-            System.out.println("0: " + customer.getAccountId());
+            customer.setPassword(null);
             for (TravelItinerary ti : customer.getTravelItineraries()) {
-                
-                System.out.println("1: " + customer.getAccountId());
-
                 ti.getCountry().getServices().clear();
                 ti.setCustomer(null);
-
-                System.out.println("2: " + customer.getAccountId());
                 for (Booking booking : ti.getBookings()) {
-                    
-                    System.out.println("3: " + customer.getAccountId());
                     booking.setTravelItinerary(null);
                     booking.setService(null);
                     booking.setReview(null);
@@ -87,15 +77,9 @@ public class AccountResource {
                     booking.setPaymentTransaction(null);
                 }
             }
-            
-            System.out.println("4: " + customer.getAccountId());
-
             for (Tag tag : customer.getFavouriteTags()) {
                 tag.getServices().clear();
             }
-            
-            System.out.println("5: " + customer.getAccountId());
-
             return Response.status(Status.OK).entity(customer).build();
         } catch (InvalidLoginCredentialException | AccountDisabledException | PasswordNotAcceptedException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
@@ -185,25 +169,18 @@ public class AccountResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
+
     @Path("updateCustomer")
     @POST
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCustomer(@QueryParam("username") String username, @QueryParam("password") String password,
-            @QueryParam("name") String name, @QueryParam("mobile") String mobile, @QueryParam("passportNumber") String passportNumber,
-            @QueryParam("email") String email, @QueryParam("vaccinationStatus") Boolean vaccinationStatus) {
+    public Response updateCustomer(CustomerHandler wrapper) {
         try {
-            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-            
-            customer.setName(name);
-            customer.setEmail(email);
-            customer.setMobile(mobile);
-            customer.setVaccinationStatus(vaccinationStatus);
-            customer.setPassportNumber(passportNumber);
+            Customer customer = (Customer) accountSessionBeanLocal.login(wrapper.getCustomer().getUsername(), wrapper.getPassword());
 
             customerSessionBeanLocal.updateCustomer(customer);
             System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");
+            System.out.println("Customer ID " + wrapper.getCustomer().getAccountId());
 
             return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
         } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
@@ -214,7 +191,6 @@ public class AccountResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
 
     private AccountSessionBeanLocal lookupAccountSessionBeanLocal() {
         try {

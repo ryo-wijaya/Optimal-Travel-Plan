@@ -22,15 +22,21 @@ export class ServicesPage implements OnInit {
   countries: Country[];
   tags: Tag[];
   selTag: Tag[];
+  private password:string;
 
   constructor(private router: Router,
     private serviceService: ServiceService,
     private travelItineraryService: TravelItineraryService) { }
 
   ngOnInit() {
-    this.customer = JSON.parse(sessionStorage['customer']);
+    console.log("init travel itin details page");
+    let tempCus = sessionStorage['customer'];
+    if (tempCus != null) {
+      this.customer = JSON.parse(tempCus);
+      this.password = sessionStorage['password'];
+    }
     let password: string = sessionStorage['password'];
-    this.serviceService.retrieveAllActiveServices(this.customer.username, password).subscribe({
+    this.serviceService.retrieveAllActiveServices().subscribe({
       next: (response) => {
         this.services = response;
         this.filteredServices = response;
@@ -41,7 +47,7 @@ export class ServicesPage implements OnInit {
     });
     this.travelItineraryService.retrieveAllCountrys().subscribe({
       next: (response) => {
-        this.countries = [{ countryId: null, name: null, services: [] }];
+        this.countries = [{ countryId: null, name: "No filter", services: [] }];
         this.countries = this.countries.concat(response);
       },
       error: (error) => {
@@ -60,28 +66,44 @@ export class ServicesPage implements OnInit {
   }
 
   filter() {
-    if (this.country != null && this.country.name != null) {
-      this.filteredServices = this.services
-      for (let s of this.services) {
-        if (s.country == this.country) {
-          this.filteredServices.concat(s);
-          break;
+    let filter = false;
+    this.filteredServices = [];
+    for (let s of this.services) {
+      let willAdd: boolean = false;
+
+      if (this.country != null && this.country.name != null) {
+        filter = true;
+        if (s.country.countryId == this.country.countryId) {
+          willAdd = true;
         }
+      }
+
+      if (!willAdd && this.selTag != null) {
         for (let t of this.selTag) {
-          for(let t2 of s.tags){
-            if(t.tagId == t2.tagId){
-              this.filteredServices.concat(s);
-              break;
+          if (t != null && t.name != null) {
+            filter = true;
+            console.log(s.tags);
+            for (let t2 of s.tags) {
+              if (t.tagId == t2.tagId) {
+                willAdd = true;
+                break;
+              }
             }
           }
         }
       }
+      if (willAdd) {
+        this.filteredServices.push(s);
+      }
+    }
+
+    if (!filter) {
+      this.filteredServices = this.services;
     }
   }
 
   viewServiceDetails(event, service: Service) {
     console.log("attempting to view serivce ID = " + service.serviceId);
-    this.router.navigate(["/client/serviceDetail/" + service.serviceId]);
+    this.router.navigate(["/serviceDetails/" + service.serviceId]);
   }
-
 }

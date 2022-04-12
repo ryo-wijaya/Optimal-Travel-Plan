@@ -37,8 +37,7 @@ const routes: Routes = [
   },
   {
     path: 'client/services',
-    loadChildren: () => import('./Client/services/services.module').then( m => m.ServicesPageModule),
-    canActivate: [AuthGuard]
+    loadChildren: () => import('./Client/services/services.module').then( m => m.ServicesPageModule)
   },
   {
     path: 'accessDenied',
@@ -46,11 +45,24 @@ const routes: Routes = [
   },
   {
     path: 'client/accountDetails',
-    loadChildren: () => import('./Client/account-details/account-details.module').then( m => m.AccountDetailsPageModule)
+    loadChildren: () => import('./Client/account-details/account-details.module').then( m => m.AccountDetailsPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'travelItineraryDetails',
     loadChildren: () => import('./travel-itinerary-details/travel-itinerary-details.module').then( m => m.TravelItineraryDetailsPageModule)
+  },
+  {
+    path: 'serviceDetails/:serviceId',
+    loadChildren: () => import('./service-details/service-details.module').then( m => m.ServiceDetailsPageModule)
+  },
+  {
+    path: 'create-new-booking',
+    loadChildren: () => import('./create-new-booking/create-new-booking.module').then( m => m.CreateNewBookingPageModule)
+  },
+  {
+    path: 'createSupportRequest',
+    loadChildren: () => import('./Client/create-support-request/create-support-request.module').then( m => m.CreateSupportRequestPageModule)
   },
   {
     path: 'client/view-support-requests',

@@ -9,19 +9,10 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-content>
-      <h2>Profile Details:</h2>
-
-      <form #accountDetailsForm="ngForm" (ngSubmit)="updateDetails(accountDetailsForm)">
-
-        <div *ngIf="resultSuccess == true" style="color: blue;">
-          {{message}}
-        </div>
-
-        <div *ngIf="resultError == true" style="color: red;">
-          {{message}}
-        </div>
+  <form #accountDetailsForm="ngForm" (ngSubmit)="updateDetails(accountDetailsForm)">
+    <ion-card>
+      <ion-card-content>
+        <h2>Profile Details:</h2>
 
         <div style="color:red;">
           <div *ngIf="inName.invalid && (inName.dirty || inName.touched || submitted)" class="errorText">
@@ -40,7 +31,8 @@
         </div>
 
         <div style="color:red;">
-          <div *ngIf="inPassportNumber.invalid && (inPassportNumber.dirty || inPassportNumber.touched || submitted)" class="errorText">
+          <div *ngIf="inPassportNumber.invalid && (inPassportNumber.dirty || inPassportNumber.touched || submitted)"
+            class="errorText">
             <div *ngIf="inPassportNumber.errors.required">
               Passport Number is required.
             </div>
@@ -67,62 +59,74 @@
 
           <ion-item>
             <ion-label fixed>Name: </ion-label>
-            <ion-input type="text" id="name" name="name" [(ngModel)]="name" minlength="2" maxlength="32"
+            <ion-input type="text" id="name" name="name" [(ngModel)]="customer.name" minlength="2" maxlength="32"
               required="true" #inName="ngModel"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label fixed>Mobile: </ion-label>
-            <ion-input type="text" id="mobile" name="mobile" [(ngModel)]="mobile" minlength="6" maxlength="20"
+            <ion-input type="text" id="mobile" name="mobile" [(ngModel)]="customer.mobile" minlength="6" maxlength="20"
               required="true" #inMobile="ngModel"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label fixed>Passport Number: </ion-label>
-            <ion-input type="text" id="passportNumber" name="passportNumber" [(ngModel)]="passportNumber" minlength="6" maxlength="20"
-              required="true" #inPassportNumber="ngModel"></ion-input>
+            <ion-input type="text" id="passportNumber" name="passportNumber" [(ngModel)]="customer.passportNumber"
+              minlength="6" maxlength="20" required="true" #inPassportNumber="ngModel"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label fixed>Email: </ion-label>
-            <ion-input type="email" id="email" name="email" [(ngModel)]="email" minlength="6" maxlength="20"
+            <ion-input type="email" id="email" name="email" [(ngModel)]="customer.email" minlength="6" maxlength="20"
               required="true" #inEmail="ngModel"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label fixed>Vaccinated: </ion-label>
-            <ion-select id="vaccinated" name="vaccinated" #inVacStatus="ngModel" [(ngModel)]="vaccinationStatus" required="true">
+            <ion-select id="vaccinated" name="vaccinated" #inVacStatus="ngModel"
+              [(ngModel)]="customer.vaccinationStatus" required="true">
               <ion-select-option [value]="true">Yes</ion-select-option>
               <ion-select-option [value]="false">No</ion-select-option>
             </ion-select>
           </ion-item>
 
-          <ion-item>
-            {{customer.favouriteTags[0].name}}
-          </ion-item>
-
-          <ion-item>
-            <ion-button type="submit" ion-button block>
-              Edit
-            </ion-button>
-          </ion-item>
         </ion-list>
-      </form>
-    </ion-card-content>
-  </ion-card>
+      </ion-card-content>
+    </ion-card>
 
-  <ion-card>
-    <ion-card-content>
-      <h2>Favourite Tags:</h2>
-      <ion-list>
-        <ion-item>
-          <ion-select multiple="true">
-            <ion-select-option *ngFor="let tag of customer.favouriteTags" value="{{tag.name}}">{{tag.name}}</ion-select-option>
+    <ion-card>
+      <ion-card-content>
+        <span style="float: right;">
+          <ion-label>Add Tag</ion-label>
+          <ion-select [(ngModel)]="selectedTag" (ionChange)="addTag($event)" [ngModelOptions]="{standalone: true}">
+            <ion-select-option *ngFor="let tag of availableTagsLeft" [value]="tag">{{tag.name}}</ion-select-option>
           </ion-select>
-        </ion-item>
-      </ion-list>
+        </span>
 
+        <h2>Favourite Tags:</h2>
+        <ion-list>
 
-    </ion-card-content>
-  </ion-card>
+          <ion-item *ngFor="let tag of customer.favouriteTags">
+            <ion-button type="submit" ion-button block (click)="removeTag($event, tag)">
+              Remove
+            </ion-button>
+            <ion-icon name="color-wand-outline"></ion-icon>
+            {{tag.name}}
+          </ion-item>
+
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-content>
+        <ion-button type="submit" ion-button block>
+          Save Changes
+        </ion-button>
+        <ion-button ion-button block (click)="changePassword($event)">
+          Change Password
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </form>
 </ion-content>

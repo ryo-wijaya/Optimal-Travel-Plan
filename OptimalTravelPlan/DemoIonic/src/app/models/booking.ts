@@ -4,7 +4,7 @@ import { PaymentTransaction } from "./payment-transaction";
 import { SupportRequest } from "./support-request";
 
 export class Booking {
-    bookingId: Number | undefined;
+    bookingId: number | undefined;
     startDate: Date | undefined;
     endDate: Date | undefined;
     travelItinerary: TravelItinerary | undefined;
@@ -12,7 +12,7 @@ export class Booking {
     paymentTransaction: PaymentTransaction | undefined | null;
     supportRequest: SupportRequest | undefined | null;
 
-    constructor(bookingId?: Number, startDate?: Date, endDate?: Date, 
+    constructor(bookingId?: number, startDate?: Date, endDate?: Date, 
         travelItinerary?: TravelItinerary, service?: Service) {
             this.bookingId = bookingId;
             this.startDate = startDate;
