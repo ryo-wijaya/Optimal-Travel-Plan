@@ -37,7 +37,6 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   ngOnInit() {
-    console.log("init travel itin details page");
     let tempCus = sessionStorage['customer'];
     if (tempCus != null) {
       this.customer = JSON.parse(tempCus);
@@ -56,11 +55,15 @@ export class TravelItineraryDetailsPage implements OnInit {
       selectMirror: true,
       dayMaxEvents: true
     };
-    
+
     let temp = sessionStorage['travelItinerary'];
     if (temp != null) {
       this.travelItinerary = JSON.parse(temp);
     }
+
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'))
+    }, 1)
 
     this.refreshCal();
   }
@@ -116,6 +119,9 @@ export class TravelItineraryDetailsPage implements OnInit {
         });
       }
     }
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'))
+    }, 1)
     this.refreshEvents();
   }
 
@@ -162,6 +168,9 @@ export class TravelItineraryDetailsPage implements OnInit {
         this.options = { ...this.options, ...{ events: this.events } };
       }
     }
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'))
+    }, 1)
   }
 
   public formatDate(date: Date) {
