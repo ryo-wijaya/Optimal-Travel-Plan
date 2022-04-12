@@ -14,14 +14,6 @@
       <ion-card-content>
         <h2>Profile Details:</h2>
 
-        <div *ngIf="resultSuccess == true" style="color: blue;">
-          {{message}}
-        </div>
-
-        <div *ngIf="resultError == true" style="color: red;">
-          {{message}}
-        </div>
-
         <div style="color:red;">
           <div *ngIf="inName.invalid && (inName.dirty || inName.touched || submitted)" class="errorText">
             <div *ngIf="inName.errors.required">
@@ -106,7 +98,7 @@
       <ion-card-content>
         <span style="float: right;">
           <ion-label>Add Tag</ion-label>
-          <ion-select type="submit" [(ngModel)]="selectedTag" (ionChange)="addTag($event)" [ngModelOptions]="{standalone: true}">
+          <ion-select [(ngModel)]="selectedTag" (ionChange)="addTag($event)" [ngModelOptions]="{standalone: true}">
             <ion-select-option *ngFor="let tag of availableTagsLeft" [value]="tag">{{tag.name}}</ion-select-option>
           </ion-select>
         </span>
@@ -131,7 +123,7 @@
         <ion-button type="submit" ion-button block>
           Save Changes
         </ion-button>
-        <ion-button type="sumbit" ion-button block>
+        <ion-button ion-button block (click)="changePassword($event)">
           Change Password
         </ion-button>
       </ion-card-content>

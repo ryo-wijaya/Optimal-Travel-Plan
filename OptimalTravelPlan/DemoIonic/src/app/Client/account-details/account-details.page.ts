@@ -23,17 +23,11 @@ export class AccountDetailsPage implements OnInit {
   selectedTag: Tag;
 
 
-  resultSuccess: boolean;
-  resultError: boolean;
-  message: string;
-
   constructor(private router: Router,
     private accountService: AccountService,
     private travelItineraryService: TravelItineraryService,
     public alertController: AlertController) {
     this.submitted = false;
-    this.resultError = false;
-    this.resultSuccess = false;
   }
 
   ngOnInit() {
@@ -42,7 +36,7 @@ export class AccountDetailsPage implements OnInit {
     this.travelItineraryService.retrieveAllTags().subscribe({
       next: (response) => {
         this.tags = (response);
-        this.filterTags(null);
+        this.filterTags();
       },
       error: (error) => {
         console.log('********** get tags error: ' + error);
@@ -58,15 +52,15 @@ export class AccountDetailsPage implements OnInit {
         break;
       }
     }
-    this.filterTags(null);
+    this.filterTags();
   }
 
   addTag(event) {
     this.customer.favouriteTags.push(this.selectedTag);
-    this.filterTags(null);
+    this.filterTags();
   }
 
-  filterTags(event) {
+  filterTags() {
     this.availableTagsLeft = [];
     // Filters what tag is left available
     for (let i = 0; i < this.tags.length; i++) {
@@ -84,8 +78,6 @@ export class AccountDetailsPage implements OnInit {
     }
   }
 
-
-
   updateDetails(accountDetailsForm: NgForm) {
     this.submitted = true;
 
@@ -93,18 +85,130 @@ export class AccountDetailsPage implements OnInit {
       let customerHandler = new CustomerHandler(this.customer, this.password);
       this.accountService.updateCustomer(customerHandler).subscribe({
         next: (response) => {
-          this.message = "Profile successfully updated!";
-          this.resultSuccess = true;
-          this.resultError = false;
           sessionStorage['customer'] = JSON.stringify(this.customer);
           sessionStorage['password'] = this.password;
+          this.profileUpdateSuccessful();
         },
         error: (error) => {
-          this.resultError = true;
-          this.resultSuccess = false;
-          this.message = "An error has occured when updating profile";
+          this.profileUpdateFailed();
         }
       });
     }
   }
+
+  async changePassword(event) {
+    const alert = await this.alertController.create({
+      header: 'Change Password',
+      inputs: [
+        {
+          name: 'oldPass',
+          type: 'password',
+          placeholder: 'Old password'
+        },
+        {
+          name: 'newPass',
+          type: 'password',
+          placeholder: 'New password'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Change',
+          handler: () => {
+            console.log('Confirm Change password');
+            alert.onDidDismiss().then((alertData) => {
+
+              if (alertData.data.values.oldPass == this.password) {
+                this.accountService.changePassword(this.customer.username, this.password, alertData.data.values.newPass).subscribe({
+                  next: (response) => {
+                    this.password = alertData.data.values.newPass;
+                    sessionStorage['password'] = this.password;
+                    this.passwordChangeSuccess();
+                  },
+                  error: (error) => {
+                    console.log('********** change password: ' + error);
+                  }
+                });
+              } else {
+                this.passwordChangeFailed();
+              }
+            })
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async passwordChangeFailed() {
+    const alert = await this.alertController.create({
+      header: 'Old password is not correct!',
+      
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async passwordChangeSuccess() {
+    const alert = await this.alertController.create({
+      header: 'Password Successfully Changed!',
+      
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async profileUpdateSuccessful() {
+    const alert = await this.alertController.create({
+      header: 'Profile Update Successful!',
+      
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async profileUpdateFailed() {
+    const alert = await this.alertController.create({
+      header: 'Profile Update Failed!',
+      
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }
+      ]
+    });
+    await alert.present();
+  }
 }
+
