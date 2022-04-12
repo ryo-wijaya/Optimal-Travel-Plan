@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Create Support Request</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form #supportRequestForm="ngForm" (ngSubmit)="createRequest(supportRequestForm)">
+    <ion-card>
+      <ion-card-content>
+        <h2>Create Support Request for travel Itinerary {{travelItinerary.travelItineraryId}}:</h2>
+
+        <div *ngIf="successful == true" style="color: blue;">
+          {{message}}
+        </div>
+
+        <div *ngIf="fail == true" style="color: red;">
+          {{message}}
+        </div>
+
+        <div style="color:red;">
+          <div *ngIf="inDetails.invalid && (inDetails.dirty || inDetails.touched || submitted)" class="errorText">
+            <div *ngIf="inDetails.errors.required">
+              Name is required.
+            </div>
+          </div>
+        </div>
+
+ 
+
+        <ion-list>
+
+          <ion-item>
+            <ion-label fixed> <b>Details: </b></ion-label>
+            <ion-textarea type="text" id="details" name="details" [(ngModel)]="details"
+              minlength="5" maxlength="500" required="true" #inDetails="ngModel" placeholder="I had an issue with..."></ion-textarea>
+          </ion-item>
+
+          <ion-item>
+            <span style="float: right;">
+              <ion-label><b>Select Booking: </b> </ion-label>
+              <ion-select [(ngModel)]="selectedBooking" [ngModelOptions]="{standalone: true}" interface="action-sheet">
+                <ion-select-option *ngFor="let booking of travelItinerary.bookings" [value]="booking">
+                  ID: {{booking.bookingId}} |
+                  {{booking.service.serviceName}} |
+                  {{booking.startDate}}
+                </ion-select-option>
+              </ion-select>
+            </span>
+          </ion-item>
+
+          <ion-item>
+            <ion-button type="submit" ion-button block>
+              Create Request
+            </ion-button>
+          </ion-item>
+
+        </ion-list>
+      </ion-card-content>
+    </ion-card>

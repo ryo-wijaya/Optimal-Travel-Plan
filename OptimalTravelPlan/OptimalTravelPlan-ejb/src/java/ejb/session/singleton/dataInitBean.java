@@ -233,6 +233,11 @@ public class dataInitBean {
                 for (int i = 0; i < list.size(); i++) {
                     Booking booking = list.get(i);
                     
+                    //NEWLY ADDED LINE - FOR FIRST BOOKING, NO SUPPORT REQUEST OR REVIEW OR ANYTHING
+                    if (i == 0) {
+                        continue;
+                    }
+                    
                     String dateFormat = supportRequestSessionBeanLocal.getFormattedComment(booking.getTravelItinerary().getCustomer().getName());
                     SupportRequest supportRequest1 = new SupportRequest(dateFormat + "I am not happy with the world :'(\n", new Date(), booking);
                     

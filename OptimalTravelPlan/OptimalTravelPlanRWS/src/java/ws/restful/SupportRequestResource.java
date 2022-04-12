@@ -43,13 +43,11 @@ public class SupportRequestResource {
     BookingSessionBeanLocal bookingSessionBean = lookupBookingSessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBean = lookupAccountSessionBeanLocal();
-    
+
     CustomerSessionBeanLocal customerSessionBean = lookupCustomerSessionBeanLocal();
 
     SupportRequestSessionBeanLocal supportRequestSessionBean = lookupSupportRequestSessionBeanLocal();
 
-    
-    
     @Context
     private UriInfo context;
 
@@ -57,59 +55,54 @@ public class SupportRequestResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveSupportRequest(@QueryParam("username") String username, 
-                                        @QueryParam("password") String password)
-    {
-        try
-        {
+    public Response retrieveSupportRequest(@QueryParam("username") String username,
+            @QueryParam("password") String password) {
+        try {
             Customer customer = (Customer) accountSessionBean.login(username, password);
             System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
 
             List<SupportRequest> supportRequests = supportRequestSessionBean.retriveSupportRequestsByCustomerId(customer.getAccountId());
-            
-            for(SupportRequest sr : supportRequests) {
+
+            for (SupportRequest sr : supportRequests) {
                 sr.getBooking().cleanSelf();
             }
-            
+
             GenericEntity<List<SupportRequest>> genericEntity = new GenericEntity<List<SupportRequest>>(supportRequests) {
             };
-            
+
             return Response.status(Status.OK).entity(genericEntity).build();
-        }
-        catch(InvalidLoginCredentialException ex)
-        {            
+        } catch (InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
+
     @Path("CreateSupportrequest")
     @PUT
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createSupportRequest(@QueryParam("username") String username, @QueryParam("password") String password,
             @QueryParam("requestDetails") String requestDetails, @QueryParam("bookingId") Long bookingId) {
-        {
-            try {
-                Customer customer = (Customer) accountSessionBean.login(username, password);
-                System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
+        System.out.println("Test 1: ");
+        try {
+            Customer customer = (Customer) accountSessionBean.login(username, password);
+            System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
+            System.out.println("Test 2 customerlogin: " + customer.getCustomerId());
 
-                Booking booking = bookingSessionBean.retrieveBookingById(bookingId);
-                Long supportRequestId = supportRequestSessionBean.createNewSupportRequest(new SupportRequest(requestDetails, new Date(), booking), booking.getBookingId());
-                //SupportRequest supportRequest = supportRequestSessionBean.retrieveSupportRequestById(supportRequestId);
-                
-                return Response.status(Response.Status.OK).entity(supportRequestId).build();
-            } catch (InvalidLoginCredentialException ex) {
-                return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-            } catch (Exception ex) {
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-            }
+            Booking booking = bookingSessionBean.retrieveBookingById(bookingId);
+            System.out.println("Test 3 bookingID: " + booking.getBookingId());
+            Long supportRequestId = supportRequestSessionBean.createNewSupportRequest(new SupportRequest(requestDetails, new Date(), booking), booking.getBookingId());
+            //SupportRequest supportRequest = supportRequestSessionBean.retrieveSupportRequestById(supportRequestId);
+            System.out.println("Test 4 suppoortreqId: " + supportRequestId);
+            return Response.status(Response.Status.OK).entity(supportRequestId).build();
+        } catch (InvalidLoginCredentialException ex) {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
+
     public SupportRequestResource() {
     }
 
@@ -153,5 +146,4 @@ public class SupportRequestResource {
         }
     }
 
-    
 }

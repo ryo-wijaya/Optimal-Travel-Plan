@@ -59,7 +59,12 @@ const routes: Routes = [
   {
     path: 'create-new-booking',
     loadChildren: () => import('./create-new-booking/create-new-booking.module').then( m => m.CreateNewBookingPageModule)
+  },
+  {
+    path: 'createSupportRequest',
+    loadChildren: () => import('./Client/create-support-request/create-support-request.module').then( m => m.CreateSupportRequestPageModule)
   }
+
 ];
 
 @NgModule({
