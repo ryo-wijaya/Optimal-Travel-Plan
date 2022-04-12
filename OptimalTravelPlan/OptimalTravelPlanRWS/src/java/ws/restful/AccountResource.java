@@ -197,6 +197,7 @@ public class AccountResource {
 
             customerSessionBeanLocal.updateCustomer(customer);
             System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");
+            System.out.println("Customer ID " + wrapper.getCustomer().getAccountId());
 
             return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
         } catch (AccountDisabledException | InvalidLoginCredentialException ex) {

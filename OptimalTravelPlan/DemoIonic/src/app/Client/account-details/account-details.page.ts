@@ -42,7 +42,6 @@ export class AccountDetailsPage implements OnInit {
         console.log('********** get tags error: ' + error);
       }
     });
-
   }
 
   removeTag(event, tag: Tag) {
