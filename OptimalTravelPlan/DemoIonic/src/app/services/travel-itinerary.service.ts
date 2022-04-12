@@ -22,13 +22,29 @@ export class TravelItineraryService {
   constructor(private httpClient: HttpClient) { }
 
   createTravelItinerary(objHandler: TravelItineraryHandler): Observable<number> {
-    return this.httpClient.put<number>(this.baseUrl + "Create", objHandler, httpOptions).pipe
+    console.log("Create Travel itin service : " + objHandler.customer.username
+     + " password " + objHandler.password + " country id " + objHandler.newCountryId
+      + " TI " + objHandler.travelItinerary);
+    return this.httpClient.put<number>(this.baseUrl + "/Create", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)
       );
   }
 
   updateTravelItinerary(objHandler: TravelItineraryHandler): Observable<TravelItinerary> {
+    
+    objHandler.travelItinerary.endDate = new Date();
+    objHandler.travelItinerary.startDate = new Date();
+
+    // for (let k in objHandler.customer){
+    //   console.log("k = " + k);
+    // }
+
+    console.log("Update Travel itin service : " + objHandler.customer
+     + " password " + objHandler.password + " country id " + objHandler.newCountryId
+      + " TI " + objHandler.travelItinerary.travelItineraryId + " start date "+ objHandler.travelItinerary.startDate +
+      " end date " + objHandler.travelItinerary.endDate);
+      
     return this.httpClient.post<TravelItinerary>(this.baseUrl + "/Update", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)

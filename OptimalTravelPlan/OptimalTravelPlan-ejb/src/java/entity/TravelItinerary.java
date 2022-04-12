@@ -62,7 +62,10 @@ public class TravelItinerary implements Serializable {
             this.customer.cleanSelf();
             this.country.getServices().clear();
             for (Booking bk : this.bookings) {
+                Service ser = bk.getService();
                 bk.cleanSelf();
+                bk.setService(ser);
+                ser.cleanSelf();
             }
         } catch (Exception e) {
             System.out.println("Cleaning error!");

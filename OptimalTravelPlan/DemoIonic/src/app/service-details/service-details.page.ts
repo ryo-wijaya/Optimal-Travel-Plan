@@ -31,9 +31,13 @@ export class ServiceDetailsPage implements OnInit {
 
   ngOnInit() {
     let serID: number = parseInt(this.activatedRoute.snapshot.paramMap.get('serviceId'));
-    this.customer = JSON.parse(sessionStorage['customer']);
-    let password: string = sessionStorage['password'];
-    this.serviceService.retrieveAllActiveServices(this.customer.username, password).subscribe({
+    console.log("init travel itin details page");
+    let tempCus = sessionStorage['customer'];
+    if (tempCus != null) {
+      this.customer = JSON.parse(tempCus);
+      this.password = sessionStorage['password'];
+    }
+    this.serviceService.retrieveAllActiveServices().subscribe({
       next: (response) => {
         let services: Service[] = response;
         for (let s of services) {

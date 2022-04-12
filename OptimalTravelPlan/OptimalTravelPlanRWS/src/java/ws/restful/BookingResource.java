@@ -55,6 +55,7 @@ public class BookingResource {
     public Response createBooking(BookingHandler objHandler) {
         if (objHandler != null) {
             try {
+                System.out.println("ws.restful.BookingResource.createBooking()");
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
                 Long bookingId = bookingSessionBeanLocal.createBooking(objHandler.getBooking(), objHandler.getServiceId(), objHandler.getTravelItineraryId());
                 return Response.status(Response.Status.OK).entity(bookingId).build();
