@@ -36,7 +36,8 @@ export class TravelItinerariesPage implements OnInit {
 
   viewItiDetails(event, iti: TravelItinerary) {
     console.log("attempting to view travelItinerary = " + iti.travelItineraryId);
-    //this.router.navigate(["/TravelItinerary/" + iti.travelItineraryId]);
+    sessionStorage['travelItinerary'] = JSON.stringify(iti);
+    this.router.navigate(["/travelItineraryDetails/"]);
   }
 }
 
