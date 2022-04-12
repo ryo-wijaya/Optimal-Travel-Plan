@@ -22,16 +22,21 @@ export class ServicesPage implements OnInit {
   countries: Country[];
   tags: Tag[];
   selTag: Tag[];
+  private password:string;
 
   constructor(private router: Router,
     private serviceService: ServiceService,
     private travelItineraryService: TravelItineraryService) { }
 
   ngOnInit() {
-    
-    this.customer = JSON.parse(sessionStorage['customer']);
+    console.log("init travel itin details page");
+    let tempCus = sessionStorage['customer'];
+    if (tempCus != null) {
+      this.customer = JSON.parse(tempCus);
+      this.password = sessionStorage['password'];
+    }
     let password: string = sessionStorage['password'];
-    this.serviceService.retrieveAllActiveServices(this.customer.username, password).subscribe({
+    this.serviceService.retrieveAllActiveServices().subscribe({
       next: (response) => {
         this.services = response;
         this.filteredServices = response;
