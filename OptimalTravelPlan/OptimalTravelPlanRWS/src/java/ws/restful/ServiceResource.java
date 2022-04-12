@@ -67,18 +67,7 @@ public class ServiceResource {
             List<Service> services = serviceSessionBeanLocal.retrieveAllActiveServices();
             
             for (Service service : services) {
-                for (Booking booking : service.getBookings()) {
-                    booking.setService(null);
-                }
-                service.getBookings().clear();
-                
-                for (Tag tag : service.getTags()) {
-                    tag.getServices().clear();
-                }
-                service.getTags().clear();
-                
-                service.getCountry().getServices().clear();
-                service.getBusiness().getServices().clear();
+                service.cleanRelationships();
             }
             GenericEntity<List<Service>> genericEntityServices = new GenericEntity<List<Service>>(services) {};
             
@@ -101,18 +90,7 @@ public class ServiceResource {
             List<Service> services = serviceSessionBeanLocal.retrieveAllEntertainment();
             
             for (Service service : services) {
-                for (Booking booking : service.getBookings()) {
-                    booking.setService(null);
-                }
-                service.getBookings().clear();
-                
-                for (Tag tag : service.getTags()) {
-                    tag.getServices().clear();
-                }
-                service.getTags().clear();
-                
-                service.getCountry().getServices().clear();
-                service.getBusiness().getServices().clear();
+                service.cleanRelationships();
             }
             
             GenericEntity<List<Service>> genericEntityServices = new GenericEntity<List<Service>>(services) {};
@@ -137,18 +115,7 @@ public class ServiceResource {
             List<Service> services = serviceSessionBeanLocal.retrieveAllActiveServiceByCountry(countryId);
             
             for (Service service : services) {
-                for (Booking booking : service.getBookings()) {
-                    booking.setService(null);
-                }
-                service.getBookings().clear();
-                
-                for (Tag tag : service.getTags()) {
-                    tag.getServices().clear();
-                }
-                service.getTags().clear();
-                
-                service.getCountry().getServices().clear();
-                service.getBusiness().getServices().clear();
+                service.cleanRelationships();
             }
             
             GenericEntity<List<Service>> genericEntityServices = new GenericEntity<List<Service>>(services) {};
@@ -173,18 +140,7 @@ public class ServiceResource {
             List<Service> services = serviceSessionBeanLocal.retrieveAllActiveServiceByBusinessId(businessId);
             
             for (Service service : services) {
-                for (Booking booking : service.getBookings()) {
-                    booking.setService(null);
-                }
-                service.getBookings().clear();
-                
-                for (Tag tag : service.getTags()) {
-                    tag.getServices().clear();
-                }
-                service.getTags().clear();
-                
-                service.getCountry().getServices().clear();
-                service.getBusiness().getServices().clear();
+                service.cleanRelationships();
             }
             
             GenericEntity<List<Service>> genericEntityServices = new GenericEntity<List<Service>>(services) {};
@@ -208,17 +164,7 @@ public class ServiceResource {
             List<Service> services = serviceSessionBeanLocal.retrieveAllActiveServiceByTags(dataWrapper.getTagIds());
             
             for (Service service : services) {
-                for (Booking booking : service.getBookings()) {
-                    booking.setService(null);
-                }
-                service.getBookings().clear();
-                for (Tag tag : service.getTags()) {
-                    tag.getServices().clear();
-                }
-                service.getTags().clear();
-                
-                service.getCountry().getServices().clear();
-                service.getBusiness().getServices().clear();
+                service.cleanRelationships();
             }
             
             GenericEntity<List<Service>> genericEntityServices = new GenericEntity<List<Service>>(services) {};

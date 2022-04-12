@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/client/services"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Service Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <img style="width: auto; max-height: 50%;" src="assets/pictures/service.jpg" />
+  <ion-content>
+    <ion-list *ngIf="retrieveServiceError == false && service != null">
+
+      <ion-item>
+        <ion-button (click)="addToTravelItinerary()">Add to travel Itinerary</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Name</b></ion-label>
+        {{service.serviceName}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Country</b></ion-label>
+        {{service.country.name}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Type</b></ion-label>
+        {{service.serviceType}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Rating</b></ion-label>
+        {{service.rating}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Requires Vacc</b></ion-label>
+        {{service.requireVaccination}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Company</b></ion-label>
+        {{service.business.companyName}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Tags</b></ion-label>
+        {{service.serviceName}}
+      </ion-item>
+
+
+    </ion-list>
+  </ion-content>

@@ -51,6 +51,14 @@ const routes: Routes = [
   {
     path: 'travelItineraryDetails',
     loadChildren: () => import('./travel-itinerary-details/travel-itinerary-details.module').then( m => m.TravelItineraryDetailsPageModule)
+  },
+  {
+    path: 'serviceDetails/:serviceId',
+    loadChildren: () => import('./service-details/service-details.module').then( m => m.ServiceDetailsPageModule)
+  },
+  {
+    path: 'create-new-booking',
+    loadChildren: () => import('./create-new-booking/create-new-booking.module').then( m => m.CreateNewBookingPageModule)
   }
 ];
 

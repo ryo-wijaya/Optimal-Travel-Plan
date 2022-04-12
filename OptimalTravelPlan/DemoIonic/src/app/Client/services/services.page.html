@@ -7,19 +7,47 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  
-  <ion-card>
+
+
+  <ion-card-content>
     <ion-card-content>
       Services
-      <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name"></p-dropdown>
-      <p-multiSelect [options]="tags" [(ngModel)]="selTag" optionLabel="name"></p-multiSelect>
-      <ion-button (click)="filter()">Filter</ion-button>
-      <ion-list>
-        <ion-item *ngFor="let service of filteredServices" (click)="viewServiceDetails($event, service)">
-          <ion-icon slot="start" name="arrow-forward"></ion-icon>
-          {{service.serviceName}} - {{service.serviceType}}
-        </ion-item>
-      </ion-list>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name"
+              selectedItemsLabel="{0} items selected"></p-dropdown>
+            <ion-button (click)="filter()" style="float: right;">Filter</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <p-multiSelect [options]="tags" [(ngModel)]="selTag" optionLabel="name"></p-multiSelect>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-card-content>
-  </ion-card>
+    <ion-list>
+
+      <div style="float: right;">Service Type</div>
+      <div>Service Name </div>
+      
+      <ion-grid *ngFor="let service of filteredServices" (click)="viewServiceDetails($event, service)">
+        <ion-row>
+          <ion-button (click)="viewServiceDetails($event, service)">View</ion-button>
+          <ion-col>
+            {{service.serviceName}}
+          </ion-col>
+          <ion-col style="text-align: right;">
+            {{service.serviceType}}
+          </ion-col>
+        </ion-row>
+        <hr/>
+      </ion-grid>
+
+    </ion-list>
+  </ion-card-content>
+
+
+
 </ion-content>

@@ -80,6 +80,17 @@ public class Service implements Serializable {
         this.tags.clear();
         this.country = new Country();
     }
+    
+    public void cleanRelationships() {
+        this.business.cleanSelf();
+        this.country.cleanSelf();
+        for (Tag t: tags){
+            t.cleanSelf();
+        }
+        for(Booking b : bookings){
+            b.cleanSelf();
+        }
+    }
 
     public Integer getRating() {
         return rating;
