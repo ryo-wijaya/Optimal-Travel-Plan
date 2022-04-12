@@ -29,7 +29,7 @@ export class HomePage implements OnInit {
     this.password = sessionStorage['password'];
     this.refreshCountries();
     this.refreshTags();
-    this.refreshTravelItineraries()
+    this.refreshTravelItineraries();
   }
 
   refreshCountries() {

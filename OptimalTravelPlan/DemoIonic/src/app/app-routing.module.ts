@@ -51,7 +51,12 @@ const routes: Routes = [
   {
     path: 'travelItineraryDetails',
     loadChildren: () => import('./travel-itinerary-details/travel-itinerary-details.module').then( m => m.TravelItineraryDetailsPageModule)
+  },
+  {
+    path: 'client/view-support-requests',
+    loadChildren: () => import('./Client/view-support-requests/view-support-requests.module').then( m => m.ViewSupportRequestsPageModule)
   }
+
 ];
 
 @NgModule({

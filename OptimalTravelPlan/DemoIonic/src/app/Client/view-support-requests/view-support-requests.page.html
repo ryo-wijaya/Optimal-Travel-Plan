@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>View Support Requests</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+    <ion-card-content>
+
+      <div *ngIf="retrieveSupportRequestError == true" style="color: red;">
+        Support Request ID {{supportRequestId}} does not exist!
+      </div>
+
+      <div *ngIf="error == true" style="color: red;">
+        An error has occurred while deleting Support Request ID {{supportRequestId}}!
+      </div>
+
+      <div *ngIf="resultSuccess == true" style="color: blue;">
+        Support Request ID {{supportRequestId}} deleted successfully!
+      </div>
+
+      <ion-list *ngIf="retrieveSupportRequestError == false && supportRequestToView != null">
+
+        <ion-item>
+          <ion-label><b>Support Request Id</b></ion-label>
+          {{supportRequestToView.supportRequestId}}
+        </ion-item>
+
+        <ion-item>
+          <ion-label><b>Date</b></ion-label>
+          {{supportRequestToView.requestDate}}
+        </ion-item>
+
+        <ion-item>
+          <ion-label><b>Details</b></ion-label>
+          {{supportRequestToView.requestDetails}}
+        </ion-item>
+
+        <ion-item>
+          <ion-label><b>resolved</b></ion-label>
+          {{supportRequestToView.resolved}}
+        </ion-item>
+
+      </ion-list>
+
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

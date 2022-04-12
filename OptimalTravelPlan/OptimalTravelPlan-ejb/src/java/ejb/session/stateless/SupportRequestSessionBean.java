@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Account;
 import entity.Booking;
 import entity.Business;
+import entity.Customer;
 import entity.Staff;
 import entity.SupportRequest;
 import java.util.Calendar;
@@ -140,9 +141,12 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
             if (acc instanceof Business) {
                 Business bus = (Business) acc;
                 name = bus.getCompanyName();
-            } else {
+            } else if (acc instanceof Staff) {
                 Staff staf = (Staff) acc;
                 name = staf.getName();
+            } else {
+                Customer customer = (Customer) acc;
+                name = customer.getName();
             }
         } catch (AccountNotFoundException ex) {
             throw new SupportRequestNotFoundException("Unable to complete request : Hidden error!");

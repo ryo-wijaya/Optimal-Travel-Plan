@@ -26,6 +26,19 @@ export class SupportRequestService {
       );
   }
 
+  retrieveSupportRequestById(username: string, password: string, supportRequestId: number): Observable<SupportRequest> {
+    return this.httpClient.get<SupportRequest>(this.baseUrl + "/RetrieveSupportRequestById?username=" + username + "&password=" + password + "&supportRequestId=" + supportRequestId).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateRequestDetails(username: string, password: string, supportRequestId: number, addRequestDetails: string): Observable<any> {
+    return this.httpClient.get<SupportRequest>(this.baseUrl + "/RetrieveSupportRequestById?username=" + username + "&password=" + password + 
+    "&supportRequestId=" + supportRequestId + "&addRequestDetails=" + addRequestDetails).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   createSupportRequest(username: string, password: string, requestDetails: string, bookingId: number): Observable<number> {
     return this.httpClient.put<number>(this.baseUrl + "/CreateSupportrequest?username=" + username + "&password=" + password + "&requestDetails=" 
     + requestDetails + "&bookingId=" + bookingId, null).pipe
