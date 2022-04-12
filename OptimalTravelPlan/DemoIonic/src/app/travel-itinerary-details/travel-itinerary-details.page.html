@@ -13,12 +13,22 @@
   <div>
     <full-calendar [options]="options"></full-calendar>
   </div>
+  <div style="float: right;">
 
+    <ion-button *ngIf="loggedOn" (click)="recommendTravelItin()">Recommend travel Itinerary</ion-button>
+  </div>
+  <div>
+    <ion-button *ngIf="loggedOn" (click)="setDates()">Set dates for travel Itinerary</ion-button>
+  </div>
+  <div *ngIf="errorMessage" style="color: red;">
+    {{errorMessage}}
+  </div>
 </ion-content>
 
 <ion-footer>
-	<ion-toolbar>
-	  &copy; OTP private limited 
-    <ion-text *ngIf="loggedOn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To save travel Travel Itinerary Details</ion-text>
-	</ion-toolbar>
+  <ion-toolbar>
+    &copy; OTP private limited
+    <ion-text *ngIf="loggedOn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Login to save travel Travel Itinerary
+      Details</ion-text>
+  </ion-toolbar>
 </ion-footer>

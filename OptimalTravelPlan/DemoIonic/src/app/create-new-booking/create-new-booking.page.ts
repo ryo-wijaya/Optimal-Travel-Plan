@@ -12,16 +12,18 @@ import { Service } from '../models/service';
 })
 export class CreateNewBookingPage implements OnInit {
 
-  service: Service;
+  name: string;
   startDate: Date;
   endDate: Date;
   message: string;
-  error:boolean;
+  error: boolean;
 
   constructor(public navParams: NavParams,
     public modalController: ModalController) {
-      this.error = false;
-    this.service = JSON.parse(navParams.get('value'));
+    this.error = false;
+    this.name = navParams.get('value');
+
+
   }
 
   ngOnInit() {
@@ -38,18 +40,18 @@ export class CreateNewBookingPage implements OnInit {
     if (this.startDate && this.endDate && this.startDate < this.endDate) {
       this.modalController.dismiss({
         'start': this.startDate,
-        'end' : this.endDate
+        'end': this.endDate
       });
-    } else if ( !this.startDate || !this.endDate) {
+    } else if (!this.startDate || !this.endDate) {
       this.error = true;
       this.message = "Please select both dates!";
-    } else{
+    } else {
       this.error = true;
       this.message = "End date must be after start date!";
     }
   }
 
-  returnButton(){
+  returnButton() {
     this.modalController.dismiss({
     });
   }

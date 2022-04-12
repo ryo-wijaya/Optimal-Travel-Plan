@@ -97,14 +97,6 @@ public class dataInitBean {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
-    
-    
-    
-    
-    
-    
-    
-    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -165,7 +157,7 @@ public class dataInitBean {
                 List<Long> tagList2 = new ArrayList<>();
                 tagList2.add(natureTag.getTagId());
                 tagList2.add(cultureTag.getTagId());
-                
+
                 List<Long> tagList3 = new ArrayList<>();
                 tagList3.add(cultureTag.getTagId());
 
@@ -209,12 +201,32 @@ public class dataInitBean {
                 Long service8 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address8", "Experiemental Test"), business1.getBusinessId(), tagList5, singapore.getCountryId());
                 Long ServiceRate8 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(0.01), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service8);
                 em.flush();
-                
+
                 Date startDate = new Date();
                 Date endDate = new Date();
-                endDate.setTime(endDate.getTime() + 216000000l);
+                endDate.setTime(endDate.getTime() + 116000000l);
+                Date endDate2 = new Date();
+                endDate2.setTime(endDate.getTime() + 1000*60*60*24*3l);
+
                 TravelItinerary travelItinerary1 = new TravelItinerary(customer1, startDate, endDate, singapore);
+                TravelItinerary travelItinerary2 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary3 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary4 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary5 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary6 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary7 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary8 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+                TravelItinerary travelItinerary9 = new TravelItinerary(customer1, startDate, endDate2, singapore);
+
                 Long travel1 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary1, customer1.getAccountId(), singapore.getCountryId());
+                Long travel2 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary2, customer1.getAccountId(), singapore.getCountryId());
+                Long travel3 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary3, customer1.getAccountId(), singapore.getCountryId());
+                Long travel4 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary4, customer1.getAccountId(), singapore.getCountryId());
+                Long travel5 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary5, customer1.getAccountId(), singapore.getCountryId());
+                Long travel6 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary6, customer1.getAccountId(), singapore.getCountryId());
+                Long travel7 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary7, customer1.getAccountId(), singapore.getCountryId());
+                Long travel8 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary8, customer1.getAccountId(), singapore.getCountryId());
+                Long travel9 = travelItinerarySessionBeanLocal.createNewTravelItinerary(travelItinerary9, customer1.getAccountId(), singapore.getCountryId());
                 em.flush();
 
                 travelItinerary1 = travelItinerarySessionBeanLocal.recommendTravelItinerary(travelItinerary1);
@@ -222,14 +234,10 @@ public class dataInitBean {
                 System.out.println("travel Itin = " + travelItinerary1);
                 System.out.println("travel Itin booking = " + travelItinerary1.getBookings().size());
                 List<Booking> list = travelItinerary1.getBookings();
-                
-                
-                
 
                 PaymentAccount account = new PaymentAccount("accoutNumber", new Date(), "123", PaymentType.VISA, true);
                 paymentAccountSessionBeanLocal.createNewPaymentAccount(customer1.getCustomerId(), account);
-                
-                
+
                 for (int i = 0; i < list.size(); i++) {
                     Booking booking = list.get(i);
                     
@@ -240,16 +248,16 @@ public class dataInitBean {
                     
                     String dateFormat = supportRequestSessionBeanLocal.getFormattedComment(booking.getTravelItinerary().getCustomer().getName());
                     SupportRequest supportRequest1 = new SupportRequest(dateFormat + "I am not happy with the world :'(\n", new Date(), booking);
-                    
+
                     Review review1 = new Review(5, "This is the review content");
-                    
+
                     PaymentTransaction transaction = new PaymentTransaction(account, endDate, "transaction number", BigDecimal.TEN);
-                    
+
                     reviewSessionBeanLocal.createNewReview(booking.getBookingId(), review1);
                     transactionSessionBeanLocal.createNewPaymentTransaction(transaction, booking.getBookingId());
-                    
+
                     supportRequestSessionBeanLocal.createNewSupportRequest(supportRequest1, booking.getBookingId());
-                    
+
                     System.out.println("i = " + i + " list[i] = " + booking);
                     System.out.println("booking id = " + booking.getBookingId());
                     System.out.println("booking start = " + booking.getStartDate());

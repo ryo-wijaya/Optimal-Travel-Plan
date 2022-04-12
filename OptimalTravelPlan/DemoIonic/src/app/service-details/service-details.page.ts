@@ -56,7 +56,7 @@ export class ServiceDetailsPage implements OnInit {
   async addToTravelItinerary() {
     const modal = await this.modalController.create({
       component: CreateNewBookingPage,
-      componentProps: { value: JSON.stringify(this.service) }
+      componentProps: { value: this.service.serviceName }
     });
 
     modal.onDidDismiss().then((event) => {
@@ -68,6 +68,12 @@ export class ServiceDetailsPage implements OnInit {
         sessionItin = JSON.parse(itin);
         this.booking = new Booking(null, event.data.start, event.data.end,
           null, this.service);
+          if(sessionItin.bookings == null){
+            sessionItin.bookings = [];
+          }
+          if(sessionItin.country == null){
+            sessionItin.country = this.service.country;
+          }
         sessionItin.bookings.push(this.booking);
         console.log("Adding to sessionStorage");
         sessionStorage['travelItinerary'] = JSON.stringify(sessionItin);
