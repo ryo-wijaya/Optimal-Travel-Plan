@@ -159,6 +159,8 @@ public class TravelItineraryResource {
             @QueryParam("password") String password,
             @PathParam("travelItineraryId") Long travelItineraryId) {
         try {
+            
+            System.out.println("ws.restful.TravelItineraryResource.recommendTravelItinerary()");
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             if (!customer.getCustomerId().equals(travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId).getCustomer().getCustomerId())) {
                 throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");

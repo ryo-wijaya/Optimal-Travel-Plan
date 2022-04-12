@@ -20,7 +20,7 @@ export class AppComponent {
   ];
 
   public appPages = [
-    { title: 'Make a Travel Itinerary', url: 'travelItineraryDetails', icon: 'apps' },
+    { title: 'Travel Itinerary Detail', url: 'travelItineraryDetails', icon: 'apps' },
     { title: 'View services', url: '/client/services', icon: 'apps' }
   ]
 

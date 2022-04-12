@@ -59,6 +59,7 @@ export class TravelItineraryService {
   }
 
   recommendTravelItinerary(username: string, password: string, travelItineraryId: number): Observable<TravelItinerary> {
+    console.log("recommend travel itin user pass id" + username + " " + password + " " + travelItineraryId);
     return this.httpClient.post<TravelItinerary>(this.baseUrl + "/RecommendTravelItinerary/" + travelItineraryId + "?username=" + username + "&password=" + password, null).pipe
       (
         catchError(this.handleError)
