@@ -28,6 +28,7 @@ export class AccountDetailsPage implements OnInit {
     private travelItineraryService: TravelItineraryService,
     public alertController: AlertController) {
     this.submitted = false;
+    this.availableTagsLeft = [];
   }
 
   ngOnInit() {

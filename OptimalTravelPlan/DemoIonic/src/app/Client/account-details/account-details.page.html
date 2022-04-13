@@ -98,7 +98,7 @@
 
     <ion-card>
       <ion-card-content>
-        <span style="float: right;">
+        <span style="float: right;" *ngIf="availableTagsLeft.length != 0">
           <ion-label>Add Tag</ion-label>
           <ion-select [(ngModel)]="selectedTag" (ionChange)="addTag($event)" [ngModelOptions]="{standalone: true}">
             <ion-select-option *ngFor="let tag of availableTagsLeft" [value]="tag">{{tag.name}}</ion-select-option>
