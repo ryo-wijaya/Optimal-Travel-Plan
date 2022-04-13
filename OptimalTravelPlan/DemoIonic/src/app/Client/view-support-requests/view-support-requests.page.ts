@@ -28,6 +28,8 @@ export class ViewSupportRequestsPage implements OnInit {
   resultSuccess: boolean;
   resultError: boolean;
 
+  loaded:boolean;
+
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -37,6 +39,7 @@ export class ViewSupportRequestsPage implements OnInit {
     this.error = false;
     this.resultSuccess = false;
     this.resultError = false;
+    this.loaded = true;
   }
 
   ngOnInit() {
@@ -55,6 +58,7 @@ export class ViewSupportRequestsPage implements OnInit {
     this.supportRequestService.retrieveSupportRequestById(this.customer.username, this.password, this.supportRequestId).subscribe({
       next: (response) => {
         this.supportRequestToView = response;
+        this.loaded = true;
       },
       error: (error) => {
         this.retrieveSupportRequestError = true;
@@ -86,6 +90,7 @@ export class ViewSupportRequestsPage implements OnInit {
 
   
   updateSupportRequest() {
+    this.loaded = false;
     this.supportRequestService.updateRequestDetails(this.customer.username, this.password, this.supportRequestId, this.addRequestDetails).subscribe({
       next: (response) => {
         //blah

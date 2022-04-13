@@ -57,7 +57,7 @@
         </ion-item>
       </ion-list>
 
-      <ion-button (click)="updateSupportRequest()">Submit comment</ion-button>
+      <ion-button (click)="updateSupportRequest()" *ngIf="loaded">Submit comment</ion-button>
 
 
     </ion-card-content>
