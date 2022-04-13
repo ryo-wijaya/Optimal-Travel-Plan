@@ -18,7 +18,7 @@
     <ion-button *ngIf="loggedOn" (click)="recommendTravelItin()">Recommend travel Itinerary</ion-button>
   </div>
   <div>
-    <ion-button *ngIf="loggedOn" (click)="setDates()">Set dates for travel Itinerary</ion-button>
+    <ion-button (click)="setDates()">Set dates for travel Itinerary</ion-button>
   </div>
   <div *ngIf="errorMessage" style="color: red;">
     {{errorMessage}}
