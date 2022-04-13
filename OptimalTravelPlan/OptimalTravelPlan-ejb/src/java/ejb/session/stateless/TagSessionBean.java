@@ -5,10 +5,14 @@
  */
 package ejb.session.stateless;
 
+import entity.Booking;
 import entity.Customer;
+import entity.Service;
 import entity.Tag;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +24,9 @@ import util.exception.TagNotFoundException;
 
 @Stateless
 public class TagSessionBean implements TagSessionBeanLocal {
+
+    @EJB
+    private BookingSessionBeanLocal bookingSessionBeanLocal;
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBean;
@@ -86,4 +93,32 @@ public class TagSessionBean implements TagSessionBeanLocal {
         }
     }
 
+    @Override
+    public String mostPopularTag() {
+        Map<String, Integer> map = new HashMap<>();
+
+        List<Booking> bookings = bookingSessionBeanLocal.retrieveAllBookings();
+
+        for (Booking booking : bookings) {
+
+            for (Tag tag : booking.getService().getTags()) {
+                if (!map.containsKey(tag.getName())) {
+                    map.put(tag.getName(), 1);
+                } else {
+                    map.put(tag.getName(), map.get(tag.getName()) + 1);
+                }
+            }
+        }
+
+        Integer maxCount = 0;
+        String tagToReturn = "";
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (maxCount < entry.getValue()) {
+                maxCount = entry.getValue();
+                tagToReturn = entry.getKey();
+            }
+        }
+        return tagToReturn;
+    }
 }

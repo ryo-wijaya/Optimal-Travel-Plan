@@ -28,5 +28,7 @@ public interface TagSessionBeanLocal {
     public void deleteTag(Long tagId) throws DeleteTagException;
 
     public Tag updateTag(Tag newTag);
+
+    public String mostPopularTag();
     
 }

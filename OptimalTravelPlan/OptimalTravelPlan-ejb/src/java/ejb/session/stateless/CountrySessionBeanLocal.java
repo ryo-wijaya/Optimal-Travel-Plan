@@ -27,5 +27,7 @@ public interface CountrySessionBeanLocal {
     public Country createNewCountry(Country newCountry);
 
     public Country updateCountry(Country country);
+
+    public String mostPopularCountry();
     
 }

@@ -6,9 +6,12 @@
 package jsf.managedBean;
 
 import ejb.session.stateless.BusinessSessionBeanLocal;
+import ejb.session.stateless.CountrySessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.ServiceSessionBeanLocal;
 import ejb.session.stateless.StaffSessionBeanLocal;
+import ejb.session.stateless.SupportRequestSessionBeanLocal;
+import ejb.session.stateless.TagSessionBeanLocal;
 import ejb.session.stateless.TransactionSessionBeanLocal;
 import ejb.session.stateless.TravelItinerarySessionBeanLocal;
 import javax.inject.Named;
@@ -30,6 +33,15 @@ import org.primefaces.model.DefaultDashboardModel;
 public class AdminMainManagedBean implements Serializable {
 
     @EJB
+    private SupportRequestSessionBeanLocal supportRequestSessionBeanLocal;
+
+    @EJB
+    private TagSessionBeanLocal tagSessionBeanLocal;
+
+    @EJB
+    private CountrySessionBeanLocal countrySessionBeanLocal;
+    
+    @EJB
     private ServiceSessionBeanLocal serviceSessionBeanLocal;
 
     @EJB
@@ -46,6 +58,8 @@ public class AdminMainManagedBean implements Serializable {
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
+    
+    
 
     private DashboardModel model;
     
@@ -55,6 +69,9 @@ public class AdminMainManagedBean implements Serializable {
     private Integer transactionCount;
     private Integer itineraryCount;
     private Integer serviceCount;
+    private Integer unresolvedTicketsCount;
+    private String mostPopularCountry;
+    private String mostPopularTag;
 
     public AdminMainManagedBean() {
     }
@@ -89,6 +106,9 @@ public class AdminMainManagedBean implements Serializable {
         transactionCount = transactionSessionBeanLocal.retrieveAllPaymentTransaction().size();
         itineraryCount = transactionSessionBeanLocal.retrieveAllPaymentTransaction().size();
         serviceCount = serviceSessionBeanLocal.retrieveAllServices().size();
+        mostPopularCountry = countrySessionBeanLocal.mostPopularCountry();
+        mostPopularTag = tagSessionBeanLocal.mostPopularTag();
+        unresolvedTicketsCount = supportRequestSessionBeanLocal.retrieveAllUnresolvedSupportRequests().size();
     }
 
     public DashboardModel getModel() {
@@ -145,5 +165,29 @@ public class AdminMainManagedBean implements Serializable {
 
     public void setServiceCount(Integer serviceCount) {
         this.serviceCount = serviceCount;
+    }
+
+    public String getMostPopularCountry() {
+        return mostPopularCountry;
+    }
+
+    public void setMostPopularCountry(String mostPopularCountry) {
+        this.mostPopularCountry = mostPopularCountry;
+    }
+
+    public String getMostPopularTag() {
+        return mostPopularTag;
+    }
+
+    public void setMostPopularTag(String mostPopularTag) {
+        this.mostPopularTag = mostPopularTag;
+    }
+
+    public Integer getUnresolvedTicketsCount() {
+        return unresolvedTicketsCount;
+    }
+
+    public void setUnresolvedTicketsCount(Integer unresolvedTicketsCount) {
+        this.unresolvedTicketsCount = unresolvedTicketsCount;
     }
 }
