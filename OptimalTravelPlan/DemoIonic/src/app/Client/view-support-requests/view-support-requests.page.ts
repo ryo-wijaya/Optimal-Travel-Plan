@@ -28,6 +28,7 @@ export class ViewSupportRequestsPage implements OnInit {
   resultSuccess: boolean;
   resultError: boolean;
 
+
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private supportRequestService: SupportRequestService,
@@ -62,6 +63,7 @@ export class ViewSupportRequestsPage implements OnInit {
     });
   }
 
+
   public formatDate(date: Date): string {
     let output: string;
     output = date.toString().slice(0, 19);
@@ -82,14 +84,18 @@ export class ViewSupportRequestsPage implements OnInit {
     return output;
   }
 
-  /*
+  
   updateSupportRequest() {
-    this.supportRequestService.updateRequestDetails(this.customer.username, this.password, this.supportRequestIdm, this.addRequestDetails).subscribe({
-      next: (response)=>{
-        this.
+    this.supportRequestService.updateRequestDetails(this.customer.username, this.password, this.supportRequestId, this.addRequestDetails).subscribe({
+      next: (response) => {
+        //blah
+        this.refreshSupportRequest();
+      },
+      error: (error) => {
+        console.log('********** updateRequestDetails error: ' + error);
       }
-    })
+    });
   }
-  */
+  
 
 }

@@ -33,8 +33,10 @@ export class SupportRequestService {
   }
 
   updateRequestDetails(username: string, password: string, supportRequestId: number, addRequestDetails: string): Observable<any> {
-    return this.httpClient.get<SupportRequest>(this.baseUrl + "/RetrieveSupportRequestById?username=" + username + "&password=" + password + 
-    "&supportRequestId=" + supportRequestId + "&addRequestDetails=" + addRequestDetails).pipe(
+
+    console.log("user + pass + number + details = " + username + password + supportRequestId + " " + addRequestDetails);
+    return this.httpClient.post<SupportRequest>(this.baseUrl + "/UpdateRequestDetails?username=" + username + "&password=" + password + 
+    "&supportRequestId=" + supportRequestId + "&addRequestDetails=" + addRequestDetails,null).pipe(
       catchError(this.handleError)
     );
   }

@@ -116,6 +116,7 @@ public class SupportRequestResource {
         }
     }
     
+    @Path("UpdateRequestDetails")
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
@@ -127,13 +128,16 @@ public class SupportRequestResource {
             
             supportRequestSessionBean.updateSupportRequestDetails(supportRequestId, customer.getAccountId(), addRequestDetails);
             
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
             
         } catch (InvalidLoginCredentialException ex) {
+            System.out.println("invalid login");
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (AccountDisabledException ex) {
+            System.out.println("Account disabled");
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (SupportRequestNotFoundException ex) {
+            System.out.println("erro unknown");
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }

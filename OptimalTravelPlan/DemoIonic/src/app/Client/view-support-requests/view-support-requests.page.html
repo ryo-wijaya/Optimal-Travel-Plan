@@ -39,16 +39,25 @@
         </ion-item>
 
         <ion-item>
-          <ion-label><b>Details</b></ion-label>
-          {{supportRequestToView.requestDetails}}
-        </ion-item>
-
-        <ion-item>
           <ion-label><b>resolved</b></ion-label>
           {{supportRequestToView.resolved}}
         </ion-item>
 
+        <ion-item>
+          <ion-label><b>Details</b></ion-label>
+          {{supportRequestToView.requestDetails}}
+        </ion-item>
+
+
+        <ion-item>
+          <ion-label fixed>Add comment</ion-label>
+          <ion-input type="text" id="comment" name="comment" [(ngModel)]="addRequestDetails" required="true" #incomment="ngModel" style="text-align: right;">
+          </ion-input>
+
+        </ion-item>
       </ion-list>
+
+      <ion-button (click)="updateSupportRequest()">Submit comment</ion-button>
 
 
     </ion-card-content>
