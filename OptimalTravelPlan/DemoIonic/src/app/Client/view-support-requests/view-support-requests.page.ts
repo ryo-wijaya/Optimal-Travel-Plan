@@ -31,12 +31,12 @@ export class ViewSupportRequestsPage implements OnInit {
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private supportRequestService: SupportRequestService,
-    public alertController: AlertController) { 
-      this.retrieveSupportRequestError = false;
-      this.error = false;
-      this.resultSuccess = false;
-      this.resultError = false;
-    }
+    public alertController: AlertController) {
+    this.retrieveSupportRequestError = false;
+    this.error = false;
+    this.resultSuccess = false;
+    this.resultError = false;
+  }
 
   ngOnInit() {
     this.customer = JSON.parse(sessionStorage['customer']);
@@ -52,14 +52,34 @@ export class ViewSupportRequestsPage implements OnInit {
 
   refreshSupportRequest() {
     this.supportRequestService.retrieveSupportRequestById(this.customer.username, this.password, this.supportRequestId).subscribe({
-      next: (response)=>{
+      next: (response) => {
         this.supportRequestToView = response;
       },
-      error:(error)=>{
+      error: (error) => {
         this.retrieveSupportRequestError = true;
         console.log('************** View Support Request Page: ' + error);
       }
     });
+  }
+
+  public formatDate(date: Date): string {
+    let output: string;
+    output = date.toString().slice(0, 19);
+    output = output.replace("T", " ");
+    let hour = parseInt(output.slice(11, 13));
+    let morning = "am";
+    let hourS = hour.toString();
+    if (hour > 12) {
+      hour -= 12;
+      morning = "pm"
+    }
+    if(hour <10){
+      hourS = "0" + hour.toString();
+    } else{
+      hourS = hour.toString();
+    }
+    output = output.slice(0, 11) + hourS + output.slice(13,16) + morning;
+    return output;
   }
 
   /*
