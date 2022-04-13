@@ -58,6 +58,7 @@
       </ion-list>
 
       <ion-button (click)="updateSupportRequest()" *ngIf="loaded">Submit comment</ion-button>
+      <ion-icon name="refresh-outline" *ngIf="!loaded"></ion-icon>
 
 
     </ion-card-content>
