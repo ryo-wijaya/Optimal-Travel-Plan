@@ -136,18 +136,35 @@ public class dataInitBean {
 
                 Customer customer1 = new Customer("customer1", "123456789", "000000001", "customer1@email.com", Boolean.TRUE, "customer1", "password");
                 em.persist(customer1);
+                
+                Customer customer2 = new Customer("customer2", "222222222", "000000002", "customer2@email.com", Boolean.TRUE, "customer2", "password");
+                em.persist(customer2);
+                
+                Customer customer3 = new Customer("customer3", "333333333", "000000003", "customer3@email.com", Boolean.FALSE, "customer3", "password");
+                em.persist(customer3);
+                
+                Customer customer4 = new Customer("customer4", "444444444", "000000004", "customer4@email.com", Boolean.TRUE, "customer4", "password");
+                em.persist(customer4);
 
                 //Create data here
                 Tag familyTag = tagSessionBeanLocal.createNewTag(new Tag("family"));
                 Tag natureTag = tagSessionBeanLocal.createNewTag(new Tag("nature"));
                 Tag cultureTag = tagSessionBeanLocal.createNewTag(new Tag("culture"));
                 Tag nightTag = tagSessionBeanLocal.createNewTag(new Tag("night"));
+                Tag adventureTag = tagSessionBeanLocal.createNewTag(new Tag("adventure"));
                 Tag testTag = tagSessionBeanLocal.createNewTag(new Tag("empty test tag"));
 
                 customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), familyTag.getTagId());
                 customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), natureTag.getTagId());
                 customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), cultureTag.getTagId());
                 customerSessionBeanLocal.associateTagToCustomer(customer1.getAccountId(), nightTag.getTagId());
+                
+                customerSessionBeanLocal.associateTagToCustomer(customer2.getAccountId(), natureTag.getTagId());
+                
+                customerSessionBeanLocal.associateTagToCustomer(customer3.getAccountId(), familyTag.getTagId());
+                
+                customerSessionBeanLocal.associateTagToCustomer(customer4.getAccountId(), cultureTag.getTagId());
+                customerSessionBeanLocal.associateTagToCustomer(customer4.getAccountId(), adventureTag.getTagId());
 
                 List<Long> tagList1 = new ArrayList<>();
                 tagList1.add(familyTag.getTagId());
@@ -200,6 +217,10 @@ public class dataInitBean {
 
                 Long service8 = serviceSessionBeanLocal.createNewService(new Service(business1, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address8", "Experiemental Test"), business1.getBusinessId(), tagList5, singapore.getCountryId());
                 Long ServiceRate8 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(0.01), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service8);
+                em.flush();
+                
+                Long service9 = serviceSessionBeanLocal.createNewService(new Service(business2, singapore, ServiceType.ENTERTAINMENT, Boolean.TRUE, "address9", "Art Science Museum"), business2.getBusinessId(), tagList3, singapore.getCountryId());
+                Long ServiceRate9 = serviceRateSessionBeanLocal.createNewServiceRate(new ServiceRate(new Date(100, 02, 26), new Date(2088, 03, 26), BigDecimal.valueOf(10.00), RateType.NORMAL, Boolean.TRUE, ChargeType.ENTRY), service9);
                 em.flush();
 
                 Date startDate = new Date();

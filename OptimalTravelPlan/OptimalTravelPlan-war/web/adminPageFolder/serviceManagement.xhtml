@@ -42,7 +42,7 @@
                     <p:column headerText="Service Address" sortBy="#{service.address}" filterBy="#{service.address}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{service.address}" />
                     </p:column>
-                    <p:column headerText="Service Rating" sortBy="#{service.rating}" filterBy="#{service.rating}" filterMatchMode="contains" style="width: 70px">
+                    <p:column headerText="Service Rating" sortBy="#{service.rating}" filterBy="#{service.rating}" filterMatchMode="contains" style="width: 80px">
                         <p:rating id="serviceRating" value="#{service.rating}" stars="5" disabled="true" />
                     </p:column>
                     <p:column headerText="Vaccination required?" sortBy="#{service.requireVaccination}" filterBy="#{service.requireVaccination}" filterMatchMode="contains" style="text-align: center; width: 90px">
