@@ -36,7 +36,6 @@ public class Review implements Serializable {
         this.rating = rating;
         this.content = content;
         this.businessReply = "";
-        this.rating = 0;
     }
 
     public Integer getRating() {
