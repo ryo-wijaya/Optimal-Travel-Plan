@@ -97,8 +97,6 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     @Override
     public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {
 
-        System.out.println("update bean tra end " + travelItinerary.getEndDate());
-        System.out.println("update bean tra start " + travelItinerary.getStartDate());
 
         TravelItinerary travelItineraryToUpdate = retrieveTravelItineraryById(travelItinerary.getTravelItineraryId());
         if (travelItineraryToUpdate.getBookings() == null || travelItineraryToUpdate.getBookings().size() == 0) {
@@ -140,9 +138,6 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 //        } else {
 //            travelItineraryToUpdate.setEndDate(latestDate);
 //        }
-
-        System.out.println("update bean tra end " + travelItineraryToUpdate.getEndDate());
-        System.out.println("update bean tra start " + travelItineraryToUpdate.getStartDate());
         em.flush();
         return travelItineraryToUpdate;
     }

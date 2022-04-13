@@ -26,7 +26,7 @@ export class CreateNewBookingPage implements OnInit {
     let end = navParams.get('end');
 
     console.log("start = " + start);
-    console.log("format = " + this.formatDate(start));
+    // console.log("format = " + this.formatDate(start));
     // if (start != null && start != 'null') {
     //   this.startDate = new Date(this.formatDate(start));
     // }
