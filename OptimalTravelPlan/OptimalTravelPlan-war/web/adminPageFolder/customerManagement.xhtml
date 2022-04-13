@@ -29,28 +29,28 @@
                             <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCustomers').filter()" style="width:300px" placeholder="Enter value"/>
                         </p:outputPanel>
                     </f:facet>
-                    <p:column headerText="Customer ID" sortBy="#{customer.customerId}" filterBy="#{customer.customerId}" filterMatchMode="contains">
+                    <p:column headerText="Customer ID" sortBy="#{customer.customerId}" filterBy="#{customer.customerId}" filterMatchMode="contains" style="text-align: center; width: 60px">
                         <h:outputText value="#{customer.customerId}" />
                     </p:column>
-                    <p:column headerText="Name" sortBy="#{customer.name}" filterBy="#{customer.name}" filterMatchMode="contains">
+                    <p:column headerText="Name" sortBy="#{customer.name}" filterBy="#{customer.name}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.name}" />
                     </p:column>
-                    <p:column headerText="Mobile" sortBy="#{customer.mobile}" filterBy="#{customer.mobile}" filterMatchMode="contains">
+                    <p:column headerText="Mobile" sortBy="#{customer.mobile}" filterBy="#{customer.mobile}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.mobile}" />
                     </p:column>
-                    <p:column headerText="Passport Number" sortBy="#{customer.passportNumber}" filterBy="#{customer.passportNumber}" filterMatchMode="contains">
+                    <p:column headerText="Passport Number" sortBy="#{customer.passportNumber}" filterBy="#{customer.passportNumber}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.passportNumber}" />
                     </p:column>
-                    <p:column headerText="Email" sortBy="#{customer.email}" filterBy="#{customer.email}" filterMatchMode="contains">
+                    <p:column headerText="Email" sortBy="#{customer.email}" filterBy="#{customer.email}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.email}" />
                     </p:column>
-                    <p:column headerText="Vaccination Status" sortBy="#{customer.vaccinationStatus}" filterBy="#{customer.vaccinationStatus}" filterMatchMode="exact">
+                    <p:column headerText="Vaccination Status" sortBy="#{customer.vaccinationStatus}" filterBy="#{customer.vaccinationStatus}" filterMatchMode="exact" style="text-align: center; width: 100px">
                         <h:outputText value="#{customer.vaccinationStatus}" />
                     </p:column>                    
-                    <p:column headerText="Username" sortBy="#{customer.username}" filterBy="#{customer.username}" filterMatchMode="contains">
+                    <p:column headerText="Username" sortBy="#{customer.username}" filterBy="#{customer.username}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.username}" />
                     </p:column>  
-                    <p:column headerText="Number of payment accounts" sortBy="#{customer.paymentAccounts.size()}" filterBy="#{customer.paymentAccounts.size()}" filterMatchMode="contains">
+                    <p:column headerText="Number of payment accounts" sortBy="#{customer.paymentAccounts.size()}" filterBy="#{customer.paymentAccounts.size()}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.paymentAccounts.size()}" />
                         <p:commandButton icon="pi pi-search-plus" title="View" value="View payment accounts"
                                          rendered="#{customer.paymentAccounts.size() != 0}" style="float: right;" oncomplete="PF('dialogViewPaymentAccounts').show()"
@@ -58,7 +58,7 @@
                             <f:setPropertyActionListener value="#{customer}" target="#{customerManagementManagedBean.selectedCustomer}"/>
                         </p:commandButton>
                     </p:column>      
-                    <p:column headerText="Number of favourite tags" sortBy="#{customer.paymentAccounts.size()}" filterBy="#{customer.paymentAccounts.size()}" filterMatchMode="contains">
+                    <p:column headerText="Number of favourite tags" sortBy="#{customer.paymentAccounts.size()}" filterBy="#{customer.paymentAccounts.size()}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.favouriteTags.size()}" />
                         <p:commandButton icon="pi pi-search-plus" title="View" value="View favourite tags"
                                          rendered="#{customer.favouriteTags.size() != 0}" style="float: right;" 
@@ -67,7 +67,7 @@
                             <f:setPropertyActionListener value="#{customer}" target="#{customerManagementManagedBean.selectedCustomer}"/>
                         </p:commandButton>
                     </p:column> 
-                    <p:column headerText="Number of travel itineraries" sortBy="#{customer.travelItineraries.size()}" filterBy="#{customer.travelItineraries.size()}" filterMatchMode="contains">
+                    <p:column headerText="Number of travel itineraries" sortBy="#{customer.travelItineraries.size()}" filterBy="#{customer.travelItineraries.size()}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{customer.travelItineraries.size()}" />
                         <p:commandButton icon="pi pi-search-plus" title="View" value="View travel itineraries"
                                          rendered="#{customer.travelItineraries.size() != 0}" style="float: right;" 

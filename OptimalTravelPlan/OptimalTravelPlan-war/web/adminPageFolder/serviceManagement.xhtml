@@ -30,41 +30,42 @@
                             <p:inputText id="globalFilter" onkeyup="PF('dataTableAllServices').filter()" style="width:300px" placeholder="Enter value"/>
                         </p:outputPanel>
                     </f:facet>
-                    <p:column headerText="Service ID" sortBy="#{service.serviceId}" filterBy="#{service.serviceId}" filterMatchMode="contains">
+                    <p:column headerText="Service ID" sortBy="#{service.serviceId}" filterBy="#{service.serviceId}" filterMatchMode="contains" style="text-align: center; width: 50px">
                         <h:outputText value="#{service.serviceId}" />
                     </p:column>
-                    <p:column headerText="Service name" sortBy="#{service.serviceName}" filterBy="#{service.serviceName}" filterMatchMode="contains">
+                    <p:column headerText="Service name" sortBy="#{service.serviceName}" filterBy="#{service.serviceName}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{service.serviceName}" />
                     </p:column>
-                    <p:column headerText="Service Country" sortBy="#{service.country.name}" filterBy="#{service.country.name}" filterMatchMode="contains">
+                    <p:column headerText="Service Country" sortBy="#{service.country.name}" filterBy="#{service.country.name}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{service.country.name}" />
                     </p:column>
-                    <p:column headerText="Service Address" sortBy="#{service.address}" filterBy="#{service.address}" filterMatchMode="contains">
+                    <p:column headerText="Service Address" sortBy="#{service.address}" filterBy="#{service.address}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{service.address}" />
                     </p:column>
-                    <p:column headerText="Service Rating" sortBy="#{service.rating}" filterBy="#{service.rating}" filterMatchMode="contains">
+                    <p:column headerText="Service Rating" sortBy="#{service.rating}" filterBy="#{service.rating}" filterMatchMode="contains" style="width: 70px">
                         <p:rating id="serviceRating" value="#{service.rating}" stars="5" disabled="true" />
                     </p:column>
-                    <p:column headerText="Vaccination required?" sortBy="#{service.requireVaccination}" filterBy="#{service.requireVaccination}" filterMatchMode="contains">
+                    <p:column headerText="Vaccination required?" sortBy="#{service.requireVaccination}" filterBy="#{service.requireVaccination}" filterMatchMode="contains" style="text-align: center; width: 90px">
                         <h:outputText value="#{service.requireVaccination}" />
                     </p:column>
-                    <p:column headerText="Service Type" sortBy="#{service.serviceType}" filterBy="#{service.serviceType}" filterMatchMode="contains">
+                    <p:column headerText="Service Type" sortBy="#{service.serviceType}" filterBy="#{service.serviceType}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{service.serviceType}" />
                     </p:column>
-                    <p:column headerText="Total bookings" sortBy="#{service.bookings.size()}" filterBy="#{service.bookings.size()}" filterMatchMode="contains">
+                    <p:column headerText="Total bookings" sortBy="#{service.bookings.size()}" filterBy="#{service.bookings.size()}" filterMatchMode="contains" style="text-align: center; width: 70px">
                         <h:outputText value="#{service.bookings.size()}" />
                     </p:column>
 
-                    <p:column headerText="Business Owner" sortBy="#{service.business}" filterBy="#{service.business}" filterMatchMode="contains">
-                        <h:outputText value="#{service.business.companyName}" />
+                    <p:column headerText="Business Owner" sortBy="#{service.business}" filterBy="#{service.business}" filterMatchMode="contains" style="text-align: center">
+                        <h:outputText value="#{service.business.companyName}"/>
                         <p:commandButton actionListener="#{serviceManagementManagedBean.viewServiceOwner}" icon="pi pi-search-plus" title="business" value="View Business"
                                          style="float: right;" update="dialogViewBusiness" oncomplete="PF('dialogViewBusiness').show()" >
                             <f:attribute name="businessToView" value="#{service.business}" />
                         </p:commandButton>
                     </p:column>
 
-                    <p:column headerText="Status(active/disabled)" sortBy="#{service.active}" filterBy="#{service.active}" filterMatchMode="contains">
+                    <p:column headerText="Status(active/disabled)" sortBy="#{service.active}" filterBy="#{service.active}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{service.active}" />
+                        <br></br>
                         <p:commandButton actionListener="#{serviceManagementManagedBean.toggleServiceActive}" icon="pi pi-power-off" title="active" value="Toggle active"
                                          style="float: right;" update="formAllServices">
                             <f:attribute name="serviceToToggle" value="#{service}" />

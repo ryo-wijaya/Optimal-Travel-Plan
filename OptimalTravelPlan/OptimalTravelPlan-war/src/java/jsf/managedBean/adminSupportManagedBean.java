@@ -42,7 +42,7 @@ public class adminSupportManagedBean implements Serializable {
     private List<SupportRequest> unresolvedSupportRequests;
 
     private SupportRequest supportRequestToView;
-
+    private SupportRequest supportRequestToToggle;
     private SupportRequest supportRequestToUpdate;
     private String newComment;
     private Booking booking;
@@ -113,6 +113,23 @@ public class adminSupportManagedBean implements Serializable {
         }
     }
 
+    public void toggleSupportRequestResolved() {
+        try {
+            Boolean temp = supportRequestToToggle.getResolved();
+            if (temp) {
+                supportRequestToToggle.setResolved(false);
+            } else {
+                supportRequestToToggle.setResolved(true);
+            }
+            supportRequestSessionBeanLocal.resolveSupportRequest(supportRequestToToggle.getSupportRequestId());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marked issue resolved!", null));
+            refreshList();
+        } catch (SupportRequestNotFoundException | ResolveSupportRequestException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while resolving request: " + ex.getMessage(), null));
+        }
+    }
+    
+    /*
     public void toggleSupportRequestResolved(ActionEvent event) {
         try {
             Boolean temp = supportRequestToUpdate.getResolved();
@@ -131,6 +148,7 @@ public class adminSupportManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while resolving request: " + ex.getMessage(), null));
         }
     }
+    */
 
     public void retrieveBookingByRequest(ActionEvent event) throws SupportRequestNotFoundException {
         this.booking = bookingSessionBeanLocal.retrieveBookingBySupportRequest((Long) event.getComponent().getAttributes().get("serviceId"));
@@ -199,4 +217,13 @@ public class adminSupportManagedBean implements Serializable {
     public void setAdmin(Staff admin) {
         this.admin = admin;
     }
+
+    public SupportRequest getSupportRequestToToggle() {
+        return supportRequestToToggle;
+    }
+
+    public void setSupportRequestToToggle(SupportRequest supportRequestToToggle) {
+        this.supportRequestToToggle = supportRequestToToggle;
+    }
+    
 }
