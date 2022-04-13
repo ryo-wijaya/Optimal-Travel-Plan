@@ -56,8 +56,18 @@ public class TravelItineraryResource {
     TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal = lookupTravelItinerarySessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
-    
-    
+
+    private void convertDate(TravelItineraryHandler objHandler) {
+        if (objHandler.getStartDate() != null && objHandler.getEndDate() != null) {
+            System.out.println("ws.restful.TravelItineraryResource.convertDate()");
+            Date s = new Date(objHandler.getStartDate());
+            Date e = new Date(objHandler.getEndDate());
+
+            objHandler.getTravelItinerary().setStartDate(s);
+            objHandler.getTravelItinerary().setEndDate(e);
+        }
+
+    }
 
     @Context
     private UriInfo context;
@@ -75,6 +85,7 @@ public class TravelItineraryResource {
                 System.out.println("ws.restful.TravelItineraryResource.createTravelItinerary()");
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
                 objHandler.getTravelItinerary().getBookings().clear();
+                convertDate(objHandler);
                 Long travelItineraryId
                         = travelItinerarySessionBeanLocal.createNewTravelItinerary(
                                 objHandler.getTravelItinerary(),
@@ -100,23 +111,20 @@ public class TravelItineraryResource {
     public Response updateTravelItinerary(TravelItineraryHandler objHandler) {
         if (objHandler != null) {
             try {
-                
+
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
                 TravelItinerary travelItinerary = objHandler.getTravelItinerary();
-                
-                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() customer " + objHandler.getCustomer().getCustomerId());
-                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()country id " + objHandler.getTravelItinerary().getCountry().getCountryId());
-                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()obj " + travelItinerary);
-                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()id " + travelItinerary.getTravelItineraryId());
+
+                convertDate(objHandler);
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() end date " + travelItinerary.getEndDate());
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()start date " + travelItinerary.getStartDate());
-                
-                if (travelItinerary.getTravelItineraryId() == null){
+
+                if (travelItinerary.getTravelItineraryId() == null) {
                     travelItinerary.setTravelItineraryId(objHandler.getTravelItineraryId());
-                    
-                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() setting back travel itin id " + travelItinerary.getTravelItineraryId());
+
+                    System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() setting back travel itin id " + travelItinerary.getTravelItineraryId());
                 }
-                
+
                 if (!travelItinerary.getCustomer().getAccountId().equals(customer.getAccountId())) {
                     throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
                 }
@@ -124,6 +132,8 @@ public class TravelItineraryResource {
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()" + travelItinerary.getTravelItineraryId());
                 travelItinerary = travelItinerarySessionBeanLocal.updateTravelItinerary(travelItinerary);
                 travelItinerary.cleanRelationships();
+                
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() new start = " + travelItinerary.getStartDate() + " new end = " + travelItinerary.getEndDate());
 
                 return Response.status(Response.Status.OK).entity(travelItinerary).build();
 
@@ -165,7 +175,7 @@ public class TravelItineraryResource {
             @QueryParam("password") String password,
             @PathParam("travelItineraryId") Long travelItineraryId) {
         try {
-            
+
             System.out.println("ws.restful.TravelItineraryResource.recommendTravelItinerary()");
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             if (!customer.getCustomerId().equals(travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId).getCustomer().getCustomerId())) {
@@ -213,7 +223,7 @@ public class TravelItineraryResource {
     public Response retrieveAllTags() {
         try {
             List<Tag> tags = tagSessionBeanLocal.retrieveAllTags();
-            for(Tag t : tags){
+            for (Tag t : tags) {
                 t.cleanRelationships();
             }
             GenericEntity<List<Tag>> genericEntity = new GenericEntity<List<Tag>>(tags) {
@@ -232,7 +242,7 @@ public class TravelItineraryResource {
         try {
             System.out.println("ws.restful.TravelItineraryResource.retrieveAllCountries()");
             List<Country> countries = countrySessionBeanLocal.retrieveAllCountries();
-            for(Country t : countries){
+            for (Country t : countries) {
                 t.cleanRelationships();
             }
             GenericEntity<List<Country>> genericEntity = new GenericEntity<List<Country>>(countries) {

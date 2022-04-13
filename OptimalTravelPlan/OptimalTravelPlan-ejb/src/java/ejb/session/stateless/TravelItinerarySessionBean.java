@@ -96,10 +96,13 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
     @Override
     public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {
+
+        System.out.println("update bean tra end " + travelItinerary.getEndDate());
+        System.out.println("update bean tra start " + travelItinerary.getStartDate());
+
         TravelItinerary travelItineraryToUpdate = retrieveTravelItineraryById(travelItinerary.getTravelItineraryId());
         if (travelItineraryToUpdate.getBookings() == null || travelItineraryToUpdate.getBookings().size() == 0) {
             travelItineraryToUpdate.setCountry(travelItinerary.getCountry());
-            return travelItineraryToUpdate;
         } else if (!travelItinerary.getCountry().getCountryId().equals(travelItineraryToUpdate.getCountry().getCountryId())) {
             throw new UpdateTravelItineraryException("Unable to change country due to existing bookings!");
         }
@@ -109,12 +112,17 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
         Date earliestDate = new Date();
         Date latestDate = new Date();
+        Boolean updateStart = false;
+        Boolean updateEnd = false;
+
         for (Booking booking : travelItineraryToUpdate.getBookings()) {
             if (booking.getStartDate().before(earliestDate)) {
                 earliestDate.setTime(booking.getStartDate().getTime());
+                updateStart = true;
             }
             if (booking.getEndDate().before(latestDate)) {
                 latestDate.setTime(booking.getEndDate().getTime());
+                updateEnd = true;
             }
             if (booking.getStartDate().before(travelItinerary.getStartDate())
                     || booking.getEndDate().after(travelItinerary.getEndDate())) {
@@ -122,16 +130,19 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
             }
         }
-        if (travelItinerary.getStartDate().before(earliestDate)) {
-            travelItineraryToUpdate.setStartDate(travelItinerary.getStartDate());
-        } else {
-            travelItineraryToUpdate.setStartDate(earliestDate);
-        }
-        if (travelItinerary.getEndDate().after(latestDate)) {
-            travelItineraryToUpdate.setEndDate(travelItinerary.getEndDate());
-        } else {
-            travelItineraryToUpdate.setEndDate(latestDate);
-        }
+//        if (!updateStart || travelItinerary.getStartDate().before(earliestDate)) {
+        travelItineraryToUpdate.setStartDate(travelItinerary.getStartDate());
+//        } else {
+//            travelItineraryToUpdate.setStartDate(earliestDate);
+//        }
+//        if (!updateEnd || travelItinerary.getEndDate().after(latestDate)) {
+        travelItineraryToUpdate.setEndDate(travelItinerary.getEndDate());
+//        } else {
+//            travelItineraryToUpdate.setEndDate(latestDate);
+//        }
+
+        System.out.println("update bean tra end " + travelItineraryToUpdate.getEndDate());
+        System.out.println("update bean tra start " + travelItineraryToUpdate.getStartDate());
         em.flush();
         return travelItineraryToUpdate;
     }
@@ -148,6 +159,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     public TravelItinerary retrieveTravelItineraryById(Long travelItineraryId) throws TravelItineraryNotFoundException {
         TravelItinerary travelItinerary = em.find(TravelItinerary.class, travelItineraryId);
         if (travelItinerary != null) {
+            System.out.println("ejb.session.stateless.TravelItinerarySessionBean.retrieveTravelItineraryById() start = " + travelItinerary.getStartDate() + " end = " + travelItinerary.getEndDate());
             return travelItinerary;
         } else {
             throw new TravelItineraryNotFoundException("Travel Itinerary not found!");
@@ -235,18 +247,19 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             foodPointer.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        Calendar hotelPointer = (Calendar) startDate.clone();
-        while (hotelPointer.before(endDate)) {
-            addHotels(travelItinerary, hotelPointer, hotels);
-            hotelPointer.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
         Calendar entertainmentPointer = (Calendar) startDate.clone();
         while (entertainmentPointer.before(endDate)) {
             addEntertainment(travelItinerary, entertainmentPointer, services);
             entertainmentPointer.add(Calendar.DAY_OF_MONTH, 1);
             moveToDaylight(entertainmentPointer);
         }
+
+        Calendar hotelPointer = (Calendar) startDate.clone();
+        while (hotelPointer.before(endDate)) {
+            addHotels(travelItinerary, hotelPointer, hotels);
+            hotelPointer.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
         return travelItinerary;
     }
 

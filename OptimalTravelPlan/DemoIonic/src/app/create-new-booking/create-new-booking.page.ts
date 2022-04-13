@@ -25,12 +25,13 @@ export class CreateNewBookingPage implements OnInit {
     let start = navParams.get('start');
     let end = navParams.get('end');
 
-    // console.log("start = " + start);
+    console.log("start = " + start);
+    console.log("format = " + this.formatDate(start));
     // if (start != null && start != 'null') {
-    //   this.startDate = start;
+    //   this.startDate = new Date(this.formatDate(start));
     // }
     // if(end != null && start != 'null'){
-    //   this.endDate =
+    //   this.endDate = end;
     // }
 
   }
@@ -46,6 +47,7 @@ export class CreateNewBookingPage implements OnInit {
 
 
   public closeModal() {
+    console.log("return start date = " + this.startDate);
     if (this.startDate && this.endDate && this.startDate < this.endDate) {
       this.modalController.dismiss({
         'start': this.startDate,
@@ -58,6 +60,10 @@ export class CreateNewBookingPage implements OnInit {
       this.error = true;
       this.message = "End date must be after start date!";
     }
+  }
+
+  public formatDate(date: Date) {
+    return date.toString().slice(0, 19) + "+08:00";
   }
 
   returnButton() {

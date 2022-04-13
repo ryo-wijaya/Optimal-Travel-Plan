@@ -23,7 +23,7 @@ export class TravelItineraryService {
 
   createTravelItinerary(objHandler: TravelItineraryHandler): Observable<number> {
     console.log("Create Travel itin service : " + objHandler.customer.username
-     + " password " + objHandler.password + " country id " + objHandler.newCountryId
+      + " password " + objHandler.password + " country id " + objHandler.newCountryId
       + " TI " + objHandler.travelItinerary);
     return this.httpClient.put<number>(this.baseUrl + "/Create", objHandler, httpOptions).pipe
       (
@@ -31,21 +31,27 @@ export class TravelItineraryService {
       );
   }
 
-  updateTravelItinerary(objHandler: TravelItineraryHandler): Observable<TravelItinerary> {
+  convertDate(objHandler: TravelItineraryHandler): void {
+
+    console.log("converting dates start = " +  objHandler.travelItinerary.startDate);
     
-    objHandler.travelItinerary.endDate = new Date();
-    objHandler.travelItinerary.startDate = new Date();
+    // objHandler.startDate = objHandler.travelItinerary.startDate.getTime();
+    // objHandler.endDate = objHandler.travelItinerary.endDate.getTime();
+  }
+
+  updateTravelItinerary(objHandler: TravelItineraryHandler): Observable<TravelItinerary> {
 
     // for (let k in objHandler.customer){
     //   console.log("k = " + k);
     // }
 
+    this.convertDate(objHandler);
     console.log("Update Travel itin service : " + objHandler.customer
-     + " password " + objHandler.password + " country id " + objHandler.newCountryId
-      + " TI " + objHandler.travelItinerary.travelItineraryId + " start date "+ objHandler.travelItinerary.startDate +
+      + " password " + objHandler.password + " country id " + objHandler.newCountryId
+      + " TI " + objHandler.travelItinerary.travelItineraryId + " start date " + objHandler.travelItinerary.startDate +
       " end date " + objHandler.travelItinerary.endDate);
-      objHandler.travelItineraryId = objHandler.travelItinerary.travelItineraryId;
-      
+    objHandler.travelItineraryId = objHandler.travelItinerary.travelItineraryId;
+
     return this.httpClient.post<TravelItinerary>(this.baseUrl + "/Update", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)

@@ -7,6 +7,8 @@ export class TravelItineraryHandler {
     customer: Customer | undefined;
     travelItinerary: TravelItinerary | undefined;
     travelItineraryId: number | undefined;
+    startDate: number | undefined;
+    endDate: number | undefined;
 
     constructor(newCountryId?: number, password?: string) {
         this.newCountryId = newCountryId;

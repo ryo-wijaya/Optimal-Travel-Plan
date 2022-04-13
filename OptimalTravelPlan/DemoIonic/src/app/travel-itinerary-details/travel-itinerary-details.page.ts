@@ -85,6 +85,7 @@ export class TravelItineraryDetailsPage implements OnInit {
       this.travelItinerary.endDate = event.data.end;
       sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
       console.log("updated start date " + this.travelItinerary.startDate + " end date " + this.travelItinerary.endDate);
+      this.refreshCal();
     });
     await modal.present();
   }
@@ -165,10 +166,6 @@ export class TravelItineraryDetailsPage implements OnInit {
         });
       }
     }
-    setTimeout(function () {
-      window.dispatchEvent(new Event('resize'))
-    }, 1)
-    
     this.refreshEvents();
   }
 
