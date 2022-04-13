@@ -29,32 +29,32 @@
                             <p:inputText id="globalFilter" onkeyup="PF('dataTableAllBusinesses').filter()" style="width:300px" placeholder="Enter value"/>
                         </p:outputPanel>
                     </f:facet>
-                    <p:column headerText="Business ID" sortBy="#{business.businessId}" filterBy="#{business.businessId}" filterMatchMode="contains">
+                    <p:column headerText="Business ID" sortBy="#{business.businessId}" filterBy="#{business.businessId}" filterMatchMode="contains" style="text-align: center; width: 70px">
                         <h:outputText value="#{business.businessId}" />
                     </p:column>
-                    <p:column headerText="Business name" sortBy="#{business.companyName}" filterBy="#{business.companyName}" filterMatchMode="contains">
+                    <p:column headerText="Business name" sortBy="#{business.companyName}" filterBy="#{business.companyName}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.companyName}" />
                     </p:column>
-                    <p:column headerText="Business website" sortBy="#{business.companyWebsite}" filterBy="#{business.companyWebsite}" filterMatchMode="contains">
+                    <p:column headerText="Business website" sortBy="#{business.companyWebsite}" filterBy="#{business.companyWebsite}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.companyWebsite}" />
                     </p:column>
-                    <p:column headerText="Business number" sortBy="#{business.companyNumber}" filterBy="#{business.companyNumber}" filterMatchMode="contains">
+                    <p:column headerText="Business number" sortBy="#{business.companyNumber}" filterBy="#{business.companyNumber}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.companyNumber}" />
                     </p:column>
-                    <p:column headerText="Business headquarter address" sortBy="#{business.headquarterAddress}" filterBy="#{business.headquarterAddress}" filterMatchMode="contains">
+                    <p:column headerText="Business headquarter address" sortBy="#{business.headquarterAddress}" filterBy="#{business.headquarterAddress}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.headquarterAddress}" />
                     </p:column>
-                    <p:column headerText="Username" sortBy="#{business.username}" filterBy="#{business.username}" filterMatchMode="contains">
+                    <p:column headerText="Username" sortBy="#{business.username}" filterBy="#{business.username}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.username}" />
                     </p:column>
-                    <p:column headerText="Number of services" sortBy="#{business.services.size()}" filterBy="#{business.services.size()}" filterMatchMode="contains">
+                    <p:column headerText="Number of services" sortBy="#{business.services.size()}" filterBy="#{business.services.size()}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.services.size()}" />
                         <p:commandButton actionListener="#{businessManagementManagedBean.viewBusinessServices}" icon="pi pi-search-plus" title="View" value="View services"
                                          rendered="#{business.services.size() != 0}" style="float: right;">
                             <f:attribute name="businessToViewServices" value="#{business}" />
                         </p:commandButton>
                     </p:column>          
-                    <p:column headerText="Business Status" sortBy="#{business.enabled}" filterBy="#{business.enabled}" filterMatchMode="contains">
+                    <p:column headerText="Business Status" sortBy="#{business.enabled}" filterBy="#{business.enabled}" filterMatchMode="contains" style="text-align: center">
                         <h:outputText value="#{business.enabled}" />
                     </p:column>
                     <p:column headerText="Action" >
