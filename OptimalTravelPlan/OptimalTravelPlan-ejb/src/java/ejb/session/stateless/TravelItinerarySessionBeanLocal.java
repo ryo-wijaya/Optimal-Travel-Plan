@@ -39,6 +39,8 @@ public interface TravelItinerarySessionBeanLocal {
 
     public List<TravelItinerary> retrieveAllCustomerTravelItinerary(Long customerId) throws AccountNotFoundException;
 
+    public List<TravelItinerary> retrieveAllTravelItineraries();
+
     
 
 }
