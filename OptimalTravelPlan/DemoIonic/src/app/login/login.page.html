@@ -18,6 +18,9 @@
       <div *ngIf="loginError == true" style="color: red;">
         {{errorMessage}}
       </div>
+      <div *ngIf="!(message == null || message == 'null')" style="color: blue;">
+        {{message}}
+      </div>
 
       <form #customerLoginForm="ngForm" (ngSubmit)="customerLogin(customerLoginForm)">
 

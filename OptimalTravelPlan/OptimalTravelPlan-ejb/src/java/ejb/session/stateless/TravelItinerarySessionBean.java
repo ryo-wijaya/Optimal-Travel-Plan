@@ -55,8 +55,6 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
     @EJB(name = "BookingSessionBeanLocal")
     private BookingSessionBeanLocal bookingSessionBeanLocal;
-    
-    
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
@@ -95,8 +93,6 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             }
         }
     }
-    
-
 
     @Override
     public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {
@@ -110,15 +106,33 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         if (travelItinerary.getStartDate().after(travelItinerary.getEndDate())) {
             throw new UpdateTravelItineraryException("Start Date must be after End date!");
         }
+
+        Date earliestDate = new Date();
+        Date latestDate = new Date();
         for (Booking booking : travelItineraryToUpdate.getBookings()) {
+            if (booking.getStartDate().before(earliestDate)) {
+                earliestDate.setTime(booking.getStartDate().getTime());
+            }
+            if (booking.getEndDate().before(latestDate)) {
+                latestDate.setTime(booking.getEndDate().getTime());
+            }
             if (booking.getStartDate().before(travelItinerary.getStartDate())
                     || booking.getEndDate().after(travelItinerary.getEndDate())) {
-                throw new UpdateTravelItineraryException("Booking outside travel itinerary found!");
+                System.out.println("ejb.session.stateless.TravelItinerarySessionBean.updateTravelItinerary() Booking outside travel itinerary found! Extending start and end date");
 
             }
         }
-        travelItineraryToUpdate.setStartDate(travelItinerary.getStartDate());
-        travelItineraryToUpdate.setEndDate(travelItinerary.getEndDate());
+        if (travelItinerary.getStartDate().before(earliestDate)) {
+            travelItineraryToUpdate.setStartDate(travelItinerary.getStartDate());
+        } else {
+            travelItineraryToUpdate.setStartDate(earliestDate);
+        }
+        if (travelItinerary.getEndDate().after(latestDate)) {
+            travelItineraryToUpdate.setEndDate(travelItinerary.getEndDate());
+        } else {
+            travelItineraryToUpdate.setEndDate(latestDate);
+        }
+        em.flush();
         return travelItineraryToUpdate;
     }
 
@@ -546,9 +560,9 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         if (travelItinerary.getBookings() != null) {
             for (Booking booking : travelItinerary.getBookings()) {
                 try {
-                BigDecimal price = bookingSessionBeanLocal.getPricingOfBooking(booking.getBookingId(), booking.getStartDate(), booking.getEndDate());
-                totalPrice = totalPrice.add(price);
-                } catch(Exception exception){
+                    BigDecimal price = bookingSessionBeanLocal.getPricingOfBooking(booking.getBookingId(), booking.getStartDate(), booking.getEndDate());
+                    totalPrice = totalPrice.add(price);
+                } catch (Exception exception) {
                     System.out.println("This should not happen " + exception.getMessage());
                 }
             }

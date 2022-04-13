@@ -19,10 +19,14 @@ export class LoginPage implements OnInit {
   loginError: boolean;
   errorMessage: string;
 
+  message: string;
+
   constructor(private router: Router,
           private accountService: AccountService) { }
 
   ngOnInit() {
+    this.message = sessionStorage['fromRegistration'];
+    sessionStorage['fromRegistration'] = null;
   }
 
 	clear()
@@ -35,6 +39,7 @@ export class LoginPage implements OnInit {
 	customerLogin(customerLoginForm: NgForm) 
   {
 		this.submitted = true;
+    this.message = "Logging in!...";
 
 		if (customerLoginForm.valid) 
     {
@@ -51,10 +56,12 @@ export class LoginPage implements OnInit {
 					}
 					else
           {
+            this.message = null;
 						this.loginError = true;
 					}
         },
         error:(error)=>{
+          this.message = null;
           this.loginError = true;
 					this.errorMessage = 'Invalid login credential: Username does not exist or invalid password!'
         }

@@ -13,6 +13,15 @@ public class TravelItineraryHandler {
     private TravelItinerary travelItinerary;
     private Long newCountryId;
     private String password;
+    private Long travelItineraryId;
+
+    public Long getTravelItineraryId() {
+        return travelItineraryId;
+    }
+
+    public void setTravelItineraryId(Long travelItineraryId) {
+        this.travelItineraryId = travelItineraryId;
+    }
 
     public Customer getCustomer() {
         return customer;

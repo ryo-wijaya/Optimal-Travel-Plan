@@ -55,11 +55,14 @@ export class RegistrationPage implements OnInit {
             let newCustomerId: number = response;
             this.resultSuccess = true;
             this.resultError = false;
-            this.message = "Customer " + newCustomerId + " created successfully!";
+            this.message = "Customer " + newCustomerId + " created successfully! You may attempt to log in now!";
+
 
             this.newCustomer = new Customer();
             this.submitted = true;
             createCustomerForm.reset();
+            sessionStorage['fromRegistration'] = this.message;
+            this.router.navigate(['/login']);
           },
           error:(error) => {
             this.resultError = true;

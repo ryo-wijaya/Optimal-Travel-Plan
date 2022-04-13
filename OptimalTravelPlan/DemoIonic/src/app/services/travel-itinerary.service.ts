@@ -44,6 +44,7 @@ export class TravelItineraryService {
      + " password " + objHandler.password + " country id " + objHandler.newCountryId
       + " TI " + objHandler.travelItinerary.travelItineraryId + " start date "+ objHandler.travelItinerary.startDate +
       " end date " + objHandler.travelItinerary.endDate);
+      objHandler.travelItineraryId = objHandler.travelItinerary.travelItineraryId;
       
     return this.httpClient.post<TravelItinerary>(this.baseUrl + "/Update", objHandler, httpOptions).pipe
       (

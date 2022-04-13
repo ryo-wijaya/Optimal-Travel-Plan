@@ -22,7 +22,16 @@ export class CreateNewBookingPage implements OnInit {
     public modalController: ModalController) {
     this.error = false;
     this.name = navParams.get('value');
+    let start = navParams.get('start');
+    let end = navParams.get('end');
 
+    // console.log("start = " + start);
+    // if (start != null && start != 'null') {
+    //   this.startDate = start;
+    // }
+    // if(end != null && start != 'null'){
+    //   this.endDate =
+    // }
 
   }
 

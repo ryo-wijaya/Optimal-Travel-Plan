@@ -74,7 +74,10 @@ export class TravelItineraryDetailsPage implements OnInit {
     if (this.travelItinerary != null && this.travelItinerary.travelItineraryId != null) { val += " id: " + this.travelItinerary.travelItineraryId; }
     const modal = await this.modalController.create({
       component: CreateNewBookingPage,
-      componentProps: { value: val }
+      componentProps: { value: val,
+        start: this.travelItinerary.startDate,
+        end:this.travelItinerary.endDate
+       }
     });
 
     modal.onDidDismiss().then((event) => {
@@ -137,7 +140,7 @@ export class TravelItineraryDetailsPage implements OnInit {
               sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
             },
             error: (error) => {
-              console.log('********** Failted creating travel itin: ' + error);
+              console.log('********** Failed update travel itin: ' + error.errorMessage);
             }
           });
 
@@ -165,6 +168,7 @@ export class TravelItineraryDetailsPage implements OnInit {
     setTimeout(function () {
       window.dispatchEvent(new Event('resize'))
     }, 1)
+    
     this.refreshEvents();
   }
 
@@ -195,6 +199,7 @@ export class TravelItineraryDetailsPage implements OnInit {
 
 
   public refreshEvents() {
+    console.log("Refreshing events");
     if (this.travelItinerary.bookings != null) {
       let id = 0;
       this.events = [];

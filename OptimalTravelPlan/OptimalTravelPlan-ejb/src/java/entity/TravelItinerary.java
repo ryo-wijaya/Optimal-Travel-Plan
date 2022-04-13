@@ -44,6 +44,11 @@ public class TravelItinerary implements Serializable {
     public TravelItinerary() {
     }
 
+    public void setTravelItineraryId(Long travelItineraryId) {
+        this.travelItineraryId = travelItineraryId;
+    }
+    
+
     public TravelItinerary(Customer customer, Date startDate, Date endDate, Country country) {
         this.customer = customer;
         this.startDate = startDate;

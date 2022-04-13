@@ -111,6 +111,12 @@ public class TravelItineraryResource {
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() end date " + travelItinerary.getEndDate());
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()start date " + travelItinerary.getStartDate());
                 
+                if (travelItinerary.getTravelItineraryId() == null){
+                    travelItinerary.setTravelItineraryId(objHandler.getTravelItineraryId());
+                    
+                System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() setting back travel itin id " + travelItinerary.getTravelItineraryId());
+                }
+                
                 if (!travelItinerary.getCustomer().getAccountId().equals(customer.getAccountId())) {
                     throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
                 }
