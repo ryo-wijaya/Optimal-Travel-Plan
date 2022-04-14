@@ -10,42 +10,114 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-  
-    <ion-card-content>
-      <b>Countries</b>
-      <ion-list>
-        <ion-item *ngFor="let country of countries">
-          {{country.name}}
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <ion-slides>
+    <ion-slide>
+      <ion-card>
+        <ion-card-content>
+          <h1>
+            Singapore
+          </h1>
+          <img src="../../../assets/pictures/country_singapore2.jpg">
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
 
-  <ion-card>
-    <ion-card-content>
-      <b>Tags</b>
-      <ion-list>
-        <ion-item *ngFor="let tag of tags">
-          {{tag.name}}
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+    <ion-slide>
+      <ion-card>
+        <ion-card-content>
+          <h1>
+            Japan
+          </h1>
+          <img src="../../../assets/pictures/country_japan.jpg">
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
 
-  <ion-card>
-    <ion-card-content>
-      <b>Travel Itineraries</b>
-      <ion-list>
-        <ion-item *ngFor="let travelItinerary of travelItineraries">
-          {{travelItinerary.country.name}}
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+    <ion-slide>
+      <ion-card>
+        <ion-card-content>
+          <h1>
+            Taiwan
+          </h1>
+          <img src="../../../assets/pictures/country_taiwan.jpg">
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
 
+<ion-content>
+  <ion-slides [options]="{
+    initialSlide: 0,
+    slidesPerView: 1,
+    autoplay:true
+   }">
+   <ion-slide>
+    <ion-card>
+      <ion-card-content>
+        <h1>
+          Singapore Flyer
+        </h1>
+        <img src="../../../assets/pictures/singapore_flyer.jpg">
+      </ion-card-content>
+    </ion-card>
+   </ion-slide>
 
+   <ion-slide>
+    <ion-card>
+      <ion-card-content>
+        <h1>
+          Singapore Zoo
+        </h1>
+        <img src="../../../assets/pictures/singapore_zoo.jpg">
+      </ion-card-content>
+    </ion-card>
+   </ion-slide>
 
+  </ion-slides>
+</ion-content>
+
+<ion-content>
+  <ion-slides>
+    <ion-slide>
+      <ion-card>
+        <ion-card-content>
+          <b>Countries</b>
+          <ion-list>
+            <ion-item *ngFor="let country of countries">
+              {{country.name}}
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+
+    <ion-slide>
+      <ion-card>
+        <ion-card-content>
+          <b>Tags</b>
+          <ion-list>
+            <ion-item *ngFor="let tag of tags">
+              {{tag.name}}
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+    
+    <ion-slide>
+      <ion-card>
+        <ion-card-content>
+          <b>Travel Itineraries</b>
+          <ion-list>
+            <ion-item *ngFor="let travelItinerary of travelItineraries">
+              {{travelItinerary.country.name}}
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
 </ion-content>
 
 <ion-footer>

@@ -14,14 +14,15 @@ export class AppComponent {
   ];
 
   public customerPages = [
-    { title: 'My Account', url: '/client/accountDetails', icon: 'apps' },
-    { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'apps' },
-    { title: 'My Support Requests', url: '/client/supportRequests', icon: 'apps' }
+    { title: 'Homepage', url: '/client/home', icon: 'home'},
+    { title: 'My Account', url: '/client/accountDetails', icon: 'key' },
+    { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'calendar' },
+    { title: 'My Support Requests', url: '/client/supportRequests', icon: 'help-circle' }
   ];
 
   public appPages = [
-    { title: 'Travel Itinerary Detail', url: 'travelItineraryDetails', icon: 'apps' },
-    { title: 'View services', url: '/client/services', icon: 'apps' }
+    { title: 'Travel Itinerary Detail', url: 'travelItineraryDetails', icon: 'airplane' },
+    { title: 'View services', url: '/client/services', icon: 'people-circle' }
   ]
 
   constructor(private router:Router) { }
