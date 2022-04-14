@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,12 +36,16 @@ import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
+import util.exception.PaymentAccountNotFoundException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateTravelItineraryException;
 
 @Stateless
 public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLocal {
+
+    @EJB(name = "TransactionSessionBeanLocal")
+    private TransactionSessionBeanLocal transactionSessionBeanLocal;
 
     @EJB(name = "PaymentAccountSessionBeanLocal")
     private PaymentAccountSessionBeanLocal paymentAccountSessionBeanLocal;
@@ -65,6 +71,27 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
     private static final Integer DINNER_HOUR_ENDING_TIME = 21;
     private static final Long HOUR_IN_MILLISECONDS = 3600000L;
     private static final Long HALF_HOUR_IN_MILLISECONDS = 1800000L;
+
+    @Override
+    public TravelItinerary payForAllBookings(Long travelItineraryId, Long PaymentAccountId) throws TravelItineraryNotFoundException, PaymentAccountNotFoundException, UnknownPersistenceException {
+        TravelItinerary ti = retrieveTravelItineraryById(travelItineraryId);
+        paymentAccountSessionBeanLocal.retrievePaymentAccountByPaymentAccountId(PaymentAccountId);
+
+        for (Booking bk : ti.getBookings()) {
+            try {
+                if (bk.getPaymentTransaction() == null) {
+                    transactionSessionBeanLocal.makePayment(bk.getBookingId(), PaymentAccountId);
+                } else {
+                    System.out.println("booking has already been paid for number = " + bk.getPaymentTransaction().getTransactionNumber());
+                }
+            } catch (BookingNotFoundException | ConstraintViolationException ex) {
+                System.out.println("Error in payForAllBooking make payment " + ex.getMessage());
+            }
+        }
+        ti = retrieveTravelItineraryById(travelItineraryId);
+
+        return ti;
+    }
 
     @Override
     public Long createNewTravelItinerary(TravelItinerary travelItinerary, Long customerId, Long countryId) throws UnknownPersistenceException, ConstraintViolationException, AccountNotFoundException {
@@ -93,7 +120,7 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             }
         }
     }
-    
+
     @Override
     public List<TravelItinerary> retrieveAllTravelItineraries() {
         Query query = em.createQuery("SELECT i from TravelItinerary i");
@@ -102,7 +129,6 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
 
     @Override
     public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {
-
 
         TravelItinerary travelItineraryToUpdate = retrieveTravelItineraryById(travelItinerary.getTravelItineraryId());
         if (travelItineraryToUpdate.getBookings() == null || travelItineraryToUpdate.getBookings().size() == 0) {
@@ -573,16 +599,19 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         BigDecimal totalPrice = new BigDecimal(0);
         if (travelItinerary.getBookings() != null) {
             for (Booking booking : travelItinerary.getBookings()) {
-                try {
-                    BigDecimal price = bookingSessionBeanLocal.getPricingOfBooking(booking.getBookingId(), booking.getStartDate(), booking.getEndDate());
-                    totalPrice = totalPrice.add(price);
-                } catch (Exception exception) {
-                    System.out.println("This should not happen " + exception.getMessage());
+                if (booking.getPaymentTransaction() == null) {
+                    try {
+                        BigDecimal price = bookingSessionBeanLocal.getPricingOfBooking(booking.getBookingId(), booking.getStartDate(), booking.getEndDate());
+                        totalPrice = totalPrice.add(price);
+                    } catch (Exception exception) {
+                        System.out.println("This should not happen " + exception.getMessage());
+                    }
+
                 }
             }
         }
         return totalPrice;
-    }
+    } 
 
     private List<Service> sortByMostMatches(List<Service> result, List<Tag> tags) {
         HashMap<Service, Integer> map = new HashMap<>();

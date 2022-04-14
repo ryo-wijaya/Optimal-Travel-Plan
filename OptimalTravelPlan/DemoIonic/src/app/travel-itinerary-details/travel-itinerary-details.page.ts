@@ -10,6 +10,10 @@ import { BookingService } from '../services/booking.service';
 import { ServiceService } from '../services/service.service';
 import { TravelItineraryService } from '../services/travel-itinerary.service';
 import { CreateNewBookingPage } from '../create-new-booking/create-new-booking.page';
+import { PaymentAccount } from '../models/payment-account';
+import { PaymentAccountService } from '../services/payment-account.service';
+import { NgIf } from '@angular/common';
+import { PaymentTransaction } from '../models/payment-transaction';
 
 @Component({
   selector: 'app-travel-itinerary-details',
@@ -21,20 +25,29 @@ export class TravelItineraryDetailsPage implements OnInit {
   events: any[] | null;
   options: any;
   header: any;
-  errorMessage:string;
+  errorMessage: string;
 
   loggedOn: boolean;
   customer: Customer;
   password: string;
   travelItinerary: TravelItinerary;
+  paid: boolean;
+  subtotal: number;
+
+  paymentAccounts: PaymentAccount[];
+  bookings: Booking[];
 
   constructor(private router: Router,
     private serviceService: ServiceService,
     private travelItineraryService: TravelItineraryService,
     private bookingService: BookingService,
-    public modalController: ModalController) {
+    public modalController: ModalController,
+    public alertController: AlertController,
+    public paymentAccountService: PaymentAccountService) {
     this.loggedOn = false;
     this.events = [];
+    this.paid = true;
+    this.subtotal = 1;
   }
 
   ngOnInit() {
@@ -61,11 +74,6 @@ export class TravelItineraryDetailsPage implements OnInit {
     if (temp != null) {
       this.travelItinerary = JSON.parse(temp);
     }
-
-    setTimeout(function () {
-      window.dispatchEvent(new Event('resize'))
-    }, 1)
-
     this.refreshCal();
   }
 
@@ -74,10 +82,11 @@ export class TravelItineraryDetailsPage implements OnInit {
     if (this.travelItinerary != null && this.travelItinerary.travelItineraryId != null) { val += " id: " + this.travelItinerary.travelItineraryId; }
     const modal = await this.modalController.create({
       component: CreateNewBookingPage,
-      componentProps: { value: val,
+      componentProps: {
+        value: val,
         start: this.travelItinerary.startDate,
-        end:this.travelItinerary.endDate
-       }
+        end: this.travelItinerary.endDate
+      }
     });
 
     modal.onDidDismiss().then((event) => {
@@ -91,7 +100,7 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public recommendTravelItin() {
-    if (this.travelItinerary.travelItineraryId == null){
+    if (this.travelItinerary.travelItineraryId == null) {
       this.errorMessage = "Travel itinerary ID is has not been created! Please try again later!";
       return;
     }
@@ -116,7 +125,7 @@ export class TravelItineraryDetailsPage implements OnInit {
     if (this.travelItinerary == null) {
       this.travelItinerary = new TravelItinerary();
       return;
-    } else if (this.travelItinerary.bookings == null){
+    } else if (this.travelItinerary.bookings == null) {
       return;
     }
     if (this.loggedOn) {
@@ -136,6 +145,7 @@ export class TravelItineraryDetailsPage implements OnInit {
               if (ti != null) {
                 this.travelItinerary = ti;
                 sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
+                this.registerBookings();
                 this.refreshEvents();
               }
               sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
@@ -169,8 +179,8 @@ export class TravelItineraryDetailsPage implements OnInit {
     this.refreshEvents();
   }
 
-
   public registerBookings() {
+    console.log("registering booking");
     for (let bk of this.travelItinerary.bookings) {
       if (bk.bookingId == null) {
         let handler: BookingHandler = new BookingHandler();
@@ -193,21 +203,26 @@ export class TravelItineraryDetailsPage implements OnInit {
     }
   }
 
-
-
   public refreshEvents() {
-    console.log("Refreshing events");
+    console.log("Refreshing events ");
+    this.paid = true;
     if (this.travelItinerary.bookings != null) {
       let id = 0;
       this.events = [];
+      this.bookings = [];
       for (let bk of this.travelItinerary.bookings) {
+        if (bk.paymentTransaction == null || bk.paymentTransaction.paymentTransactionId == null) {
+          this.paid = false;
+        }
         id++;
+        this.bookings.push(bk);
         this.events.push(
           {
             'id': id,
-            'start': this.formatDate(bk.startDate),
-            'end': this.formatDate(bk.endDate),
-            'title': bk.service.serviceName
+            'start': this.formatDate2(bk.startDate),
+            'end': this.formatDate2(bk.endDate),
+            'title': bk.service.serviceName,
+            'url': ('http://localhost:8100/viewBookingDetails/' + bk.bookingId)
           }
         );
         this.options = { ...this.options, ...{ events: this.events } };
@@ -218,7 +233,104 @@ export class TravelItineraryDetailsPage implements OnInit {
     }, 1)
   }
 
-  public formatDate(date: Date) {
+  public formatDate2(date: Date) {
     return date.toString().slice(0, 19);
+  }
+
+  public formatDate(date: Date): string {
+    let output: string;
+    output = date.toString().slice(0, 19);
+    output = output.replace("T", " ");
+    let hour = parseInt(output.slice(11, 13));
+    let morning = "am";
+    let hourS = hour.toString();
+    if (hour > 12) {
+      hour -= 12;
+      morning = "pm"
+    }
+    if (hour < 10) {
+      hourS = "0" + hour.toString();
+    } else {
+      hourS = hour.toString();
+    }
+    output = output.slice(0, 11) + hourS + output.slice(13, 16) + morning;
+    return output;
+  }
+
+  public viewBookingDetails(bookingId: number) {
+    this.router.navigate(['viewBookingDetails/' + bookingId]);
+  }
+
+
+  public makePayment() {
+    this.travelItineraryService.calculateTotalItineraryPrice(this.customer.username, this.password, this.travelItinerary.travelItineraryId).subscribe({
+      next: (response) => {
+        this.subtotal = response;
+        this.paymentAccountService.retrieveAllPaymentAccount(this.customer.username, this.password).subscribe({
+          next: (response) => {
+            this.paymentAccounts = response;
+            if (this.paymentAccounts.length > 0) {
+              this.popup();
+            } else {
+              this.errorMessage = "Please set up a payment account first!";
+            }
+
+            console.log("changing subtotal to new " + response)
+          },
+          error: (error) => {
+            console.log('********** Failed to query total price: ' + error);
+          }
+        });
+      },
+      error: (error) => {
+        console.log('********** Failed to query total price: ' + error);
+      }
+    });
+  }
+
+  async popup() {
+    let arr = [];
+
+    for (let account of this.paymentAccounts) {
+      if (account.enabled) {
+        console.log("Account found! " + account.accountNumber + " | " + account.paymentAccountId);
+        arr.push({
+          name: account.accountNumber,
+          type: 'radio',
+          label: account.accountNumber,
+          value: account.accountNumber
+        });
+      }
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Total Price: $' + this.subtotal,
+      inputs: arr,
+      buttons: [{
+        text: 'Confirm',
+        role: 'ok',
+        cssClass: 'secondary',
+        handler: (val) => {
+          this.confirmPayment(val);
+        }
+      },
+      { text: 'Back', role: 'cancel', cssClass: 'secondary' }]
+    });
+    await alert.present();
+  }
+
+  private confirmPayment(val) {
+
+    this.travelItineraryService.payForAllBookings(this.customer.username, this.password, val, this.travelItinerary.travelItineraryId).subscribe({
+      next: (response) => {
+        console.log("Payment successful " + response);
+        this.subtotal = 0;
+        this.travelItinerary = response;
+        sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
+      },
+      error: (error) => {
+        console.log('********** Failted creating travel itin: ' + error);
+      }
+    });
   }
 }

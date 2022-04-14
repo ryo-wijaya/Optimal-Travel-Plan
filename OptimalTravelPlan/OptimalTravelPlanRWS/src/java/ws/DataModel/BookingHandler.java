@@ -7,20 +7,42 @@ package ws.DataModel;
 
 import entity.Booking;
 import entity.Customer;
+import java.math.BigDecimal;
 
 /**
  *
  * @author sucram
  */
 public class BookingHandler {
+
     private Booking booking;
     private Customer customer;
+    
     private Long serviceId;
+    private Long bookingId;
     private Long travelItineraryId;
+
     private String password;
+    private BigDecimal cost;
+
+    public Long getTravelItineraryId() {
+        return travelItineraryId;
+    }
+
+    public void setTravelItineraryId(Long travelItineraryId) {
+        this.travelItineraryId = travelItineraryId;
+    }
 
     public String getPassword() {
         return password;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public void setPassword(String password) {
@@ -51,12 +73,12 @@ public class BookingHandler {
         this.serviceId = serviceId;
     }
 
-    public Long getTravelItineraryId() {
-        return travelItineraryId;
+    public Long getBookingId() {
+        return bookingId;
     }
 
-    public void setTravelItineraryId(Long travelItineraryId) {
-        this.travelItineraryId = travelItineraryId;
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
-    
+
 }

@@ -14,6 +14,7 @@ import util.exception.BookingAlreadyConfirmedException;
 import util.exception.BookingNotFoundException;
 import util.exception.ConstraintViolationException;
 import util.exception.CreateNewBookingException;
+import util.exception.PaymentAccountNotFoundException;
 import util.exception.TravelItineraryNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateTravelItineraryException;
@@ -41,6 +42,5 @@ public interface TravelItinerarySessionBeanLocal {
 
     public List<TravelItinerary> retrieveAllTravelItineraries();
 
-    
-
+    public TravelItinerary payForAllBookings(Long travelItineraryId, Long PaymentAccountId)throws TravelItineraryNotFoundException, PaymentAccountNotFoundException, UnknownPersistenceException ;
 }

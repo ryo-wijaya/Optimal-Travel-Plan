@@ -10,7 +10,6 @@ import entity.Customer;
 import entity.PaymentAccount;
 import entity.PaymentTransaction;
 import entity.TravelItinerary;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,9 +46,30 @@ public class TransactionSessionBean implements TransactionSessionBeanLocal {
     @Override
     public PaymentTransaction createNewPaymentTransaction(PaymentTransaction paymentTransaction, Long bookingId) throws ConstraintViolationException, UnknownPersistenceException, BookingNotFoundException {
         try {
-            em.persist(paymentTransaction);
 
             Booking bookingToAssociate = bookingSessionBeanLocal.retrieveBookingById(bookingId);
+            Double d = Math.random() * 9999999999999999l;
+            d = Math.floor(d);
+            if (d < 10000000000l) {
+                d += 10000000000l;
+            }
+            d %= 10000000000l;
+            String code = "";
+            int k = d.intValue();
+            while (k > 0) {
+                code = "" + (k % 10) + code;
+                k /= 10;
+            }
+            while (code.length() < 10) {
+                code = "0" + code;
+            }
+
+            paymentTransaction.setTransactionNumber(code);
+
+            paymentTransaction.setPrevailingRateAtPaymentDate(bookingSessionBeanLocal.getPricingOfBooking(bookingId, bookingToAssociate.getStartDate(), bookingToAssociate.getEndDate()));
+
+            em.persist(paymentTransaction);
+
             bookingToAssociate.setPaymentTransaction(paymentTransaction);
 
             em.flush();
@@ -83,9 +103,7 @@ public class TransactionSessionBean implements TransactionSessionBeanLocal {
     public PaymentTransaction makePayment(Long bookingId, Long PaymentAccountId) throws BookingNotFoundException, PaymentAccountNotFoundException, ConstraintViolationException, UnknownPersistenceException {
         PaymentAccount account = paymentAccountSessionBeanLocal.retrievePaymentAccountByPaymentAccountId(PaymentAccountId);
         Booking booking = bookingSessionBeanLocal.retrieveBookingById(bookingId);
-        Long i = (long) Math.floor(Math.random() * 999999999);
-        String transactionNumber = String.format("%1$" + 9 + "s", i).replace(' ', '0');
-        PaymentTransaction newPaymentTransaction = new PaymentTransaction(account, new Date(), transactionNumber,
+        PaymentTransaction newPaymentTransaction = new PaymentTransaction(account, new Date(), "asd",
                 bookingSessionBeanLocal.getPricingOfBooking(bookingId, booking.getStartDate(), booking.getEndDate()));
         newPaymentTransaction.setPaymentAccount(account);
         return createNewPaymentTransaction(newPaymentTransaction, bookingId);

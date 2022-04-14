@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/travelItineraryDetails"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Booking Details</ion-title>
+    <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-text *ngIf="retrieveBookingError" style="color: red; text-align: center;">
+    {{errorMsg}}
+  </ion-text>
+  <img style="width: auto; max-height: 50%;" src="/assets/pictures/service.jpg"
+    *ngIf="retrieveBookingError == false && booking != null" />
+  <ion-content>
+    <ion-list *ngIf="retrieveBookingError == false && booking != null">
+
+      <div *ngIf="booking.paymentTransaction == null">
+
+
+        <ion-item>
+          <ion-button (click)="(editBookingDates())">Edit booking dates</ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-button (click)="(deleteBooking())">Delete this booking</ion-button>
+        </ion-item>
+      </div>
+
+      <ion-item>
+        <ion-label><b>Booking Id</b></ion-label>
+        {{booking.bookingId}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Service</b></ion-label>
+        {{booking.service.serviceName}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Start Date</b></ion-label>
+        {{formatDate(booking.startDate)}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>End Date</b></ion-label>
+        {{formatDate(booking.endDate)}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Requires Vacc</b></ion-label>
+        {{booking.service.requireVaccination}}
+      </ion-item>
+      <ion-item>
+        <ion-label><b>Current cost</b></ion-label>
+        $${{cost}}
+      </ion-item>
+
+      <ion-card *ngIf="booking.paymentTransaction != null" style=" padding: 5px;">
+        <ion-label><b>Transaction Number</b></ion-label><br />
+        <div>
+          {{booking.paymentTransaction.transactionNumber}}</div>
+          <ion-label><b>Payment Date</b></ion-label><br />
+          <div>
+            {{formatDate(booking.paymentTransaction.dateOfPayment)}}</div>
+            <ion-label><b>Amount Paid at given rate</b></ion-label><br />
+            <div>
+              $${{booking.paymentTransaction.prevailingRateAtPaymentDate}}</div>
+
+      </ion-card>
+
+
+    </ion-list>
+  </ion-content>

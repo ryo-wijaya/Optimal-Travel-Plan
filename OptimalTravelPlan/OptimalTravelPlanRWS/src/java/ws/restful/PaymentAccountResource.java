@@ -58,7 +58,7 @@ public class PaymentAccountResource {
         if (objHandler != null) {
             try {
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
- 
+
                 if (!verifyPaymentAccountToCustomer(customer, objHandler.getPaymentAccount())) {
                     throw new CustomerNotMatchException("Please ensure customer owns this payment account!");
                 }
@@ -81,6 +81,9 @@ public class PaymentAccountResource {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
             List<PaymentAccount> list = paymentAccountSessionBeanLocal.retrieveAllCustomerPaymentAccounts(customer.getCustomerId());
+            for (PaymentAccount p : list) {
+                System.out.println("ws.restful.PaymentAccountResource.retrieveAllPaymentAccount() id = " + p.getPaymenetAccountId());
+            }
             GenericEntity<List<PaymentAccount>> genericEntity = new GenericEntity<List<PaymentAccount>>(list) {
             };
             return Response.status(Status.OK).entity(genericEntity).build();

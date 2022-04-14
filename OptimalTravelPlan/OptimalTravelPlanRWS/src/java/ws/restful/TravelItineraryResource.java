@@ -6,13 +6,18 @@
 package ws.restful;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
+import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.CountrySessionBeanLocal;
+import ejb.session.stateless.PaymentAccountSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
 import ejb.session.stateless.TravelItinerarySessionBeanLocal;
+import entity.Booking;
 import entity.Country;
 import entity.Customer;
+import entity.PaymentAccount;
 import entity.Tag;
 import entity.TravelItinerary;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,13 +54,20 @@ import ws.DataModel.TravelItineraryHandler;
 @Path("TravelItinerary")
 public class TravelItineraryResource {
 
+    BookingSessionBeanLocal bookingSessionBeanLocal = lookupBookingSessionBeanLocal();
+
+    PaymentAccountSessionBeanLocal paymentAccountSessionBeanLocal = lookupPaymentAccountSessionBeanLocal();
+
     CountrySessionBeanLocal countrySessionBeanLocal = lookupCountrySessionBeanLocal();
+    
 
     TagSessionBeanLocal tagSessionBeanLocal = lookupTagSessionBeanLocal();
 
     TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal = lookupTravelItinerarySessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
+    
+    
 
     private void convertDate(TravelItineraryHandler objHandler) {
         if (objHandler.getStartDate() != null && objHandler.getEndDate() != null) {
@@ -131,8 +143,15 @@ public class TravelItineraryResource {
 
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary()" + travelItinerary.getTravelItineraryId());
                 travelItinerary = travelItinerarySessionBeanLocal.updateTravelItinerary(travelItinerary);
-                travelItinerary.cleanRelationships();
                 
+                for (Booking booking: objHandler.getTravelItinerary().getBookings()){
+                    if(booking.getBookingId() == null){
+                        bookingSessionBeanLocal.createBooking(booking, booking.getService().getServiceId(), travelItinerary.getTravelItineraryId());
+                    }
+                }
+                travelItinerary = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItinerary.getTravelItineraryId());
+                travelItinerary.cleanRelationships();
+
                 System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() new start = " + travelItinerary.getStartDate() + " new end = " + travelItinerary.getEndDate());
 
                 return Response.status(Response.Status.OK).entity(travelItinerary).build();
@@ -182,6 +201,8 @@ public class TravelItineraryResource {
                 throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
             }
             TravelItinerary ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId);
+            
+            
             ti = travelItinerarySessionBeanLocal.recommendTravelItinerary(ti);
             ti.cleanRelationships();
             ResponseBuilder r = Response.status(Status.OK);
@@ -253,6 +274,61 @@ public class TravelItineraryResource {
         }
     }
 
+    @Path("PayForAllBookings")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response payForAllBookings(@QueryParam("username") String username, @QueryParam("password") String password,
+            @QueryParam("PaymentAccountId") String paymentAccountNumber,
+            @QueryParam("TravelItineraryId") Long travelItineraryId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            TravelItinerary ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId);
+            
+            if (!ti.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                throw new CustomerNotMatchException("Please ensure booking matches customer!");
+            }
+            Long paymentAccountId = 0l;
+            for(PaymentAccount pa : customer.getPaymentAccounts()){
+                if(pa.getAccountNumber().equals(paymentAccountNumber)){
+                    paymentAccountId = pa.getPaymenetAccountId();
+                    break;
+                }
+            }
+            
+            ti = travelItinerarySessionBeanLocal.payForAllBookings(travelItineraryId, paymentAccountId);
+            ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(ti.getTravelItineraryId());
+            ti.cleanRelationships();
+
+            return Response.status(Status.OK).entity(ti).build();
+        } catch (Exception ex) {
+            System.out.println("ws.restful.BookingResource.retrieveBookingById() error = " + ex.getLocalizedMessage());
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("CalculateTotalItineraryPrice")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response calculateTotalItineraryPrice(@QueryParam("username") String username, @QueryParam("password") String password,
+            @QueryParam("TravelItineraryId") Long travelItineraryId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            TravelItinerary ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItineraryId);
+            if (!ti.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                throw new CustomerNotMatchException("Please ensure booking matches customer!");
+            }
+            BigDecimal subtotal = travelItinerarySessionBeanLocal.calculateTotalItineraryPrice(ti);
+            
+
+            return Response.status(Status.OK).entity(subtotal).build();
+        } catch (Exception ex) {
+            System.out.println("ws.restful.BookingResource.retrieveBookingById() error = " + ex.getLocalizedMessage());
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        }
+    }
+
     private AccountSessionBeanLocal lookupAccountSessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
@@ -287,6 +363,26 @@ public class TravelItineraryResource {
         try {
             javax.naming.Context c = new InitialContext();
             return (CountrySessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/CountrySessionBean!ejb.session.stateless.CountrySessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private PaymentAccountSessionBeanLocal lookupPaymentAccountSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (PaymentAccountSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/PaymentAccountSessionBean!ejb.session.stateless.PaymentAccountSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private BookingSessionBeanLocal lookupBookingSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (BookingSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/BookingSessionBean!ejb.session.stateless.BookingSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

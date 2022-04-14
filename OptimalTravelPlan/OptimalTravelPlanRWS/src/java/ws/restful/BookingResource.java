@@ -9,6 +9,7 @@ import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.BookingSessionBeanLocal;
 import entity.Booking;
 import entity.Customer;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
@@ -75,15 +76,24 @@ public class BookingResource {
             @PathParam("bookingId") Long bookingId) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-            System.out.println("********** CustomerResource.customerLogin(): Customer " + customer.getUsername() + " login remotely via web service");
+            System.out.println("ws.restful.BookingResource.retrieveBookingById()booking id = " + bookingId);
             Booking booking = bookingSessionBeanLocal.retrieveBookingById(bookingId);
-            if(!booking.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())){
+            System.out.println("ws.restful.BookingResource.retrieveBookingById() Retrieved successfully!");
+            if (!booking.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                 throw new CustomerNotMatchException("Please ensure booking matches customer!");
             }
             booking.cleanRelationships();
 
-            return Response.status(Status.OK).entity(booking).build();
+            System.out.println("ws.restful.BookingResource.retrieveBookingById() Calling get price");
+            BigDecimal cost = bookingSessionBeanLocal.getPricingOfBooking(bookingId, booking.getStartDate(), booking.getEndDate());
+            BookingHandler handler = new BookingHandler();
+
+            handler.setBooking(booking);
+            handler.setCost(cost);
+
+            return Response.status(Status.OK).entity(handler).build();
         } catch (Exception ex) {
+            System.out.println("ws.restful.BookingResource.retrieveBookingById() error = " + ex.getLocalizedMessage());
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         }
     }
@@ -96,12 +106,30 @@ public class BookingResource {
         if (objHandler != null) {
             try {
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-                if (!objHandler.getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                System.out.println("ws.restful.BookingResource.updateBooking() booking id = " + objHandler.getBooking().getBookingId());
+                System.out.println("ws.restful.BookingResource.updateBooking() Backup booking id = " + objHandler.getBookingId());
+
+                if (objHandler.getBooking().getBookingId() == null) {
+                    objHandler.getBooking().setBookingId(objHandler.getBookingId());
+                }
+                Booking bk = bookingSessionBeanLocal.retrieveBookingById(objHandler.getBooking().getBookingId());
+
+                if (!bk.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }
+                System.out.println("ws.restful.BookingResource.updateBooking()");
                 bookingSessionBeanLocal.updateBooking(objHandler.getBooking());
 
-                return Response.status(Response.Status.OK).entity(Boolean.TRUE).build();
+                Booking bkupdated = bookingSessionBeanLocal.retrieveBookingById(objHandler.getBooking().getBookingId());
+                bkupdated.cleanRelationships();
+
+                BigDecimal cost = bookingSessionBeanLocal.getPricingOfBooking(bkupdated.getBookingId(), bkupdated.getStartDate(), bkupdated.getEndDate());
+                BookingHandler handler = new BookingHandler();
+
+                handler.setBooking(bkupdated);
+                handler.setCost(cost);
+
+                return Response.status(Response.Status.OK).entity(handler).build();
 
             } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -129,6 +157,7 @@ public class BookingResource {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
         }
     }
+
 
     private BookingSessionBeanLocal lookupBookingSessionBeanLocal() {
         try {

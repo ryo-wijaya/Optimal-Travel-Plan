@@ -26,15 +26,17 @@ export class BookingService {
       );
   }
 
-  retrieveBookingById(username: string, password: string, bookingId: number): Observable<Booking> {
-    return this.httpClient.get<Booking>(this.baseUrl + "/RetrieveBookingById/"+ bookingId +"?username=" + username + "&password=" + password).pipe
+  retrieveBookingById(username: string, password: string, bookingId: number): Observable<BookingHandler> {
+    return this.httpClient.get<BookingHandler>(this.baseUrl + "/RetrieveBookingById/"+ bookingId +"?username=" + username + "&password=" + password).pipe
     (
       catchError(this.handleError)
     );
   }
 
-  updateCustomer(objHandler: BookingHandler): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.baseUrl + "/Update", objHandler, httpOptions).pipe(
+  updateBooking(objHandler: BookingHandler): Observable<BookingHandler> {
+    console.log("Calling update booking id = " + objHandler.booking.bookingId);
+    objHandler.bookingId = objHandler.booking.bookingId;
+    return this.httpClient.post<BookingHandler>(this.baseUrl + "/Update", objHandler, httpOptions).pipe(
       catchError(this.handleError)
     );
   }

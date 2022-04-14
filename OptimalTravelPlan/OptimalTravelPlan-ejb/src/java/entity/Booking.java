@@ -48,10 +48,9 @@ public class Booking implements Serializable {
 
     public Booking() {
     }
-    
-    public void cleanSelf(){
+
+    public void cleanSelf() {
         this.travelItinerary = new TravelItinerary();
-        this.paymentTransaction = new PaymentTransaction();
         this.supportRequest = new SupportRequest();
         this.review = new Review();
         this.service = new Service();
@@ -64,13 +63,26 @@ public class Booking implements Serializable {
         this.travelItinerary = travelItinerary;
         this.service = service;
     }
-    
-    public void cleanRelationships(){
+
+    public void cleanRelationships() {
+        System.out.println("entity.Booking.cleanRelationships()");
         this.travelItinerary.cleanSelf();
-        this.paymentTransaction.cleanSelf();
-        this.supportRequest.cleanSelf();
-        this.review.cleanSelf();
+        if (this.paymentTransaction != null) {
+            this.paymentTransaction.cleanSelf();
+        }
+        if (this.supportRequest != null) {
+            this.supportRequest.cleanSelf();
+        }
+        if (this.review != null) {
+            this.review.cleanSelf();
+        }
+
         this.service.cleanSelf();
+        System.out.println("entity.Booking.cleanRelationships() Cleared!");
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
 
     public Long getBookingId() {

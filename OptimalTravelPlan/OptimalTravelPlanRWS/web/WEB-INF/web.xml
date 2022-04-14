@@ -47,4 +47,16 @@
         <local>ejb.session.stateless.CountrySessionBeanLocal</local>
         <ejb-link>OptimalTravelPlan-ejb.jar#CountrySessionBean</ejb-link>
     </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>PaymentAccountSessionBeanLocal</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.session.stateless.PaymentAccountSessionBeanLocal</local>
+        <ejb-link>OptimalTravelPlan-ejb.jar#PaymentAccountSessionBean</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>BookingSessionBeanLocal</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.session.stateless.BookingSessionBeanLocal</local>
+        <ejb-link>OptimalTravelPlan-ejb.jar#BookingSessionBean</ejb-link>
+    </ejb-local-ref>
 </web-app>

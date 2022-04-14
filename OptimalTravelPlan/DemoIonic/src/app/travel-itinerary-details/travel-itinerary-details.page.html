@@ -8,30 +8,48 @@
       <ion-label>Travel Itinerary Details</ion-label>
     </div>
     <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
-    src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
   </ion-toolbar>
-  
+
 </ion-header>
 <ion-content>
   <div>
     <full-calendar [options]="options"></full-calendar>
   </div>
   <div style="float: right;">
-
-    <ion-button *ngIf="loggedOn" (click)="recommendTravelItin()">Recommend travel Itinerary</ion-button>
+    <ion-button *ngIf="loggedOn" (click)="recommendTravelItin()">Recommend</ion-button>
   </div>
   <div>
-    <ion-button (click)="setDates()">Set dates for travel Itinerary</ion-button>
+    <ion-button (click)="setDates()">Set dates</ion-button>
   </div>
   <div *ngIf="errorMessage" style="color: red;">
     {{errorMessage}}
+  </div>
+  <ion-card>
+    <ion-grid *ngFor="let booking of bookings" (click)="viewBookingDetails(booking.bookingId)">
+      <ion-row>
+        <ion-button (click)="viewBookingDetails(booking.bookingId)">View</ion-button>
+        <ion-col>
+          {{booking.service.serviceName}}
+        </ion-col>
+        <ion-col style="text-align: right;">
+          {{formatDate(booking.startDate)}}
+        </ion-col>
+
+      </ion-row>
+      <hr />
+    </ion-grid>
+  </ion-card>
+
+  <div style="float: right; width: 95%;">
+    <ion-button *ngIf="loggedOn && !paid && subtotal >0 " (click)="makePayment()" style="width: 95%;">Confirm Payment</ion-button>
   </div>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
     &copy; OTP private limited
-    <ion-text *ngIf="loggedOn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Login to save travel Travel Itinerary
-      Details</ion-text>
+    <ion-text *ngIf="!loggedOn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Login to save travel Travel Itinerary
+      Details/Edit bookings</ion-text>
   </ion-toolbar>
 </ion-footer>

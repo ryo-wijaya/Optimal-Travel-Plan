@@ -33,8 +33,8 @@ export class TravelItineraryService {
 
   convertDate(objHandler: TravelItineraryHandler): void {
 
-    console.log("converting dates start = " +  objHandler.travelItinerary.startDate);
-    
+    console.log("converting dates start = " + objHandler.travelItinerary.startDate);
+
     // objHandler.startDate = objHandler.travelItinerary.startDate.getTime();
     // objHandler.endDate = objHandler.travelItinerary.endDate.getTime();
   }
@@ -75,6 +75,22 @@ export class TravelItineraryService {
 
   deleteTravelItinerary(username: string, password: string, travelItineraryId: number): Observable<boolean> {
     return this.httpClient.delete<boolean>(this.baseUrl + "/deleteTravelItinerary/" + travelItineraryId + "?username=" + username + "&password=" + password, httpOptions).pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+
+  payForAllBookings(username: string, password: string, paymentAccountId: number, travelItineraryId: number): Observable<TravelItinerary> {
+    return this.httpClient.get<TravelItinerary>(this.baseUrl + "/PayForAllBookings?username=" + username + "&password=" + password +
+     "&PaymentAccountId=" + paymentAccountId + "&TravelItineraryId=" + travelItineraryId).pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+
+  calculateTotalItineraryPrice(username: string, password: string, travelItineraryId: number): Observable<number> {
+    return this.httpClient.get<number>(this.baseUrl + "/CalculateTotalItineraryPrice?username=" + username + "&password=" + password
+     + "&TravelItineraryId=" + travelItineraryId).pipe
       (
         catchError(this.handleError)
       );

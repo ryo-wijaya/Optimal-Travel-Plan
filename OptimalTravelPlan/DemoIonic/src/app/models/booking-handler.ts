@@ -7,6 +7,9 @@ export class BookingHandler {
     serviceId: Number | undefined | null;
     travelItineraryId: Number | undefined | null;
     password: string | undefined;
+    cost:number | undefined;
+    bookingId:number | undefined;
+
 
 
 

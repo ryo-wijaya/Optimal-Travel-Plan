@@ -47,8 +47,8 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
     private EntityManager em;
 
-    private static Long MILLISECONDS_PER_HOUR;
-    
+    private static Long MILLISECONDS_PER_HOUR = 1000*60*60l;
+
     @Override
     public Long createBooking(Booking newBooking, Long serviceId, Long travelItineraryId) throws ConstraintViolationException, UnknownPersistenceException, CreateNewBookingException {
         System.out.println("ejb.session.stateless.BookingSessionBean.createBooking()");
@@ -80,28 +80,43 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
     }
 
     @Override
-    public BigDecimal getPricingOfBooking(Long bookingId, Date startDate, Date endDate) throws BookingNotFoundException{
+    public BigDecimal getPricingOfBooking(Long bookingId, Date startDate, Date endDate) throws BookingNotFoundException {
+
+        System.out.println("ejb.session.stateless.BookingSessionBean.getPricingOfBooking() booking id " + bookingId);
         Booking booking = retrieveBookingById(bookingId);
+        if (booking.getService().getRates().isEmpty() || booking.getStartDate() == null || booking.getEndDate() == null) {
+            return new BigDecimal(0);
+        }
         List<ServiceRate> rates = booking.getService().getRates();
-        if (rates.isEmpty()){
+        if (rates.isEmpty()) {
             return new BigDecimal(0);
         }
         List<ServiceRate> list = new ArrayList<>();
-        for (ServiceRate rate : rates){
-            if (rate.getStartDate().before(startDate) && rate.getEndDate().after(startDate)){
+        for (ServiceRate rate : rates) {
+            if (rate.getStartDate().before(startDate) && rate.getEndDate().after(startDate)) {
                 list.add(rate);
             }
         }
-        list.sort((a,b)-> {return a.compareTo(b);});
-        ServiceRate serviceRate = list.get(list.size()-1);
+
+        System.out.println("ejb.session.stateless.BookingSessionBean.getPricingOfBooking()");
+        list.sort((a, b) -> {
+            return a.compareTo(b);
+        });
+        ServiceRate serviceRate = list.get(list.size() - 1);
         if (serviceRate.getChargeType().equals(ChargeType.ENTRY)) {
             return serviceRate.getPrice();
         }
+        
+        if (list.isEmpty()) {
+            return new BigDecimal(0);
+        }
         BigDecimal hourly = serviceRate.getPrice();
-        hourly = hourly.multiply(new BigDecimal(Math.floor((endDate.getTime() - startDate.getTime() + MILLISECONDS_PER_HOUR/2) / MILLISECONDS_PER_HOUR)));
+        Double noHr = Math.floor((endDate.getTime() - startDate.getTime() + MILLISECONDS_PER_HOUR / 2) / MILLISECONDS_PER_HOUR);
+        BigDecimal hour = new BigDecimal(noHr);
+        hourly = hourly.multiply(hour);
         return hourly;
     }
-    
+
     @Override
     public Booking retrieveBookingBySupportRequest(Long supportRequestId) throws SupportRequestNotFoundException {
         SupportRequest sq = supportRequestSessionBeanLocal.retrieveSupportRequestById(supportRequestId);
@@ -117,7 +132,7 @@ public class BookingSessionBean implements BookingSessionBeanLocal {
             //remove loading since by default (one to one / many to one) are EARGER fetch
             return booking;
         } else {
-            throw new BookingNotFoundException();
+            throw new BookingNotFoundException("Booking not found!");
         }
     }
 

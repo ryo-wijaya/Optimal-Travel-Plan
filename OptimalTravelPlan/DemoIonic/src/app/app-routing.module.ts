@@ -57,7 +57,7 @@ const routes: Routes = [
     loadChildren: () => import('./service-details/service-details.module').then( m => m.ServiceDetailsPageModule)
   },
   {
-    path: 'create-new-booking',
+    path: 'createNewBooking',
     loadChildren: () => import('./create-new-booking/create-new-booking.module').then( m => m.CreateNewBookingPageModule)
   },
   {
@@ -65,9 +65,15 @@ const routes: Routes = [
     loadChildren: () => import('./Client/create-support-request/create-support-request.module').then( m => m.CreateSupportRequestPageModule)
   },
   {
-    path: 'client/view-support-requests',
+    path: 'client/viewSupportRequests',
     loadChildren: () => import('./Client/view-support-requests/view-support-requests.module').then( m => m.ViewSupportRequestsPageModule)
+  },
+  {
+    path: 'viewBookingDetails/:bookingId',
+    loadChildren: () => import('./view-booking-details/view-booking-details.module').then( m => m.ViewBookingDetailsPageModule),
+    canActivate: [AuthGuard]
   }
+
 
 ];
 

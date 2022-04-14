@@ -272,9 +272,12 @@ public class dataInitBean {
 
                     Review review1 = new Review(5, "This is the review content");
 
-                    PaymentTransaction transaction = new PaymentTransaction(account, endDate, "transaction number", BigDecimal.TEN);
+                    PaymentTransaction transaction = new PaymentTransaction(account, endDate, "transaction number", BigDecimal.ONE);
 
                     reviewSessionBeanLocal.createNewReview(booking.getBookingId(), review1);
+                    if(booking.getBookingId() == null){
+                        System.out.println("ejb.session.singleton.dataInitBean.postConstruct()  NULNULNUL NULNULNUL NULNULNUL NULNULNUL NULNULNUL");
+                    }
                     transactionSessionBeanLocal.createNewPaymentTransaction(transaction, booking.getBookingId());
 
                     supportRequestSessionBeanLocal.createNewSupportRequest(supportRequest1, booking.getBookingId());
