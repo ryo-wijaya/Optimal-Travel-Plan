@@ -38,19 +38,18 @@
             };
         </script>
 
-
-
-        <p:panel style="width: 300px">
-            <h:form id="menuForm">
-                <p:menu>
-                    <p:menuitem style="float: left; color: activeborder; background-color: activecaption" value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
-                    <p:menuitem style="color: activeborder; background-color: activecaption" value="Refresh Page" ajax="false" icon="pi pi-refresh" 
+        <div>
+            <h:form>
+                <p:growl id="messages"/>
+                
+                <p:menubar>
+                    <p:menuitem value="Refresh Page" ajax="false" icon="pi pi-refresh" 
                                 actionListener="#{bookingPageManagedBean.updatePage}" update="reviewForm bookingForm"/>
-                </p:menu>
+                    <p:menuitem value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
+                    <p:menuitem value="Dashboard" ajax="false" icon="pi pi-list" outcome="businessDashboard.xhtml"/>
+                </p:menubar>
             </h:form>
-        </p:panel>
-
-        <div style="width: 200; text-align: right">
+            
             <h:form>
                 <p:messages id="messages" redisplay="false" closable="true" />
                 <h:outputLabel for="startDate" value="Start Date of Bookings " />
@@ -62,7 +61,6 @@
                 <p:commandButton actionListener="#{bookingPageManagedBean.generateReport}" value="Generate Report" icon="pi pi-paperclip" ajax="false" />
             </h:form>
         </div>
-
 
         <div id="reviews" style="width: 39.5%; float: right; text-align: center">
             <h:form id="reviewForm">
@@ -199,7 +197,7 @@
 
                     <p:column headerText="View Review">
                         <p:commandButton update=":reviewForm" value="View" icon="pi pi-search-plus" 
-                                         actionListener="#{bookingPageManagedBean.filterReview}">
+                                         actionListener="#{bookingPageManagedBean.filterReview}"  rendered="#{booking.review != null}">
                             <f:attribute name ="selectedFilterReview" value="#{booking.review}" />
                         </p:commandButton>
                     </p:column>

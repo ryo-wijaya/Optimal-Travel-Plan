@@ -9,13 +9,15 @@
 
     <ui:define name="content">
         <div>
-            <h3>Service Management</h3>
+
             <h:form>
-                <p:menu>
-                    <p:menuitem style="float:left; color: activeborder; background-color: activecaption" value="Back to home" ajax="false" 
+                <p:menubar>
+                    <p:menuitem value="Back to home" ajax="false" 
                                 icon="pi pi-arrow-circle-left" outcome="./businessMain.xhtml"/>
-                </p:menu>
+                </p:menubar>
             </h:form>
+            
+            <h3>Service Management</h3>
 
             <p:messages id="messages" redisplay="false" closable="true" />
             <h:form id="formAllServices">
