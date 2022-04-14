@@ -93,6 +93,12 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
             }
         }
     }
+    
+    @Override
+    public List<TravelItinerary> retrieveAllTravelItineraries() {
+        Query query = em.createQuery("SELECT i from TravelItinerary i");
+        return query.getResultList();
+    }
 
     @Override
     public TravelItinerary updateTravelItinerary(TravelItinerary travelItinerary) throws TravelItineraryNotFoundException, UpdateTravelItineraryException {

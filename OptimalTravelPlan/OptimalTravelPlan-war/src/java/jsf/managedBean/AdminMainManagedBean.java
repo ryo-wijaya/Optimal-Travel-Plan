@@ -104,10 +104,10 @@ public class AdminMainManagedBean implements Serializable {
         businessCount = businessSessionBeanLocal.retrieveAllBusinesses().size();
         staffCount = staffSessionBeanLocal.retrieveAllStaff().size();
         transactionCount = transactionSessionBeanLocal.retrieveAllPaymentTransaction().size();
-        itineraryCount = transactionSessionBeanLocal.retrieveAllPaymentTransaction().size();
+        itineraryCount = travelItinerarySessionBeanLocal.retrieveAllTravelItineraries().size();
         serviceCount = serviceSessionBeanLocal.retrieveAllServices().size();
-        mostPopularCountry = countrySessionBeanLocal.mostPopularCountry();
-        mostPopularTag = tagSessionBeanLocal.mostPopularTag();
+        mostPopularCountry = countrySessionBeanLocal.mostPopularCountry().toUpperCase();
+        mostPopularTag = tagSessionBeanLocal.mostPopularTag().toUpperCase();
         unresolvedTicketsCount = supportRequestSessionBeanLocal.retrieveAllUnresolvedSupportRequests().size();
     }
 
