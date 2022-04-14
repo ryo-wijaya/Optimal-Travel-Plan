@@ -20,7 +20,7 @@ export class PaymentAccountService {
   constructor(private httpClient: HttpClient) { }
 
   createPaymentAccount(objHandler: PaymentAccountHandler): Observable<number> {
-    return this.httpClient.put<number>(this.baseUrl + "/createPaymentAccount", objHandler, httpOptions).pipe
+    return this.httpClient.put<number>(this.baseUrl + "/CreatePaymentAccount", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)
       );
@@ -40,7 +40,7 @@ export class PaymentAccountService {
   }
 
   deletePaymentAccount(username: string, password: string, paymentAccountId: number): Observable<boolean> {
-    return this.httpClient.delete<boolean>(this.baseUrl + "/DeletePaymentAccount/" + paymentAccountId + "?username=" + username + "&password=" + password).pipe
+    return this.httpClient.delete<boolean>(this.baseUrl + "/DeletePaymentAccount?username=" + username + "&password=" + password + "&paymentAccountId=" + paymentAccountId).pipe
       (
         catchError(this.handleError)
       );

@@ -17,6 +17,7 @@ public class PaymentAccountHandler {
     private PaymentAccount paymentAccount;
     private Customer customer;
     private String password;
+    private Integer date;
 
     public PaymentAccount getPaymentAccount() {
         return paymentAccount;
@@ -40,5 +41,13 @@ public class PaymentAccountHandler {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getDate() {
+        return date;
+    }
+
+    public void setDate(Integer date) {
+        this.date = date;
     }
 }

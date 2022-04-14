@@ -122,11 +122,14 @@
 
     <ion-card>
       <ion-card-content>
-        <ion-button type="submit" ion-button block>
+        <ion-button type="submit" ion-button block expand="full" shape="round">
           Save Changes
         </ion-button>
-        <ion-button ion-button block (click)="changePassword($event)">
+        <ion-button ion-button block (click)="changePassword($event)" expand="full" shape="round">
           Change Password
+        </ion-button>
+        <ion-button ion-button block (click)="navigateToPayment()" expand="full" shape="round">
+          Manage Payment
         </ion-button>
       </ion-card-content>
     </ion-card>

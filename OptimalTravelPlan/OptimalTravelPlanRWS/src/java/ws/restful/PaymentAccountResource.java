@@ -9,6 +9,7 @@ import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.PaymentAccountSessionBeanLocal;
 import entity.Customer;
 import entity.PaymentAccount;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,13 +56,26 @@ public class PaymentAccountResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPaymentAccount(PaymentAccountHandler objHandler) {
+        System.out.println("Test 1");
         if (objHandler != null) {
+            System.out.println("Test 2");
             try {
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
 
                 if (!verifyPaymentAccountToCustomer(customer, objHandler.getPaymentAccount())) {
                     throw new CustomerNotMatchException("Please ensure customer owns this payment account!");
                 }
+               
+                //Date doesnt work
+//                Integer exDate = objHandler.getDate();
+//                System.out.println("Test 3");
+//                System.out.println(exDate);
+//                Date newDate = new Date(exDate);
+//                System.out.println("Test 4");
+//                objHandler.getPaymentAccount().setCardExpirationDate(newDate);
+//                System.out.println("Test 5");
+
+
                 PaymentAccount paymentAccount = paymentAccountSessionBeanLocal.createNewPaymentAccount(customer.getCustomerId(), objHandler.getPaymentAccount());
                 return Response.status(Response.Status.OK).entity(paymentAccount.getPaymenetAccountId()).build();
             } catch (Exception ex) {
@@ -113,20 +127,26 @@ public class PaymentAccountResource {
         }
     }
 
-    @Path("DeletePaymentAccount/{paymentAccountId}")
+    @Path("DeletePaymentAccount")
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePaymentAccount(@QueryParam("username") String username,
             @QueryParam("password") String password,
-            @PathParam("paymentAccountId") Long paymentAccountId) {
+            @QueryParam("paymentAccountId") Long paymentAccountId) {
         try {
+            System.out.println("Test 1");
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            System.out.println("Test 2");
             PaymentAccount pa = paymentAccountSessionBeanLocal.retrievePaymentAccountByPaymentAccountId(paymentAccountId);
+            System.out.println("Test 3");
             if (!verifyPaymentAccountToCustomer(customer, pa)) {
+                System.out.println("Test 4");
                 throw new CustomerNotMatchException("Please ensure customer owns this payment account!");
             }
-            paymentAccountSessionBeanLocal.deletePaymentAccount(paymentAccountId);
+            System.out.println("Test 5");
+            paymentAccountSessionBeanLocal.toggleAccountStatus(paymentAccountId);
+            System.out.println("Test 6");
             return Response.status(Status.OK).build();
         } catch (Exception ex) {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
