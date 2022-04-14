@@ -210,5 +210,9 @@ export class AccountDetailsPage implements OnInit {
     });
     await alert.present();
   }
+
+  navigateToPayment() {
+    this.router.navigate(["payment/"]);
+  }
 }
 

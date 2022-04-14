@@ -67,7 +67,11 @@ const routes: Routes = [
   {
     path: 'client/view-support-requests',
     loadChildren: () => import('./Client/view-support-requests/view-support-requests.module').then( m => m.ViewSupportRequestsPageModule)
+  },  {
+    path: 'payment',
+    loadChildren: () => import('./Client/payment/payment.module').then( m => m.PaymentPageModule)
   }
+
 
 ];
 

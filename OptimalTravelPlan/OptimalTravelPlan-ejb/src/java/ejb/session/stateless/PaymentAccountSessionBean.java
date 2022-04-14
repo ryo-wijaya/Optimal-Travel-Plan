@@ -50,7 +50,14 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
     @Override
     public List<PaymentAccount> retrieveAllCustomerPaymentAccounts(Long customerId) throws AccountNotFoundException{
         Customer customer = customerSessionBean.retrieveCustomerById(customerId);
-        return customer.getPaymentAccounts();
+        List<PaymentAccount> accs = customer.getPaymentAccounts();
+        
+        for (int i = 0; i < accs.size(); i++) {
+            if (!accs.get(i).getEnabled()) {
+                accs.remove(i);
+            }
+        }
+        return accs;
     }
     
     @Override
@@ -78,6 +85,20 @@ public class PaymentAccountSessionBean implements PaymentAccountSessionBeanLocal
         }
         em.remove(paymentAccountToDelete);
     }
+    
+    @Override
+    public void toggleAccountStatus(Long paymentAccountId) throws DeletePaymentAccountException {
+        PaymentAccount paymentAccountToDisable = em.find(PaymentAccount.class, paymentAccountId);;
+
+        if (paymentAccountToDisable != null) {
+            Boolean newStatus = paymentAccountToDisable.getEnabled() ? false : true; // not redundant
+            paymentAccountToDisable.setEnabled(newStatus);
+        } else {
+            throw new DeletePaymentAccountException("ID not provided for account status to be updated");
+        }
+    }
+    
+    
     
     @Override
     public void updatePaymentAccount(PaymentAccount paymentAccount) throws PaymentAccountNotFoundException{

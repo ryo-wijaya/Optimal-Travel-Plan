@@ -28,5 +28,7 @@ public interface PaymentAccountSessionBeanLocal {
     public void updatePaymentAccount(PaymentAccount paymentAccount) throws PaymentAccountNotFoundException;
 
     public List<PaymentAccount> retrieveAllCustomerPaymentAccounts(Long customerId) throws AccountNotFoundException;
+
+    public void toggleAccountStatus(Long paymentAccountId) throws DeletePaymentAccountException;
     
 }
