@@ -74,6 +74,9 @@ export class TravelItineraryDetailsPage implements OnInit {
     if (temp != null) {
       this.travelItinerary = JSON.parse(temp);
     }
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'))
+    }, 1)
     this.refreshCal();
   }
 
@@ -94,6 +97,7 @@ export class TravelItineraryDetailsPage implements OnInit {
       this.travelItinerary.endDate = event.data.end;
       sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
       console.log("updated start date " + this.travelItinerary.startDate + " end date " + this.travelItinerary.endDate);
+
       this.refreshCal();
     });
     await modal.present();
@@ -101,7 +105,7 @@ export class TravelItineraryDetailsPage implements OnInit {
 
   public recommendTravelItin() {
     if (this.travelItinerary.travelItineraryId == null) {
-      this.errorMessage = "Travel itinerary ID is has not been created! Please try again later!";
+      this.errorMessage = "Please start by adding one booking for country to be added!";
       return;
     }
     this.travelItineraryService.recommendTravelItinerary(this.customer.username, this.password, this.travelItinerary.travelItineraryId).subscribe
@@ -122,6 +126,8 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public refreshCal() {
+    console.log(" refreshCal" + this.travelItinerary);
+
     if (this.travelItinerary == null) {
       this.travelItinerary = new TravelItinerary();
       return;
@@ -129,7 +135,8 @@ export class TravelItineraryDetailsPage implements OnInit {
       return;
     }
     if (this.loggedOn) {
-      console.log("id " + this.travelItinerary.travelItineraryId);
+      console.log("id " + this.travelItinerary);
+
       if (this.travelItinerary.travelItineraryId != null) {
         let handler: TravelItineraryHandler;
         handler = new TravelItineraryHandler();
@@ -156,6 +163,8 @@ export class TravelItineraryDetailsPage implements OnInit {
           });
 
       } else {
+
+        console.log("Went to create travel itin " + this.travelItinerary);
         let handler: TravelItineraryHandler;
         handler = new TravelItineraryHandler();
         handler.customer = this.customer;
@@ -293,7 +302,7 @@ export class TravelItineraryDetailsPage implements OnInit {
 
     for (let account of this.paymentAccounts) {
       if (account.enabled) {
-        console.log("Account found! " + account.accountNumber + " | " + account.paymentAccountId);
+        console.log("Account found! " + account.accountNumber);
         arr.push({
           name: account.accountNumber,
           type: 'radio',
