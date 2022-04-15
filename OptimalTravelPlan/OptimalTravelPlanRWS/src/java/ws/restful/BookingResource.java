@@ -9,6 +9,7 @@ import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.BookingSessionBeanLocal;
 import entity.Booking;
 import entity.Customer;
+import entity.TravelItinerary;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import util.exception.BookingNotFoundException;
 import util.exception.CustomerNotMatchException;
 import ws.DataModel.BookingHandler;
 
@@ -98,6 +100,32 @@ public class BookingResource {
         }
     }
 
+    @Path("RetrieveBookingByPaymentTransaction/{paymentTransactionId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveBookingByPaymentTransaction(@QueryParam("username") String username, @QueryParam("password") String password,
+            @PathParam("paymentTransactionId") Long paymentTransactionId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            
+            System.out.println("ws.restful.BookingResource.retrieveBookingById()payment Transaction id = " + paymentTransactionId);
+            
+            for (TravelItinerary ti : customer.getTravelItineraries()){
+                for (Booking bk : ti.getBookings()){
+                    if (bk.getPaymentTransaction().getPaymentTransactionId() == paymentTransactionId){
+                        bk.cleanRelationships();
+                        return Response.status(Status.OK).entity(bk).build();
+                    }
+                }
+            }
+            throw new BookingNotFoundException("Unable to find request!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        }
+    }
+
     @Path("Update")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -157,7 +185,6 @@ public class BookingResource {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
         }
     }
-
 
     private BookingSessionBeanLocal lookupBookingSessionBeanLocal() {
         try {

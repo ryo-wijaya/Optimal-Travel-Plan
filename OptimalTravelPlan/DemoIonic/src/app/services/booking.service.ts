@@ -33,6 +33,13 @@ export class BookingService {
     );
   }
 
+  retrieveBookingByPaymentTransaction(username: string, password: string, paymentTransactionId: number): Observable<Booking> {
+    return this.httpClient.get<Booking>(this.baseUrl + "/RetrieveBookingByPaymentTransaction/"+ paymentTransactionId +"?username=" + username + "&password=" + password).pipe
+    (
+      catchError(this.handleError)
+    );
+  }
+
   updateBooking(objHandler: BookingHandler): Observable<BookingHandler> {
     console.log("Calling update booking id = " + objHandler.booking.bookingId);
     objHandler.bookingId = objHandler.booking.bookingId;

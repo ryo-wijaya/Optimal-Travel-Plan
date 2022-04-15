@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { Booking } from 'src/app/models/booking';
 import { Customer } from 'src/app/models/customer';
 import { PaymentAccount } from 'src/app/models/payment-account';
 import { PaymentAccountHandler } from 'src/app/models/payment-account-handler';
 import { PaymentTransaction } from 'src/app/models/payment-transaction';
 import { PaymentType } from 'src/app/models/PaymentType-enum';
+import { BookingService } from 'src/app/services/booking.service';
 import { PaymentAccountService } from 'src/app/services/payment-account.service';
 import { PaymentTransactionService } from 'src/app/services/payment-transaction.service';
 
@@ -24,16 +26,19 @@ export class PaymentPage implements OnInit {
   password: string;
   newPaymentAccount: PaymentAccount;
   selectedPaymentType: PaymentType;
+  booking : Booking;
 
 
 
   constructor(private router: Router,
     private paymentService: PaymentAccountService,
     public alertController: AlertController,
-    private transactionService: PaymentTransactionService) {
+    private transactionService: PaymentTransactionService,
+    private bookingService: BookingService) {
     this.paymentAccounts = [];
     this.newPaymentAccount = new PaymentAccount();
     this.paymentTransactions = [];
+    this.booking = new Booking();
   }
 
   ngOnInit() {
@@ -234,17 +239,40 @@ export class PaymentPage implements OnInit {
     await alert.present();
   }
 
-  async viewTrans(trans: PaymentTransaction) {
+  viewTrans(trans:PaymentTransaction){
+    this.bookingService.retrieveBookingByPaymentTransaction(this.customer.username,this.password,trans.paymentTransactionId).subscribe({
+      next: (response) => {
+        this.booking = (response);
+        this.viewTrans2(trans);
+      },
+      error: (error) => {
+        console.log('********** get payment transactions error: ' + error);
+      }
+    });
+
+  }
+
+
+  async viewTrans2(trans: PaymentTransaction) {
+
     const alert = await this.alertController.create({
-      header: 'Transaction Details',
-
-
+      header: 'Booking paid for:',
+      message: this.booking.service.serviceName + " <br/> Travel itinerary: " + this.booking.travelItinerary.travelItineraryId +
+      "<br/> Booking Id: " + this.booking.bookingId,
       buttons: [
         {
           text: 'Dismiss',
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => { }
+        },
+        {
+          text: 'Go to booking',
+          role : 'ok',
+          cssClass: 'primary',
+          handler: () => {
+            this.router.navigate(['viewBookingDetails/' + this.booking.bookingId]);
+          }
         }
       ]
     });
