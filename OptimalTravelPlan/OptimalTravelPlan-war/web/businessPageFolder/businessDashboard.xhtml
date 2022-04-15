@@ -12,9 +12,33 @@
         <ui:composition template="./../template/businessTemplate.xhtml">
 
             <ui:define name="content">
-                <div>
-                    <p:chart type="pie" model="#{businessDashBoardManagedBean.model}"/>
-                </div>
+
+                <h:form>
+                    <p:growl id="messages"/>
+                    <p:menubar>
+                        <p:menuitem value="Home" ajax="false" icon="pi pi-home" outcome="businessMain.xhtml"/>
+                    </p:menubar>
+                </h:form>
+                
+                <table>
+                    <tr>
+                        <td>
+                            <div style="width: 500px" >
+                                <p:chart type="pie" model="#{businessDashBoardManagedBean.model1}"/>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="width: 500px" >
+                                <p:chart type="bar" model="#{businessDashBoardManagedBean.model2}"/>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="width: 500px" >
+                                <p:chart type="bar" model="#{businessDashBoardManagedBean.model3}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </ui:define>
 
         </ui:composition>
