@@ -249,7 +249,6 @@ export class PaymentPage implements OnInit {
         console.log('********** get payment transactions error: ' + error);
       }
     });
-
   }
 
 
