@@ -14,59 +14,6 @@
                 Country Management
             </h3>
             
-            <h:form id="viewAllCountriesTest">
-                <p:dataView var="country" value="#{countryManagementManagedBean.countries}" rows="12" paginator="true" rowsPerPageTemplate="6,12,16"
-                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                    gridIcon="pi pi-th-large" listIcon="pi pi-bars">
-                    
-                    <p:dataViewGridItem>
-                        <div>
-                            <div class="country-grid-item-top">
-                                <div>
-                                    <i class="pi pi-flag product-category-icon" />
-                                    <span>
-                                    #{country.countryId}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="country-grid-item-content">
-                                <div class="country-name" >
-                                    #{country.name}
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </p:dataViewGridItem>
-                    
-                </p:dataView>
-                
-            </h:form>
-            
-            <h:form id="viewAllCountries">
-                <p:messages id="messages"/>
-                <p:dataGrid var="country" value="#{countryManagementManagedBean.countries}" columns="4" layout="grid" rows="12" paginator="true" id="countries"
-                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
-                        {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                        rowsPerPageTemplate="8,12" multiViewState="true">
-                    <p:panel header="#{country.name}" style="text-align: center; font-size:20px;">
-                        <p:panelGrid columns="2">
-                            <h:outputText value="Country ID: "/>
-                            <h:outputText value="#{country.countryId}"/>
-                            <h:outputText value="Country Name:"/>
-                            <h:outputText value="#{country.name}"/>
-                            <p:commandButton actionListener="#{countryManagementManagedBean.doUpdateCountry}" update="formUpdateCountry" oncomplete="PF('dialogUpdateCountry').show()" icon="ui-icon-pencil" title="Update">
-                                <f:attribute name="countryEntityToUpdate" value="#{country}" />
-                            </p:commandButton>
-                            <p:commandButton icon="ui-icon-trash" actionListener="#{countryManagementManagedBean.deleteCountry}" update="formAllCountries"
-                                             rendered="#{country.services.size() eq 0}">
-                                <f:attribute name="countryEntityToDelete" value="#{country}" />
-                                <p:confirm header="Confirmation" message="Are you sure you want to delete #{country.name} ?" icon="ui-icon-alert" />
-                            </p:commandButton>
-                        </p:panelGrid>
-                    </p:panel>
-                </p:dataGrid>
-            </h:form>
-            
             <h:form id="formAllCountries">
             
                 <p:messages id="messages" redisplay="false" closable="true" />

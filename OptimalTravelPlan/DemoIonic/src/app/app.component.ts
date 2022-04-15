@@ -15,10 +15,10 @@ export class AppComponent {
 
   public customerPages = [
     { title: 'Homepage', url: '/client/home', icon: 'home'},
-    { title: 'My Account', url: '/client/accountDetails', icon: 'apps' },
-    { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'apps' },
-    { title: 'My Support Requests', url: '/client/supportRequests', icon: 'apps' },
-    { title: 'Manage Payment', url: '/payment', icon: 'apps' }
+    { title: 'My Account', url: '/client/accountDetails', icon: 'body' },
+    { title: 'My Travel Itineraries', url: '/client/travelItineraries', icon: 'folder' },
+    { title: 'My Support Requests', url: '/client/supportRequests', icon: 'alert-circle' },
+    { title: 'Manage Payment', url: '/payment', icon: 'card' }
   ];
 
   public appPages = [
