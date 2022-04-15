@@ -10,9 +10,9 @@ import util.email.EmailManager;
 
 public class EmailSessionBean implements EmailSessionBeanLocal {
 
-    private final String FROM_EMAIL_ADDRESS = "xxx <xxx@gmail.com>";
-    private final String GMAIL_USERNAME = "xxx@gmail.com";
-    private final String GMAIL_PASSWORD = "xxx";
+    private final String FROM_EMAIL_ADDRESS = "TESTIS3106@gmail.com";
+    private final String GMAIL_USERNAME = "TESTIS3106@gmail.com";
+    private final String GMAIL_PASSWORD = "Jumpingbean123!";
 
     @Override
     public Boolean emailCheckoutNotificationSync(String content, String toEmailAddress) {

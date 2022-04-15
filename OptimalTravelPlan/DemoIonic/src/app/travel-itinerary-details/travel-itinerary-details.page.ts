@@ -242,7 +242,7 @@ export class TravelItineraryDetailsPage implements OnInit {
             'start': this.formatDate2(bk.startDate),
             'end': this.formatDate2(bk.endDate),
             'title': bk.service.serviceName,
-            'url': ('http://localhost:8100/viewBookingDetails/' + bk.bookingId)
+            'url': ('/viewBookingDetails/' + bk.bookingId)
           }
         );
         this.options = { ...this.options, ...{ events: this.events } };

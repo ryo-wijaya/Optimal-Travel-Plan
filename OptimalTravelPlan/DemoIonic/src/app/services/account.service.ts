@@ -38,8 +38,8 @@ export class AccountService {
     );
   }
 
-  forgetPasswordChange(username:string,email:string):Observable<boolean>{
-    return this.httpClient.post<boolean>(this.baseUrl + "/changePassword?username=" + username + "&email=" + email, null).pipe(
+  forgetPasswordChange(email:string):Observable<any>{
+    return this.httpClient.post<any>(this.baseUrl + "/forgetPasswordChange?email=" + email, null).pipe(
       catchError(this.handleError)
     );
   }

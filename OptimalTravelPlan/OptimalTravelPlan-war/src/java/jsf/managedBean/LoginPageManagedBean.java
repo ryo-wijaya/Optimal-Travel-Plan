@@ -122,10 +122,13 @@ public class LoginPageManagedBean implements Serializable {
                 + " please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
                 + "\n\nUsername: " +  business.getUsername() + "\n\nNew password: " + newPassword;
             
-            emailSessionBeanLocal.emailCheckoutNotificationSync(message, recoveryEmail);
+            emailSessionBeanLocal.emailCheckoutNotificationAsync(message, recoveryEmail);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Recovery Email Sent!", null));
         } catch (AccountNotFoundException ex) {
             System.out.println("Email address " + recoveryEmail + " not found");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No account associated with this email address", null));
+        } catch (InterruptedException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unknown issue occured!", null));
         }
     }
 

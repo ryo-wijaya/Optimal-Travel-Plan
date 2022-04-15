@@ -49,7 +49,7 @@ public class EmailManager {
             Message msg = new MimeMessage(session);
             msg.setFrom(InternetAddress.parse(fromEmailAddress, false)[0]);
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmailAddress, false));
-            msg.setSubject("Checkout Completed Successfully!");
+            msg.setSubject("Optimal Travel plan");
             msg.setText(content);
             msg.setHeader("X-Mailer", mailer);
 

@@ -32,5 +32,7 @@ public interface CustomerSessionBeanLocal {
     public void associateTagToCustomer(Long customerId, Long tagId) throws AccountNotFoundException, TagNotFoundException;
 
     public void deleteCustomer(Long businessId) throws AccountNotFoundException, DeleteCustomerException;
+
+    public Customer retrieveCustomerByEmail(String email) throws AccountNotFoundException;
     
 }
