@@ -32,19 +32,18 @@ export class SupportRequestsPage implements OnInit {
 
   viewSupportRequestDetails(event, supportRequest) {
     sessionStorage['supportRequestId'] = supportRequest.supportRequestId;
-    this.router.navigate(["/client/view-support-requests"])
+    this.router.navigate(["/client/viewSupportRequests"])
   }
 
   refreshSupportRequests() {
     this.supportRequestService.retrieveSupportRequest(this.customer.username,
       this.password).subscribe({
-        next:(response)=>{
+        next: (response) => {
           this.supportRequests = response;
         },
-        error:(error)=>{
+        error: (error) => {
           console.log('***************** view support request ' + error);
         }
       })
   }
-
 }

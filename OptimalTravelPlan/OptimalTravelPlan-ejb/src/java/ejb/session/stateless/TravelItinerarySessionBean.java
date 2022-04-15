@@ -136,6 +136,9 @@ public class TravelItinerarySessionBean implements TravelItinerarySessionBeanLoc
         } else if (!travelItinerary.getCountry().getCountryId().equals(travelItineraryToUpdate.getCountry().getCountryId())) {
             throw new UpdateTravelItineraryException("Unable to change country due to existing bookings!");
         }
+        if (travelItinerary.getStartDate() == null || travelItinerary.getEndDate() == null){
+            return travelItineraryToUpdate;
+        }
         if (travelItinerary.getStartDate().after(travelItinerary.getEndDate())) {
             throw new UpdateTravelItineraryException("Start Date must be after End date!");
         }

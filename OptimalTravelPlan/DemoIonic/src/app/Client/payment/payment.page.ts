@@ -151,9 +151,9 @@ export class PaymentPage implements OnInit {
                 this.newPaymentAccount.enabled = true;
 
                 let paymentHandler = new PaymentAccountHandler(this.newPaymentAccount, this.customer, this.password);
-                var date = alertData.data.values.expiry;
-                console.log(date);
-                paymentHandler.date = date.getMilliseconds;
+                console.log(alertData.data.values.expiry);
+                paymentHandler.date = alertData.data.values.expiry;
+                console.log("PaymentHandler date: " + paymentHandler.date);
 
                 this.paymentService.createPaymentAccount(paymentHandler).subscribe({
                   next: (response) => {
@@ -257,7 +257,7 @@ export class PaymentPage implements OnInit {
 
     const alert = await this.alertController.create({
       header: 'Booking paid for:',
-      message: this.booking.service.serviceName + " <br/> Travel itinerary: " + this.booking.travelItinerary.travelItineraryId +
+      message: this.booking.service.serviceName + " <br/> Travel itinerary ID: " + this.booking.travelItinerary.travelItineraryId +
       "<br/> Booking Id: " + this.booking.bookingId,
       buttons: [
         {

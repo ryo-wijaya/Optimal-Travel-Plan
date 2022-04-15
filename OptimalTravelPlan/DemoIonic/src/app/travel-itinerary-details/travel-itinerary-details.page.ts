@@ -51,6 +51,7 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log("TravelItineraryDetailsPage on init");
     let tempCus = sessionStorage['customer'];
     if (tempCus != null) {
       this.customer = JSON.parse(tempCus);
@@ -70,20 +71,16 @@ export class TravelItineraryDetailsPage implements OnInit {
       dayMaxEvents: true
     };
 
-    let temp = sessionStorage['travelItinerary'];
-    if (temp != null) {
-      this.travelItinerary = JSON.parse(temp);
-    }
+
     setTimeout(function () {
       window.dispatchEvent(new Event('resize'))
     }, 1)
-    
+
     this.refreshCal();
   }
 
-  ionViewDidEnter(){
-    this.refreshCal();
-  }
+  ionViewDidEnter() { this.refreshCal(); }
+  servicesPage() { this.router.navigate(['/client/services']); }
 
   async setDates() {
     let val: string = "Travel Itinerary"
@@ -131,18 +128,27 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public refreshCal() {
+    let temp = sessionStorage['travelItinerary'];
+    if (temp != 'null' && temp != null) {
+      this.travelItinerary = JSON.parse(temp);
+    }
     console.log(" refreshCal" + this.travelItinerary);
 
     if (this.travelItinerary == null) {
+      console.log(" refreshCal trav is null");
+
       this.travelItinerary = new TravelItinerary();
       return;
     } else if (this.travelItinerary.bookings == null) {
+      console.log(" refreshCal trav bookings is null");
       return;
     }
     if (this.loggedOn) {
-      console.log("id " + this.travelItinerary);
+      console.log("Travel itin " + this.travelItinerary);
 
       if (this.travelItinerary.travelItineraryId != null) {
+
+        console.log("Travel itin id " + this.travelItinerary.travelItineraryId);
         let handler: TravelItineraryHandler;
         handler = new TravelItineraryHandler();
         handler.customer = this.customer;
@@ -185,7 +191,7 @@ export class TravelItineraryDetailsPage implements OnInit {
             this.registerBookings();
           },
           error: (error) => {
-            console.log('********** Failted creating travel itin: ' + error);
+            console.log('********** Failted creating travel itin: ' + error().message);
           }
         });
       }

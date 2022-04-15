@@ -9,6 +9,7 @@ import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.PaymentAccountSessionBeanLocal;
 import entity.Customer;
 import entity.PaymentAccount;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,7 +61,9 @@ public class PaymentAccountResource {
             try {
                 
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-                System.out.println("ws.restful.PaymentAccountResource.createPaymentAccount() ExpDate = " + objHandler.getPaymentAccount().getCardExpirationDate());
+                System.out.println("ws.restful.PaymentAccountResource.createPaymentAccount() ExpDate = " + objHandler.getDate());
+                Date expr = new SimpleDateFormat("dd-MM-yyyy").parse(objHandler.getDate());
+                objHandler.getPaymentAccount().setCardExpirationDate(expr);
 
                 PaymentAccount paymentAccount = paymentAccountSessionBeanLocal.createNewPaymentAccount(customer.getCustomerId(), objHandler.getPaymentAccount());
                 return Response.status(Response.Status.OK).entity(paymentAccount.getPaymenetAccountId()).build();

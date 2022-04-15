@@ -108,14 +108,20 @@ public class BookingResource {
             @PathParam("paymentTransactionId") Long paymentTransactionId) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-            
+
             System.out.println("ws.restful.BookingResource.retrieveBookingById()payment Transaction id = " + paymentTransactionId);
-            
-            for (TravelItinerary ti : customer.getTravelItineraries()){
-                for (Booking bk : ti.getBookings()){
-                    if (bk.getPaymentTransaction().getPaymentTransactionId() == paymentTransactionId){
-                        bk.cleanRelationships();
-                        return Response.status(Status.OK).entity(bk).build();
+
+            for (TravelItinerary ti : customer.getTravelItineraries()) {
+                System.out.println("Itinerary ID:" + ti.getTravelItineraryId());
+                for (Booking bk : ti.getBookings()) {
+                    System.out.println("booking id:  " + bk.getBookingId());
+
+                    if (bk.getPaymentTransaction() != null) {
+                        if (bk.getPaymentTransaction().getPaymentTransactionId() == paymentTransactionId) {
+                            System.out.println("Transaction found with ID:  " + bk.getPaymentTransaction().getPaymentTransactionId());
+                            bk.cleanRelationships();
+                            return Response.status(Status.OK).entity(bk).build();
+                        }
                     }
                 }
             }
