@@ -28,8 +28,7 @@ export class ViewSupportRequestsPage implements OnInit {
   resultSuccess: boolean;
   resultError: boolean;
 
-  loaded:boolean;
-
+  loaded: boolean;
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -40,6 +39,7 @@ export class ViewSupportRequestsPage implements OnInit {
     this.resultSuccess = false;
     this.resultError = false;
     this.loaded = true;
+
   }
 
   ngOnInit() {
@@ -79,28 +79,36 @@ export class ViewSupportRequestsPage implements OnInit {
       hour -= 12;
       morning = "pm"
     }
-    if(hour <10){
+    if (hour < 10) {
       hourS = "0" + hour.toString();
-    } else{
+    } else {
       hourS = hour.toString();
     }
-    output = output.slice(0, 11) + hourS + output.slice(13,16) + morning;
+    output = output.slice(0, 11) + hourS + output.slice(13, 16) + morning;
     return output;
   }
 
-  
+
   updateSupportRequest() {
-    this.loaded = false;
-    this.supportRequestService.updateRequestDetails(this.customer.username, this.password, this.supportRequestId, this.addRequestDetails).subscribe({
-      next: (response) => {
-        //blah
-        this.refreshSupportRequest();
-      },
-      error: (error) => {
-        console.log('********** updateRequestDetails error: ' + error);
-      }
-    });
+    //for (let i = 0; i < 1000; i++) {
+      this.loaded = false;
+      this.supportRequestService.updateRequestDetails(this.customer.username, this.password, this.supportRequestId, this.addRequestDetails).subscribe({
+        next: (response) => {
+          //blah
+          this.refreshSupportRequest();
+        },
+        error: (error) => {
+          console.log('********** updateRequestDetails error: ' + error);
+        }
+      });
+   // }
+
   }
-  
+
+  getRequestDetails() {
+    let ooo = this.supportRequestToView.requestDetails.split("\n");
+    console.log(JSON.stringify(ooo));
+    return ooo;
+  }
 
 }

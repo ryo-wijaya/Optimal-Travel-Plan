@@ -43,18 +43,22 @@
           {{supportRequestToView.resolved}}
         </ion-item>
 
-        <ion-item>
+        <ion-card style="padding: 5px;">
           <ion-label><b>Details</b></ion-label>
-          {{supportRequestToView.requestDetails}}
-        </ion-item>
+          <ion-list *ngFor="let line of getRequestDetails()">
+            <ion-row>{{line}}</ion-row>
+          </ion-list>
+        </ion-card>
 
 
         <ion-item>
           <ion-label fixed>Add comment</ion-label>
-          <ion-input type="text" id="comment" name="comment" [(ngModel)]="addRequestDetails" required="true" #incomment="ngModel" style="text-align: right;">
+          <ion-input type="text" id="comment" name="comment" [(ngModel)]="addRequestDetails" required="true"
+            #incomment="ngModel" style="text-align: right;">
           </ion-input>
 
         </ion-item>
+
       </ion-list>
 
       <ion-button (click)="updateSupportRequest()" *ngIf="loaded">Submit comment</ion-button>
