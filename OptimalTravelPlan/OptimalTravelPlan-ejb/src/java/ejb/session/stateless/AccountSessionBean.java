@@ -119,16 +119,24 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
         try {
             Account account = this.retrieveAccountById(accountId);
             
-            //Generate random password
-            final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            SecureRandom random = new SecureRandom();
-            String newPassword = IntStream.range(9, 10)
-                .map(i -> random.nextInt(chars.length()))
-                .mapToObj(randomIndex -> String.valueOf(chars.charAt(randomIndex)))
-                .collect(Collectors.joining());
+            Double d = Math.random() * 9999999999999999l;
+            d = Math.floor(d);
+            if (d < 10000000000l) {
+                d += 10000000000l;
+            }
+            d %= 10000000000l;
+            String code = "";
+            int k = d.intValue();
+            while (k > 0) {
+                code = "" + (k % 10) + code;
+                k /= 10;
+            }
+            while (code.length() < 10) {
+                code = "0" + code;
+            }
             
-            account.setPassword(newPassword);
-            return newPassword;
+            account.setPassword(code);
+            return code;
             
         } catch (AccountNotFoundException | PasswordNotAcceptedException ex) {
             // Do nothing as account is guaranteed to be found and password is guaranteed to be accepted
