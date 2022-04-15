@@ -59,4 +59,10 @@
         <local>ejb.session.stateless.BookingSessionBeanLocal</local>
         <ejb-link>OptimalTravelPlan-ejb.jar#BookingSessionBean</ejb-link>
     </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>EmailSessionBeanLocal</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.session.stateless.EmailSessionBeanLocal</local>
+        <ejb-link>OptimalTravelPlan-ejb.jar#EmailSessionBean</ejb-link>
+    </ejb-local-ref>
 </web-app>

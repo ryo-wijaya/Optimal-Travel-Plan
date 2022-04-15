@@ -71,6 +71,18 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
     }
     
     @Override
+    public Customer retrieveCustomerByEmail(String email) throws AccountNotFoundException {
+        Query query = em.createQuery("SELECT c FROM Customer c WHERE c.email = :inEmail");
+        query.setParameter("inEmail", email);
+        try {
+            Customer customer = (Customer) query.getSingleResult();
+            return customer;
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new AccountNotFoundException("Email has no match!");
+        }
+    }
+    
+    @Override
     public void associateTagToCustomer(Long customerId, Long tagId) throws AccountNotFoundException, TagNotFoundException {
         Customer customer = this.retrieveCustomerById(customerId);
         Tag tag = tagSessionBeanLocal.retrieveTagByTagId(tagId);

@@ -7,6 +7,7 @@ package ws.restful;
 
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
+import ejb.session.stateless.EmailSessionBeanLocal;
 import entity.Account;
 import entity.Booking;
 import entity.Country;
@@ -46,9 +47,13 @@ import ws.DataModel.CustomerHandler;
 @Path("Account")
 public class AccountResource {
 
+    EmailSessionBeanLocal emailSessionBeanLocal = lookupEmailSessionBeanLocal();
+
     CustomerSessionBeanLocal customerSessionBeanLocal = lookupCustomerSessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
+    
+    
 
     @Context
     private UriInfo context;
@@ -133,15 +138,22 @@ public class AccountResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response forgetPasswordChange(@QueryParam("username") String username, @QueryParam("email") String password) {
+    public Response forgetPasswordChange(@QueryParam("email") String email) {  
         try {
-            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
-
-            accountSessionBeanLocal.forgetPasswordChange(customer.getAccountId());
-            System.out.println("Forget password change occured at customer account: " + customer.getAccountId() + " remotely via web service");
+            System.out.println("Email address is " + email);
+            Customer customer = customerSessionBeanLocal.retrieveCustomerByEmail(email);
+            String newPassword = accountSessionBeanLocal.forgetPasswordChange(customer.getAccountId());
+            
+            System.out.println("CUstomer Id: "+ customer.getAccountId());
+            
+            String message = "Dear user" + ",\n\n"
+                + " please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
+                + "\n\nUsername: " +  customer.getUsername() + "\n\nNew password: " + newPassword;
+            
+            emailSessionBeanLocal.emailCheckoutNotificationAsync(message, email);
 
             return Response.status(Response.Status.OK).build();
-        } catch (AccountDisabledException | InvalidLoginCredentialException ex) {
+        } catch (AccountNotFoundException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
@@ -206,6 +218,16 @@ public class AccountResource {
         try {
             javax.naming.Context c = new InitialContext();
             return (CustomerSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/CustomerSessionBean!ejb.session.stateless.CustomerSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private EmailSessionBeanLocal lookupEmailSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (EmailSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/EmailSessionBean!ejb.session.stateless.EmailSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
