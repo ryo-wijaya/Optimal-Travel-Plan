@@ -83,15 +83,14 @@ public class PaymentTransactionResource {
             List<PaymentTransaction> list = transactionSessionBeanLocal.retrievePaymentTransactionsByCustomerId(customer.getCustomerId());
             GenericEntity<List<PaymentTransaction>> genericEntity = new GenericEntity<List<PaymentTransaction>>(list) {
             };
-            
-            for (int i = 0; i < list.size(); i++) {
- 
-            // Print all elements of List
-            System.out.println(list.get(i));
-        }
-            
+            System.out.println("ws.restful.PaymentTransactionResource.retrieveAllPaymentTransaction() retrieved " + list.size() + " payments");
+//            for (int i = 0; i < list.size(); i++) {
+//                System.out.println(list.get(i));
+//            }
+
             return Response.status(Status.OK).entity(genericEntity).build();
         } catch (Exception ex) {
+            System.out.println("ws.restful.PaymentTransactionResource.retrieveAllPaymentTransaction() Error = " + ex.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }

@@ -93,7 +93,9 @@ public class TransactionSessionBean implements TransactionSessionBeanLocal {
         List<PaymentTransaction> list = new ArrayList<>();
         for (TravelItinerary travelItinerary : customer.getTravelItineraries()) {
             for (Booking bk : travelItinerary.getBookings()) {
-                list.add(bk.getPaymentTransaction());
+                if (bk.getPaymentTransaction() != null) {
+                    list.add(bk.getPaymentTransaction());
+                }
             }
         }
         return list;
