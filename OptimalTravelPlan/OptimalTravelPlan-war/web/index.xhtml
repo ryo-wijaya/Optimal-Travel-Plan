@@ -6,34 +6,28 @@
     <h:head>
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
         <title>Optimal Travel Plan</title>
-        <style>
-            .imagestyle{
-                background-image:url("resources/images/background.jpg");
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-            }
-        </style>
+
     </h:head>
-    <h:body styleClass="imagestyle" >
+    <h:body >
+        <h:graphicImage library="images" name="background.jpg" style="width: 100%; height:100%;">
 
-        <p:button style="
-                  top:30%;
-                  left:25%;
-                  width:20%;
-                  height:40%;
-                  position:absolute;
-                  "
-                  value="Login" outcome="login.xhtml" />
-        <p:button style="
-                  top:30%;
-                  left:55%;
-                  width:20%;
-                  height:40%;
-                  position:absolute;
-                  "
-                  value="Register new Business" outcome="register.xhtml" />
-
+            <p:button style="
+                      top:30%;
+                      left:25%;
+                      width:20%;
+                      height:40%;
+                      position:absolute;
+                      "
+                      value="Login" outcome="login.xhtml" />
+            <p:button style="
+                      top:30%;
+                      left:55%;
+                      width:20%;
+                      height:40%;
+                      position:absolute;
+                      "
+                      value="Register new Business" outcome="register.xhtml" />
+        </h:graphicImage >
     </h:body>
 </html>
 
