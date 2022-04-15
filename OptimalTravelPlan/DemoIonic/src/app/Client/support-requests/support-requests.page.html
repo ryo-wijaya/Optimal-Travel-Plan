@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>SupportRequests</ion-title>
     <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
-    src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
   </ion-toolbar>
 </ion-header>
 
@@ -13,11 +13,16 @@
 
   <ion-card>
     <ion-card-content>
-      <b>Support Requests</b>
-      <ion-list>
-        <ion-button expand="full" *ngFor="let supportRequest of supportRequests" (click)="viewSupportRequestDetails($event, supportRequest)">
+      <b style="text-align: center;">Support Requests</b>
+      <ion-list *ngFor="let supportRequest of supportRequests"
+        (click)="viewSupportRequestDetails($event, supportRequest)">
+        <ion-button fill="solid" expand="full">
           <ion-icon slot="start" name="arrow-forward"></ion-icon>
-          {{supportRequest.supportRequestId}}: {{supportRequest.booking.service.serviceName}} | {{supportRequest.resolved}} 
+          {{supportRequest.supportRequestId}}: {{supportRequest.booking.service.serviceName}} &nbsp;
+          <div style="align-items: right;">
+            <ion-badge color="warning" *ngIf="supportRequest.resolved == true">Resolved</ion-badge>
+            <ion-badge color="warning" *ngIf="supportRequest.resolved == false">Resolved</ion-badge>
+          </div>
         </ion-button>
       </ion-list>
     </ion-card-content>

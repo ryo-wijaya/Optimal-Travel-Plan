@@ -6,7 +6,7 @@
 
     <ion-title>My Travel Itineraries</ion-title>
     <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
-    src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
   </ion-toolbar>
 </ion-header>
 
@@ -14,6 +14,14 @@
 
 
   <ion-list>
+
+
+    <ion-button ion-button block (click)="viewItiDetails($event, null)" expand="full">
+      <ion-icon name="add-outline"></ion-icon>&nbsp;&nbsp;
+      Create new Travel Itinerary
+    </ion-button>
+
+
     <ion-item *ngFor="let iti of itineraries">
       <ion-label>
         <b>ID: </b> {{iti.travelItineraryId}}
@@ -27,11 +35,6 @@
         </ion-button>
         <ion-badge color="success">{{iti.country.name}}</ion-badge><br />
       </span>
-    </ion-item>
-    <ion-item>
-      <ion-button ion-button block (click)="viewItiDetails($event, null)"  style="width: 100%;">
-        <ion-icon name="add-outline"></ion-icon>&nbsp;&nbsp;
-        Create new Travel Itinerary</ion-button>
     </ion-item>
   </ion-list>
 
