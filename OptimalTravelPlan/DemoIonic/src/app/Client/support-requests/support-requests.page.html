@@ -21,7 +21,7 @@
           {{supportRequest.supportRequestId}}: {{supportRequest.booking.service.serviceName}} &nbsp;
             <ion-input disabled="true"></ion-input>
             <ion-badge item-right color="warning" *ngIf="supportRequest.resolved == true">Resolved</ion-badge>
-            <ion-badge item-right color="warning" *ngIf="supportRequest.resolved == false">Resolved</ion-badge>
+            <ion-badge item-right color="warning" *ngIf="supportRequest.resolved == false">Unresolved</ion-badge>
         </ion-button>
       </ion-list>
 
