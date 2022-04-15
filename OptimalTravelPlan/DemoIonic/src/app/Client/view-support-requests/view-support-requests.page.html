@@ -51,7 +51,7 @@
         </ion-card>
 
 
-        <ion-item>
+        <ion-item *ngIf="supportRequestToView.resolved == false">
           <ion-label fixed>Add comment</ion-label>
           <ion-input type="text" id="comment" name="comment" [(ngModel)]="addRequestDetails" required="true"
             #incomment="ngModel" style="text-align: right;">
@@ -61,7 +61,7 @@
 
       </ion-list>
 
-      <ion-button (click)="updateSupportRequest()" *ngIf="loaded">Submit comment</ion-button>
+      <ion-button (click)="updateSupportRequest()" *ngIf="loaded && supportRequestToView.resolved == false">Submit comment</ion-button>
       <ion-icon name="refresh-outline" *ngIf="!loaded"></ion-icon>
 
 
