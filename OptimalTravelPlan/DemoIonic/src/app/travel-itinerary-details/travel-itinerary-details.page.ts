@@ -77,6 +77,11 @@ export class TravelItineraryDetailsPage implements OnInit {
     setTimeout(function () {
       window.dispatchEvent(new Event('resize'))
     }, 1)
+    
+    this.refreshCal();
+  }
+
+  ionViewDidEnter(){
     this.refreshCal();
   }
 

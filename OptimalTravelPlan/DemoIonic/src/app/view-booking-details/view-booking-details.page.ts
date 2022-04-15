@@ -146,14 +146,11 @@ export class ViewBookingDetailsPage implements OnInit {
           this.message = "Deleted Booking!";
           let sessionItin: TravelItinerary;
           sessionItin = JSON.parse(sessionStorage['travelItinerary']);
-          for (var i = 0; i < sessionItin.bookings.length; i++) {
-            if (sessionItin.bookings[i].bookingId == id) {
-              delete sessionItin.bookings[i];
-              break;
-            }
-          }
-          sessionStorage['travelItinerary'] = sessionItin;
-
+          sessionItin.bookings = sessionItin.bookings.filter(function(value,index,arr){
+            return value.bookingId != id;
+          });
+          console.log(sessionItin.bookings);
+          sessionStorage['travelItinerary'] = JSON.stringify(sessionItin);
           this.router.navigate(['travelItineraryDetails']);
         },
         error: (error) => {
