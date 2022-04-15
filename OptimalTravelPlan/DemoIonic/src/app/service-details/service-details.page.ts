@@ -61,22 +61,31 @@ export class ServiceDetailsPage implements OnInit {
 
     modal.onDidDismiss().then((event) => {
       let itin = sessionStorage['travelItinerary'];
-      console.log(itin);
-      if (itin != null) {
+      if (itin != 'null') {
         console.log("Adding to existing travel itin!");
         let sessionItin: TravelItinerary;
         sessionItin = JSON.parse(itin);
-        this.booking = new Booking(null, event.data.start, event.data.end,
-          null, this.service);
-          if(sessionItin.bookings == null){
-            sessionItin.bookings = [];
-          }
-          if(sessionItin.country == null){
-            sessionItin.country = this.service.country;
-          }
+        let sq = this.service;
+        sq.bookings = [];
+        this.booking = new Booking(null, event.data.start, event.data.end, null, sq);
+        console.log("New Booking start .end .name " + event.data.start + " ." + event.data.end + " ." + this.booking.service.serviceName)
+        if (sessionItin.bookings == null) {
+          console.log("Setting bookings to new array");
+          sessionItin.bookings = [];
+        }
+        if (sessionItin.country == null) {
+          console.log("Setting session Itin to service country");
+          sessionItin.country = this.service.country;
+        }
+        if (sessionItin.startDate == null && sessionItin.endDate == null) {
+          sessionItin.startDate = this.booking.startDate;
+          sessionItin.endDate = this.booking.endDate;
+        }
         sessionItin.bookings.push(this.booking);
         console.log("Adding to sessionStorage");
         sessionStorage['travelItinerary'] = JSON.stringify(sessionItin);
+        console.log("Attempting to route to travelItineraryDetails");
+        this.router.navigate(["/travelItineraryDetails"]);
       } else {
         console.log("Creating new travel itin!");
         let sessionItin = new TravelItinerary();
@@ -84,14 +93,15 @@ export class ServiceDetailsPage implements OnInit {
         sessionItin.country = this.service.country;
         sessionItin.startDate = this.booking.startDate;
         sessionItin.endDate = this.booking.endDate;
-        this.booking = new Booking(null, event.data.start, event.data.end, null, this.service);
+        let sq = this.service;
+        sq.bookings = [];
+        this.booking = new Booking(null, event.data.start, event.data.end, null, sq);
         sessionItin.bookings = [this.booking];
-        console.log("Adding to sessionStorage");
+        console.log("adding bookings " + JSON.stringify(sessionItin.bookings));
         sessionStorage['travelItinerary'] = JSON.stringify(sessionItin);
+        console.log("Attempting to route to travelItineraryDetails");
+        this.router.navigate(["/travelItineraryDetails"]);
       }
-      
-      console.log("Attempting to route to travelItineraryDetails");
-      this.router.navigate(["/travelItineraryDetails"]);
     });
 
     await modal.present();
