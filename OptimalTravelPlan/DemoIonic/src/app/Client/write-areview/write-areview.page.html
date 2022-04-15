@@ -13,6 +13,10 @@
   <ion-text *ngIf="errorMsg != null" style="color: red; text-align: center;">
     {{errorMsg}}
   </ion-text>
+  <ion-text *ngIf="message != null" style="color: blue; text-align: center;">
+    {{message}}
+  </ion-text>
+
   <ion-content *ngIf=" booking != null">
 
     <ion-item>

@@ -61,7 +61,7 @@
 
       </ion-list>
 
-      <ion-button (click)="updateSupportRequest()" *ngIf="loaded && supportRequestToView.resolved == false">Submit comment</ion-button>
+      <ion-button (click)="updateSupportRequest()" *ngIf="loaded && supportRequestToView == null || supportRequestToView.resolved == false">Submit comment</ion-button>
       <ion-icon name="refresh-outline" *ngIf="!loaded"></ion-icon>
 
 

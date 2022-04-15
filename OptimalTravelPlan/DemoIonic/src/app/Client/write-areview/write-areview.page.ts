@@ -41,7 +41,7 @@ export class WriteAReviewPage implements OnInit {
       ({
         next: (response) => {
           this.booking = response.booking;
-          if (this.booking.review != null) {
+          if (this.booking.review != null && this.booking.review.rating != null) {
             this.val2 = this.booking.review.rating;
             this.review = this.booking.review.content;
           }
@@ -59,7 +59,7 @@ export class WriteAReviewPage implements OnInit {
     if (this.val2 == null || this.review == null || this.review.length < 1) {
       this.errorMsg = "Please ensure all fields are filled in!";
     } else if (this.booking.review != null && this.booking.review.reviewId != null) {
-      console.log("Booking review exist, updating!");
+      console.log("Booking review exist, updating! id = " + this.booking.review.reviewId);
       this.booking.review.rating = this.val2;
       this.booking.review.content = this.review;
 
@@ -73,15 +73,20 @@ export class WriteAReviewPage implements OnInit {
       this.reviewService.updateReview(handler).subscribe({
         next: (response) => {
           this.booking.review = response;
-          let itin: TravelItinerary = JSON.parse(sessionStorage['travelItinerary']);
-          for (let i = 0; i < itin.bookings.length; i++) {
-            if (itin.bookings[i].bookingId == this.booking.bookingId) {
-              itin.bookings[i] = this.booking;
-              break;
+          let itin = sessionStorage['travelItinerary'];
+          if (itin != null && itin != 'null') {
+            itin = JSON.parse(itin);
+            for (let i = 0; i < itin.bookings.length; i++) {
+              if (itin.bookings[i].bookingId == this.booking.bookingId) {
+                itin.bookings[i] = this.booking;
+                sessionStorage['travelItinerary'] = JSON.stringify(itin);
+                this.errorMsg = null;
+                break;
+              }
             }
           }
-          sessionStorage['travelItinerary'] = JSON.stringify(itin);
-          this.message = "Successfully added!";
+
+          this.message = "Successfully Updated!";
           this.errorMsg = null;
         },
         error: (error) => {
@@ -91,15 +96,6 @@ export class WriteAReviewPage implements OnInit {
         }
       });
 
-      let itin: TravelItinerary = JSON.parse(sessionStorage['travelItinerary']);
-      for (let i = 0; i < itin.bookings.length; i++) {
-        if (itin.bookings[i].bookingId == this.booking.bookingId) {
-          itin.bookings[i] = this.booking;
-          break;
-        }
-      }
-      sessionStorage['travelItinerary'] = JSON.stringify(itin);
-      this.message = "Successfully edited!";
     } else {
       console.log("Booking review is being created!");
       this.booking.review = new Review();
@@ -116,15 +112,20 @@ export class WriteAReviewPage implements OnInit {
       this.reviewService.createReview(handler).subscribe({
         next: (response) => {
           this.booking.review.reviewId = response;
-          let itin: TravelItinerary = JSON.parse(sessionStorage['travelItinerary']);
-          for (let i = 0; i < itin.bookings.length; i++) {
-            if (itin.bookings[i].bookingId == this.booking.bookingId) {
-              itin.bookings[i] = this.booking;
-              break;
+          let itin = sessionStorage['travelItinerary'];
+          if (itin != null && itin != 'null') {
+            itin = JSON.parse(itin);
+            for (let i = 0; i < itin.bookings.length; i++) {
+              if (itin.bookings[i].bookingId == this.booking.bookingId) {
+                itin.bookings[i] = this.booking;
+                sessionStorage['travelItinerary'] = JSON.stringify(itin);
+                break;
+              }
             }
           }
-          sessionStorage['travelItinerary'] = JSON.stringify(itin);
+
           this.message = "Successfully added!";
+          this.errorMsg = null;
         },
         error: (error) => {
           this.errorMsg = "Create new review error!";

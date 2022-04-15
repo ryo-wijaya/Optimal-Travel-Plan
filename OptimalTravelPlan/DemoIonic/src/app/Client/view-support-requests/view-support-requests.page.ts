@@ -107,7 +107,6 @@ export class ViewSupportRequestsPage implements OnInit {
 
   getRequestDetails() {
     let ooo = this.supportRequestToView.requestDetails.split("\n");
-    console.log(JSON.stringify(ooo));
     return ooo;
   }
 
