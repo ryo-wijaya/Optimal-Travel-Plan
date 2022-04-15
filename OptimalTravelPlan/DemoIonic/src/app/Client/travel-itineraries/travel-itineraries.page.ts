@@ -70,11 +70,18 @@ export class TravelItinerariesPage implements OnInit {
     }
   }
 
+
   public formatDate(date: Date): string {
+    if (date == null){
+      return "No date defined!";
+    }
     let output: string;
-    output = date.toString().slice(0, 19);
+    output = JSON.stringify(date).slice(0, 20);
     output = output.replace("T", " ");
-    let hour = parseInt(output.slice(11, 13));
+
+    console.log(output);
+    let hour = parseInt(output.slice(11, 14));
+    console.log(output.slice(11, 14));
     let morning = "am";
     let hourS = hour.toString();
     if (hour > 12) {
@@ -86,11 +93,7 @@ export class TravelItinerariesPage implements OnInit {
     } else {
       hourS = hour.toString();
     }
-    output = output.slice(0, 11) + hourS + output.slice(13, 16) + morning;
+    output = output.slice(0, 12) + hourS + output.slice(14, 17) + morning;
     return output;
   }
 }
-
-
-
-

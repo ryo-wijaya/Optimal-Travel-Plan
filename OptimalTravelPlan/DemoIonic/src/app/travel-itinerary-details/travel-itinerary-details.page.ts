@@ -129,7 +129,7 @@ export class TravelItineraryDetailsPage implements OnInit {
 
   public refreshCal() {
     let temp = sessionStorage['travelItinerary'];
-    if (temp != 'null') {
+    if (temp != 'null' && temp != null) {
       this.travelItinerary = JSON.parse(temp);
     }
     console.log(" refreshCal" + this.travelItinerary);
