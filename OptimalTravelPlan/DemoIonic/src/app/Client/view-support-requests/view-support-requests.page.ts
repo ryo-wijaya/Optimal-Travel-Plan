@@ -95,12 +95,11 @@ export class ViewSupportRequestsPage implements OnInit {
       next: (response) => {
         //blah
         this.refreshSupportRequest();
+        this.addRequestDetails = "";
       },
       error: (error) => {
         console.log('********** updateRequestDetails error: ' + error);
       }
     });
   }
-  
-
 }

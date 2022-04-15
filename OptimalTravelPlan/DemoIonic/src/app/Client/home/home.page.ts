@@ -20,11 +20,17 @@ export class HomePage implements OnInit {
   travelItineraries: TravelItinerary[];
   customer: Customer;
   password: string;
+  refreshPage: string;
 
   constructor(private router: Router,
     private travelItineraryService: TravelItineraryService) { }
 
   ngOnInit() {
+    this.refreshPage = sessionStorage['justLoggedIn'];
+    if (this.refreshPage == 'true') {
+      sessionStorage.removeItem('justLoggedIn');
+      window.location.reload();
+    }
     this.customer = JSON.parse(sessionStorage['customer']);
     this.password = sessionStorage['password'];
     this.refreshCountries();
