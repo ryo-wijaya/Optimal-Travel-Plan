@@ -92,7 +92,7 @@ public class LoginPageManagedBean implements Serializable {
 
             } else if (loginAccount instanceof Business) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Successful!", null));
-                fc.getExternalContext().redirect("./businessPageFolder/businessMain.xhtml");
+                fc.getExternalContext().redirect("./businessPageFolder/businessDashboard.xhtml");
 
             } else {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid AccessRight for this portal!", null));

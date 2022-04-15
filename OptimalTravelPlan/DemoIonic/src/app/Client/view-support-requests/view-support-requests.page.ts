@@ -94,8 +94,8 @@ export class ViewSupportRequestsPage implements OnInit {
       this.loaded = false;
       this.supportRequestService.updateRequestDetails(this.customer.username, this.password, this.supportRequestId, this.addRequestDetails).subscribe({
         next: (response) => {
-          //blah
           this.refreshSupportRequest();
+          this.addRequestDetails = "";
         },
         error: (error) => {
           console.log('********** updateRequestDetails error: ' + error);

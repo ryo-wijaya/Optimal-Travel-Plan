@@ -16,9 +16,17 @@
                 <h:form>
                     <p:growl id="messages"/>
                     <p:menubar>
-                        <p:menuitem value="Home" ajax="false" icon="pi pi-home" outcome="businessMain.xhtml"/>
+                        <p:menuitem value="Home" ajax="false" icon="pi pi-home" outcome="businessDashboard.xhtml"/>
+                        <p:menuitem value="View Bookings" ajax="false" icon="pi pi-folder-open" outcome="businessMain.xhtml"/>
+                        <p:menuitem value="View services" ajax="false" icon="pi pi-list" outcome="limitedServicePage.xhtml"/>
                     </p:menubar>
                 </h:form>
+                
+                <div>
+                    <h1>
+                        Business summary
+                    </h1>
+                </div>
                 
                 <table>
                     <tr>
