@@ -62,15 +62,22 @@ const routes: Routes = [
   },
   {
     path: 'createSupportRequest',
-    loadChildren: () => import('./Client/create-support-request/create-support-request.module').then( m => m.CreateSupportRequestPageModule)
+    loadChildren: () => import('./Client/create-support-request/create-support-request.module').then( m => m.CreateSupportRequestPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'client/viewSupportRequests',
-    loadChildren: () => import('./Client/view-support-requests/view-support-requests.module').then( m => m.ViewSupportRequestsPageModule)
+    loadChildren: () => import('./Client/view-support-requests/view-support-requests.module').then( m => m.ViewSupportRequestsPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'viewBookingDetails/:bookingId',
     loadChildren: () => import('./view-booking-details/view-booking-details.module').then( m => m.ViewBookingDetailsPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'payment',
+    loadChildren: () => import('./Client/payment/payment.module').then( m => m.PaymentPageModule),
     canActivate: [AuthGuard]
   }
 
