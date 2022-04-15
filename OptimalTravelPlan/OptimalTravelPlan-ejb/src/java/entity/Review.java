@@ -38,6 +38,10 @@ public class Review implements Serializable {
         this.businessReply = "";
     }
 
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
+    }
+
     public Integer getRating() {
         return rating;
     }

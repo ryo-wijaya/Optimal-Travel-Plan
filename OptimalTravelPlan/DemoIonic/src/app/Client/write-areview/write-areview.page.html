@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/travelItineraryDetails"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Review</ion-title>
+    <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-text *ngIf="errorMsg != null" style="color: red; text-align: center;">
+    {{errorMsg}}
+  </ion-text>
+  <ion-content *ngIf=" booking != null">
+
+    <ion-item>
+      <div style="float: right;">
+        <b>Booking Id {{booking.bookingId}} &nbsp;:&nbsp;&nbsp;&nbsp;</b><br />
+      </div>
+      <ion-input disabled="true"></ion-input>
+      <ion-avatar item-end>
+        <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+      </ion-avatar>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;{{customer.name}}</div>
+    </ion-item>
+    <ion-item>
+      <p-rating [(ngModel)]="val2" [cancel]="false"></p-rating>
+    </ion-item>
+    <ion-card style="height: 300px;">
+      <ion-textarea placeholder="Review..." [(ngModel)]="review" ></ion-textarea>
+    </ion-card>
+    <ion-item>
+      <ion-button style="width: 100%; height: 40px; font-size: medium;" (click)="submit()" color="success" >Confirm</ion-button>
+    </ion-item>
+
+  </ion-content>
