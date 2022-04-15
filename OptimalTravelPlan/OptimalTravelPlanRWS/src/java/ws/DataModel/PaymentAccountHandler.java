@@ -18,7 +18,7 @@ public class PaymentAccountHandler {
     private Long paymentAccountId;
     private Customer customer;
     private String password;
-    private Integer date;
+    private String date;
 
     public Long getPaymentAccountId() {
         return paymentAccountId;
@@ -52,11 +52,11 @@ public class PaymentAccountHandler {
         this.password = password;
     }
 
-    public Integer getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Integer date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }
