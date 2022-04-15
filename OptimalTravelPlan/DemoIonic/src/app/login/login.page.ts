@@ -119,8 +119,16 @@ export class LoginPage implements OnInit {
   }
 
   async sendAlert(status: string) {
+
+    let subheader: string = "";
+
+    if (status == "Failed") {
+      subheader = "No account associated with email address!";
+    }
+
     const alert = await this.alertController.create({
       header: 'Recovery email sending ' + status,
+      subHeader: subheader,
       
       buttons: [
         {
