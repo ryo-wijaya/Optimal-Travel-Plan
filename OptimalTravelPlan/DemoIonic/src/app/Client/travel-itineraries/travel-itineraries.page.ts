@@ -35,34 +35,39 @@ export class TravelItinerariesPage implements OnInit {
   }
 
   async viewItiDetails(event, iti: TravelItinerary) {
+    if (iti == null) {
+      sessionStorage['travelItinerary'] = null;
+      this.router.navigate(["travelItineraryDetails/"]);
+    } else {
+      const alert = await this.alertController.create({
+        header: 'Select an Action',
 
-    const alert = await this.alertController.create({
-      header: 'Select an Action',
-
-      buttons: [
-        {
-          text: 'Create Support Request',
-          role: 'ok',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log("attempting to create support request for itinerary = " + iti.travelItineraryId);
-            sessionStorage['travelItinerary'] = JSON.stringify(iti);
-            this.router.navigate(["createSupportRequest/"]);
-           }
-        },
-        {
-          text: 'Go to Calendar',
-          role: 'ok',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log("attempting to view travelItinerary = " + iti.travelItineraryId);
-            sessionStorage['travelItinerary'] = JSON.stringify(iti);
-            this.router.navigate(["travelItineraryDetails/"]);
+        buttons: [
+          {
+            text: 'Create Support Request',
+            role: 'ok',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log("attempting to create support request for itinerary = " + iti.travelItineraryId);
+              sessionStorage['travelItinerary'] = JSON.stringify(iti);
+              this.router.navigate(["createSupportRequest/"]);
+            }
+          },
+          {
+            text: 'Go to Calendar',
+            role: 'ok',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log("attempting to view travelItinerary = " + iti.travelItineraryId);
+              sessionStorage['travelItinerary'] = JSON.stringify(iti);
+              this.router.navigate(["travelItineraryDetails/"]);
+            }
           }
-        }
-      ]
-    });
-    await alert.present();
+        ]
+      });
+
+      await alert.present();
+    }
   }
 }
 

@@ -46,7 +46,7 @@ export class TravelItineraryService {
     // }
 
     this.convertDate(objHandler);
-    console.log("Update Travel itin service : " + objHandler.customer
+    console.log("Update Travel itin service : user " + objHandler.customer.username
       + " password " + objHandler.password + " country id " + objHandler.newCountryId
       + " TI " + objHandler.travelItinerary.travelItineraryId + " start date " + objHandler.travelItinerary.startDate +
       " end date " + objHandler.travelItinerary.endDate);
