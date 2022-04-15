@@ -15,9 +15,18 @@ import entity.PaymentAccount;
 public class PaymentAccountHandler {
     
     private PaymentAccount paymentAccount;
+    private Long paymentAccountId;
     private Customer customer;
     private String password;
     private Integer date;
+
+    public Long getPaymentAccountId() {
+        return paymentAccountId;
+    }
+
+    public void setPaymentAccountId(Long paymentAccountId) {
+        this.paymentAccountId = paymentAccountId;
+    }
 
     public PaymentAccount getPaymentAccount() {
         return paymentAccount;

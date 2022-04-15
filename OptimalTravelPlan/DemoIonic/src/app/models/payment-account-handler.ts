@@ -6,6 +6,7 @@ export class PaymentAccountHandler {
     customer: Customer | undefined;
     password: string | undefined;
     date: number | undefined;
+    paymentAccountId: number | undefined;
 
     constructor(paymentAccount?: PaymentAccount, customer?: Customer,
         password?: string, date?: number) {

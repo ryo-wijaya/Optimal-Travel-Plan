@@ -73,18 +73,19 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
-    <ion-card-content>
+  <ion-card style="width: 100%; padding: 0px;">
+    <ion-card-content >
       <h2>Recent Transactions:</h2>
 
-      <ion-item *ngFor="let trans of paymentTransactions">
-        <ion-button ion-button block (click)="viewTrans(trans)">
-          <ion-icon name="journal"></ion-icon> View Details
-        </ion-button>
-        &nbsp;
+      <ion-item *ngFor="let trans of paymentTransactions" (click)="viewTrans(trans)" style="width: 100%;">
+
         Transaction Number: {{trans.transactionNumber}}<br />
         Payment Account: {{trans.paymentAccount.accountNumber}}<br />
-        Payment Date: {{trans.dateOfPayment}}<br />
+        Payment Date: {{formatDate(trans.dateOfPayment)}}<br />
+        
+        <ion-button ion-button block style="float: left; height: 40px;">
+          <ion-icon name="search-circle-outline" style="height: 40px;"></ion-icon>
+        </ion-button>
       </ion-item>
 
     </ion-card-content>

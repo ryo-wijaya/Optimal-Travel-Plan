@@ -56,29 +56,16 @@ public class PaymentAccountResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPaymentAccount(PaymentAccountHandler objHandler) {
-        System.out.println("Test 1");
         if (objHandler != null) {
-            System.out.println("Test 2");
             try {
+                
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-
-                if (!verifyPaymentAccountToCustomer(customer, objHandler.getPaymentAccount())) {
-                    throw new CustomerNotMatchException("Please ensure customer owns this payment account!");
-                }
-               
-                //Date doesnt work
-//                Integer exDate = objHandler.getDate();
-//                System.out.println("Test 3");
-//                System.out.println(exDate);
-//                Date newDate = new Date(exDate);
-//                System.out.println("Test 4");
-//                objHandler.getPaymentAccount().setCardExpirationDate(newDate);
-//                System.out.println("Test 5");
-
+                System.out.println("ws.restful.PaymentAccountResource.createPaymentAccount() ExpDate = " + objHandler.getPaymentAccount().getCardExpirationDate());
 
                 PaymentAccount paymentAccount = paymentAccountSessionBeanLocal.createNewPaymentAccount(customer.getCustomerId(), objHandler.getPaymentAccount());
                 return Response.status(Response.Status.OK).entity(paymentAccount.getPaymenetAccountId()).build();
             } catch (Exception ex) {
+                ex.printStackTrace();
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
         } else {
@@ -154,6 +141,7 @@ public class PaymentAccountResource {
     }
 
     private boolean verifyPaymentAccountToCustomer(Customer customer, PaymentAccount pa) {
+        System.out.println("ws.restful.PaymentAccountResource.verifyPaymentAccountToCustomer() payment Acc id = " + pa.getPaymenetAccountId() + " " + pa.getAccountNumber());
         for (PaymentAccount paymentAccount : customer.getPaymentAccounts()) {
             if (pa.getPaymenetAccountId().equals(paymentAccount.getPaymenetAccountId())) {
                 return true;
