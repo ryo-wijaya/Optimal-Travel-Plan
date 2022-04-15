@@ -5,11 +5,11 @@ export class PaymentAccountHandler {
     paymentAccount: PaymentAccount | undefined;
     customer: Customer | undefined;
     password: string | undefined;
-    date: number | undefined;
+    date: string | undefined;
     paymentAccountId: number | undefined;
 
     constructor(paymentAccount?: PaymentAccount, customer?: Customer,
-        password?: string, date?: number) {
+        password?: string, date?: string) {
             this.paymentAccount = paymentAccount;
             this.customer = customer;
             this.password = password;

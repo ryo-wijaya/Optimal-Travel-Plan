@@ -97,7 +97,3 @@ export class TravelItinerariesPage implements OnInit {
     return output;
   }
 }
-
-
-
-
