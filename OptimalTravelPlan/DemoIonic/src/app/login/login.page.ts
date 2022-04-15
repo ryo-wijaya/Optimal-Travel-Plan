@@ -22,58 +22,55 @@ export class LoginPage implements OnInit {
   message: string;
 
   constructor(private router: Router,
-          private accountService: AccountService) { }
+    private accountService: AccountService) { }
 
   ngOnInit() {
     this.message = sessionStorage['fromRegistration'];
     sessionStorage['fromRegistration'] = null;
   }
 
-	clear()
-  {
-		this.username = "";
-		this.password = "";
-	}
+  clear() {
+    this.username = "";
+    this.password = "";
+  }
 
 
-	customerLogin(customerLoginForm: NgForm) 
-  {
-		this.submitted = true;
+  customerLogin(customerLoginForm: NgForm) {
+    this.submitted = true;
     this.message = "Logging in!...";
 
-		if (customerLoginForm.valid) 
-    {
+    if (customerLoginForm.valid) {
       this.accountService.customerLogin(this.username, this.password).subscribe({
-        next:(response)=>{
+        next: (response) => {
           let customer: Customer = response;
 
-					if (customer != null) 
-          {
-						sessionStorage['customer'] = JSON.stringify(customer);
+          if (customer != null) {
+            sessionStorage['customer'] = JSON.stringify(customer);
             sessionStorage['password'] = this.password;
-						this.loginError = false;
+            this.loginError = false;
             this.router.navigate(['/client/home']);
-					}
-					else
-          {
+          }
+          else {
             this.message = null;
-						this.loginError = true;
-					}
+            this.loginError = true;
+          }
         },
-        error:(error)=>{
+        error: (error) => {
           this.message = null;
           this.loginError = true;
-					this.errorMessage = 'Invalid login credential: Username does not exist or invalid password!'
+          if ("404" != error().message.slice(32,35)) {
+            this.errorMessage = 'Invalid login credential: Username does not exist or invalid password!'
+          } else {
+            this.errorMessage = 'Cannot reach Server! Server down!';
+          }
         }
       });
-		}
-		else
-    {
-		}
-	}
+    }
+    else {
+    }
+  }
 
-	back()
-  {
-		this.router.navigate(["/index"]);
-	}
+  back() {
+    this.router.navigate(["/index"]);
+  }
 }

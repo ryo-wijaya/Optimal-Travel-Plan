@@ -9,15 +9,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen = true>
-  <ion-slides>
-    <ion-slide>
+<ion-content style="height: 100%;">
+  <ion-slides  [options]="{
+    initialSlide: 0,
+    slidesPerView: 1,
+    autoplay:true
+   }"
+   >
+    <ion-slide >
       <ion-card>
-        <ion-card-content>
+        <ion-card-content style="height: 100%;">
           <h1>
             Singapore
           </h1>
-          <img src="../../../assets/pictures/country_singapore2.jpg">
+          <img src="/assets/pictures/country_singapore2.jpg" style="height: auto; width: 75%;">
         </ion-card-content>
       </ion-card>
     </ion-slide>
@@ -28,7 +33,7 @@
           <h1>
             Japan
           </h1>
-          <img src="../../../assets/pictures/country_japan.jpg">
+          <img src="/assets/pictures/country_japan.jpg" style="height: auto; width: 75%;">
         </ion-card-content>
       </ion-card>
     </ion-slide>
@@ -39,7 +44,7 @@
           <h1>
             Taiwan
           </h1>
-          <img src="../../../assets/pictures/country_taiwan.jpg">
+          <img src="/assets/pictures/country_taiwan.jpg" style="height: auto; width: 75%;">
         </ion-card-content>
       </ion-card>
     </ion-slide>
@@ -51,14 +56,14 @@
     initialSlide: 0,
     slidesPerView: 1,
     autoplay:true
-   }">
+   }" >
    <ion-slide>
     <ion-card>
-      <ion-card-content>
+      <ion-card-content >
         <h1>
           Singapore Flyer
         </h1>
-        <img src="../../../assets/pictures/singapore_flyer.jpg">
+        <img src="/assets/pictures/singapore_flyer.jpg" style="height: auto; width: 75%;">
       </ion-card-content>
     </ion-card>
    </ion-slide>
@@ -69,7 +74,7 @@
         <h1>
           Singapore Zoo
         </h1>
-        <img src="../../../assets/pictures/singapore_zoo.jpg">
+        <img src="/assets/pictures/singapore_zoo.jpg" style="height: auto; width: 60%;">
       </ion-card-content>
     </ion-card>
    </ion-slide>
@@ -80,7 +85,7 @@
         <h1>
           Sentosa
         </h1>
-        <img src="../../../assets/pictures/singapore_sentosa.jpg">
+        <img src="/assets/pictures/singapore_sentosa.jpg" style="height: auto; width: 60%;">
       </ion-card-content>
     </ion-card>
    </ion-slide>
@@ -89,7 +94,11 @@
 </ion-content>
 
 <ion-content>
-  <ion-slides>
+  <ion-slides  [options]="{
+    initialSlide: 0,
+    slidesPerView: 1,
+    autoplay:true
+   }">
     <ion-slide>
       <ion-card>
         <ion-card-content>
