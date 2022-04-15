@@ -69,6 +69,33 @@ export class TravelItinerariesPage implements OnInit {
       await alert.present();
     }
   }
+
+
+  public formatDate(date: Date): string {
+    if (date == null){
+      return "No date defined!";
+    }
+    let output: string;
+    output = JSON.stringify(date).slice(0, 20);
+    output = output.replace("T", " ");
+
+    console.log(output);
+    let hour = parseInt(output.slice(11, 14));
+    console.log(output.slice(11, 14));
+    let morning = "am";
+    let hourS = hour.toString();
+    if (hour > 12) {
+      hour -= 12;
+      morning = "pm"
+    }
+    if (hour < 10) {
+      hourS = "0" + hour.toString();
+    } else {
+      hourS = hour.toString();
+    }
+    output = output.slice(0, 12) + hourS + output.slice(14, 17) + morning;
+    return output;
+  }
 }
 
 

@@ -19,8 +19,8 @@
         <b>ID: </b> {{iti.travelItineraryId}}
       </ion-label>
       <span>
-        <b>Start Date: </b> {{iti.startDate}} <br />
-        <b>End Date: </b> {{iti.endDate}} <br />
+        Start Date:  {{formatDate(iti.startDate)}} <br />
+        End Date:  {{formatDate(iti.endDate)}} <br />
         <ion-button ion-button block (click)="viewItiDetails($event, iti)" style="float: right;">
           <ion-icon name="send-outline"></ion-icon>
           &nbsp;View Details
