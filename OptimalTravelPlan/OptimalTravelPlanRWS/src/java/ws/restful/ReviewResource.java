@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import util.exception.BookingNotMatchException;
+import util.exception.CustomerNotMatchException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
 import ws.DataModel.ReviewHandler;
@@ -64,15 +65,22 @@ public class ReviewResource {
     public Response createReview(ReviewHandler objHandler) {
         if (objHandler != null) {
             try {
-                Booking booking = (Booking) objHandler.getBooking();
-                Long reviewId
-                        = reviewSessionBeanLocal.createNewReview(
-                                booking.getBookingId(),
-                                objHandler.getReview()).getReviewId();
+                System.out.println("ws.restful.ReviewResource.createReview()");
+                Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
+                
+                Booking booking = bookingSessionBeanLocal.retrieveBookingById(objHandler.getBookingId());
+                if (!booking.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                    throw new CustomerNotMatchException("Please ensure booking matches customer!");
+                }
+
+                Long reviewId = reviewSessionBeanLocal.createNewReview(
+                        objHandler.getBookingId(),
+                        objHandler.getReview()).getReviewId();
 
                 return Response.status(Response.Status.OK).entity(reviewId).build();
 
             } catch (Exception ex) {
+                ex.printStackTrace();
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
         } else {
@@ -87,17 +95,26 @@ public class ReviewResource {
     public Response updateReview(ReviewHandler objHandler) {
         if (objHandler != null) {
             try {
-                Booking booking = (Booking) objHandler.getBooking();
-                Review review = objHandler.getReview();
-                if (!review.getBooking().getBookingId().equals(booking.getBookingId())) {
-                    throw new BookingNotMatchException("Please ensure review matches booking!");
+                System.out.println("ws.restful.ReviewResource.updateReview()");
+                Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
+                
+                Review review = reviewSessionBeanLocal.retrieveReviewByReviewId(objHandler.getReviewId());
+                if (!review.getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                    throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }
+                review = objHandler.getReview();
+                if (review.getReviewId() == null){
+                    review.setReviewId(objHandler.getReviewId());
+                }
+
                 reviewSessionBeanLocal.updateReview(review);
+                review = reviewSessionBeanLocal.retrieveReviewByReviewId(objHandler.getReviewId());
                 review.cleanRelationships();
 
                 return Response.status(Response.Status.OK).entity(review).build();
 
             } catch (Exception ex) {
+                ex.printStackTrace();
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
         } else {

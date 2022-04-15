@@ -79,6 +79,11 @@ const routes: Routes = [
     path: 'payment',
     loadChildren: () => import('./Client/payment/payment.module').then( m => m.PaymentPageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'client/writeAReview/:bookingId',
+    loadChildren: () => import('./Client/write-areview/write-areview.module').then( m => m.WriteAReviewPageModule),
+    canActivate: [AuthGuard]
   }
 
 

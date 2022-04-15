@@ -16,7 +16,7 @@ import { BookingHandler } from '../models/booking-handler';
 export class ViewBookingDetailsPage implements OnInit {
 
   booking: Booking;
-  private customer: Customer;
+  customer: Customer;
   private password: string;
   retrieveBookingError: boolean;
   message: string;
@@ -160,6 +160,10 @@ export class ViewBookingDetailsPage implements OnInit {
         }
       });
 
+  }
+
+  writeAReview(){
+    this.router.navigate(['/client/writeAReview/' + this.booking.bookingId]);
   }
 
 }

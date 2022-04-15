@@ -78,10 +78,9 @@ export class TravelItinerariesPage implements OnInit {
     let output: string;
     output = JSON.stringify(date).slice(0, 20);
     output = output.replace("T", " ");
-
-    console.log(output);
     let hour = parseInt(output.slice(11, 14));
-    console.log(output.slice(11, 14));
+    //console.log(output);
+    //console.log(output.slice(11, 14));
     let morning = "am";
     let hourS = hour.toString();
     if (hour > 12) {

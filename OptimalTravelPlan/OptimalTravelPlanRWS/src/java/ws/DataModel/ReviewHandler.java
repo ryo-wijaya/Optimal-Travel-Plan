@@ -5,21 +5,30 @@
  */
 package ws.DataModel;
 
-import entity.Booking;
+import entity.Customer;
 import entity.Review;
 
 public class ReviewHandler {
-    private Booking booking;
+    private Long reviewId;
+    private Customer customer;
     private Review review;
-    private Long newCountryId;
+    private Long BookingId;
     private String password;
 
-    public Booking getBooking() {
-        return booking;
+    public Long getReviewId() {
+        return reviewId;
     }
 
-    public void setBooking(Booking booking) {
-        this.booking = booking;
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Review getReview() {
@@ -30,12 +39,12 @@ public class ReviewHandler {
         this.review = review;
     }
 
-    public Long getNewCountryId() {
-        return newCountryId;
+    public Long getBookingId() {
+        return BookingId;
     }
 
-    public void setNewCountryId(Long newCountryId) {
-        this.newCountryId = newCountryId;
+    public void setBookingId(Long BookingId) {
+        this.BookingId = BookingId;
     }
 
     public String getPassword() {
@@ -45,6 +54,5 @@ public class ReviewHandler {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
+
 }
