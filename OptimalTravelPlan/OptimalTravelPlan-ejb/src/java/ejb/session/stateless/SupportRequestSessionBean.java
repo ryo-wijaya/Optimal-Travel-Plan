@@ -48,7 +48,10 @@ public class SupportRequestSessionBean implements SupportRequestSessionBeanLocal
     public Long createNewSupportRequest(SupportRequest newSupportRequest, Long bookingId) throws UnknownPersistenceException, ConstraintViolationException,
             CreateSupportRequestException {
         try {
-
+            String name = bookingSessionBeanLocal.retrieveBookingById(bookingId).getTravelItinerary().getCustomer().getName();
+            String formatDate = this.getFormattedComment(name);
+            newSupportRequest.setRequestDetails(formatDate + newSupportRequest.getRequestDetails() +  "\n");
+            
             Booking booking = bookingSessionBeanLocal.retrieveBookingById(bookingId);
             if (booking.getSupportRequest() != null) {
                 // check if a booking already has a supportRequest

@@ -267,8 +267,7 @@ public class dataInitBean {
                         continue;
                     }
                     
-                    String dateFormat = supportRequestSessionBeanLocal.getFormattedComment(booking.getTravelItinerary().getCustomer().getName());
-                    SupportRequest supportRequest1 = new SupportRequest(dateFormat + "I am not happy with the world :'(\n", new Date(), booking);
+                    SupportRequest supportRequest1 = new SupportRequest("I am not happy with the world :'(", new Date(), booking);
 
                     Review review1 = new Review(5, "This is the review content");
 

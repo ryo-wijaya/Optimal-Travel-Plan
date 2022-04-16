@@ -116,7 +116,7 @@ export class TravelItineraryDetailsPage implements OnInit {
           let ti: TravelItinerary = response;
           if (ti != null) {
             this.travelItinerary = ti;
-            this.refreshEvents();
+            this.refreshCal();
           }
           sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);
         },
@@ -257,6 +257,8 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public formatDate2(date: Date) {
+    console.log(JSON.stringify(date));
+    console.log(JSON.stringify(date.toString().slice(0, 19)));
     return date.toString().slice(0, 19);
   }
 
