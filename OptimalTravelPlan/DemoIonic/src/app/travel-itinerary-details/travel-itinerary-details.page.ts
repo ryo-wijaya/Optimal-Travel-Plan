@@ -257,8 +257,8 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public formatDate2(date: Date) {
-    console.log(JSON.stringify(date));
-    console.log(JSON.stringify(date.toString().slice(0, 19)));
+    // console.log(JSON.stringify(date));
+    // console.log(JSON.stringify(date.toString().slice(0, 19)));
     return date.toString().slice(0, 19);
   }
 

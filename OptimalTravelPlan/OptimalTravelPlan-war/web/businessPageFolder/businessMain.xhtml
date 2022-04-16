@@ -128,12 +128,8 @@
                         <p:commandButton value="Add/Edit Reply" actionListener="#{bookingPageManagedBean.reviewReply}" process="@form" update="@form" />
                     </p:outputPanel>
                 </p:dialog>
-
-
             </h:form>
         </div>
-
-
 
         <div id="bookings" style="width: 59.5%; text-align: center">
             <h:form id="bookingForm">
@@ -165,7 +161,6 @@
                               filterMatchMode="contains">
                         <h:outputText value="#{booking.bookingId}" />
                     </p:column>
-
                     <p:column headerText="Customer" sortBy="#{booking.travelItinerary.customer.name}" 
                               filterBy="#{booking.travelItinerary.customer.name}" filterMatchMode="contains"
                               width="500px" >

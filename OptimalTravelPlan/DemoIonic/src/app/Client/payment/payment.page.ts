@@ -26,9 +26,9 @@ export class PaymentPage implements OnInit {
   password: string;
   newPaymentAccount: PaymentAccount;
   selectedPaymentType: PaymentType;
-  booking : Booking;
-
-
+  booking: Booking;
+  filterString: string;
+  filteredPaymentTransactions: PaymentTransaction[];
 
   constructor(private router: Router,
     private paymentService: PaymentAccountService,
@@ -44,7 +44,7 @@ export class PaymentPage implements OnInit {
   ngOnInit() {
     this.customer = JSON.parse(sessionStorage['customer']);
     this.password = sessionStorage['password'];
-    
+
     this.paymentService.retrieveAllPaymentAccount(this.customer.username, this.password).subscribe({
       next: (response) => {
         this.paymentAccounts = (response);
@@ -57,6 +57,7 @@ export class PaymentPage implements OnInit {
     this.transactionService.retrieveAllPaymentTransaction(this.customer.username, this.password).subscribe({
       next: (response) => {
         this.paymentTransactions = (response);
+        this.filteredPaymentTransactions = response;
       },
       error: (error) => {
         console.log('********** get payment transactions error: ' + error);
@@ -145,8 +146,8 @@ export class PaymentPage implements OnInit {
               console.log('Confirm New payment account');
               alert.onDidDismiss().then((alertData) => {
 
-                this.newPaymentAccount.accountNumber =  alertData.data.values.CardNo;
-                this.newPaymentAccount.ccv =  alertData.data.values.ccv;
+                this.newPaymentAccount.accountNumber = alertData.data.values.CardNo;
+                this.newPaymentAccount.ccv = alertData.data.values.ccv;
                 this.newPaymentAccount.paymentType = this.selectedPaymentType as PaymentType;
                 this.newPaymentAccount.enabled = true;
 
@@ -239,8 +240,8 @@ export class PaymentPage implements OnInit {
     await alert.present();
   }
 
-  viewTrans(trans:PaymentTransaction){
-    this.bookingService.retrieveBookingByPaymentTransaction(this.customer.username,this.password,trans.paymentTransactionId).subscribe({
+  viewTrans(trans: PaymentTransaction) {
+    this.bookingService.retrieveBookingByPaymentTransaction(this.customer.username, this.password, trans.paymentTransactionId).subscribe({
       next: (response) => {
         this.booking = (response);
         this.viewTrans2(trans);
@@ -257,7 +258,7 @@ export class PaymentPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Booking paid for:',
       message: this.booking.service.serviceName + " <br/> Travel itinerary ID: " + this.booking.travelItinerary.travelItineraryId +
-      "<br/> Booking Id: " + this.booking.bookingId,
+        "<br/> Booking Id: " + this.booking.bookingId,
       buttons: [
         {
           text: 'Dismiss',
@@ -267,7 +268,7 @@ export class PaymentPage implements OnInit {
         },
         {
           text: 'Go to booking',
-          role : 'ok',
+          role: 'ok',
           cssClass: 'primary',
           handler: () => {
             this.router.navigate(['viewBookingDetails/' + this.booking.bookingId]);
@@ -296,5 +297,23 @@ export class PaymentPage implements OnInit {
     }
     output = output.slice(0, 11) + hourS + output.slice(13, 16) + morning;
     return output;
+  }
+
+  public filter() {
+    if (this.filterString != null && this.filterString.length > 0) {
+      this.filteredPaymentTransactions = [];
+      for (let i of this.paymentTransactions) {
+
+        if (
+          i.paymentAccount.accountNumber.includes(this.filterString)
+          || JSON.stringify(i.transactionNumber).includes(this.filterString)
+          || this.formatDate(i.dateOfPayment).includes(this.filterString)
+        ) {
+          this.filteredPaymentTransactions.push(i);
+        }
+      }
+    } else {
+      this.filteredPaymentTransactions = this.paymentTransactions;
+    }
   }
 }

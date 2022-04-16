@@ -76,8 +76,8 @@
   <ion-card>
     <ion-card-content >
       <h2>Recent Transactions:</h2>
-
-      <ion-item *ngFor="let trans of paymentTransactions" (click)="viewTrans(trans)" style="width: 100%; padding: 5px; font-size: 15px;">
+      <ion-searchbar [(ngModel)]="filterString" style="float: right; text-align: right; " color="light" (ionChange)="filter()" ></ion-searchbar>
+      <ion-item *ngFor="let trans of filteredPaymentTransactions" (click)="viewTrans(trans)" style="width: 100%; padding: 5px; font-size: 15px;">
 
         Transaction: {{trans.transactionNumber}}<br />
         Amount: $${{trans.prevailingRateAtPaymentDate}}<br/>

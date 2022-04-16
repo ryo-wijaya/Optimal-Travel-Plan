@@ -41,9 +41,12 @@ export class WriteAReviewPage implements OnInit {
       ({
         next: (response) => {
           this.booking = response.booking;
+          console.log("business reply = " + this.booking.review.businessReply);
           if (this.booking.review != null && this.booking.review.rating != null) {
             this.val2 = this.booking.review.rating;
             this.review = this.booking.review.content;
+          }else{
+            console.log("booking has missing review or rating");
           }
         },
         error: (error) => {

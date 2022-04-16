@@ -27,6 +27,7 @@ export class BookingService {
   }
 
   retrieveBookingById(username: string, password: string, bookingId: number): Observable<BookingHandler> {
+    console.log("retrieveBookingById()");
     return this.httpClient.get<BookingHandler>(this.baseUrl + "/RetrieveBookingById/"+ bookingId +"?username=" + username + "&password=" + password).pipe
     (
       catchError(this.handleError)

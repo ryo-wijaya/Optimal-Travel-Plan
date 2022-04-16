@@ -5,31 +5,19 @@
                 template="../template/adminTemplate.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
-
     <ui:define name="content">
-
         <style type="text/css">
             .ui-panel, div.ui-state-hover {
                 margin: 10px;
-                width:200px;
-            }
-
+                width:200px;}
             .ui-dashboard-column {
-                width:220px;
-            }
-
+                width:220px;}
             .wordart {
-                color: #045491; font-family: 'Droid serif', serif; font-size: 26px; font-weight: 400; line-height: 44px; margin: 0 0 12px; text-align: center;
-            }
-            
+                color: #045491; font-family: 'Droid serif', serif; font-size: 26px; font-weight: 400; line-height: 44px; margin: 0 0 12px; text-align: center;}
             .wordArt2 {
-                color: #6666ff; font-family: 'Droid serif', serif; font-size: 22px; font-weight: 400; font-style: italic; line-height: 44px; margin: 0 0 12px; text-align: center;
-            }
-        </style>
-
-
-
-        <div style="height:500px">
+                color: #6666ff; font-family: 'Droid serif', serif; font-size: 22px; font-weight: 400; font-style: italic; line-height: 44px; margin: 0 0 12px; text-align: center;}
+            </style>
+            <div style="height:500px">
             <h2 style="text-align: center; border:4px black solid; font-size:42px;">Dashboard</h2>
             <h:form>
                 <p:fieldset legend="Support Tickets" toggleable="true" toggleSpeed="100" style="text-align: center;">
@@ -37,17 +25,16 @@
                     <h:outputText value=" #{adminMainManagedBean.unresolvedTicketsCount}" class="wordart"/> &nbsp;
                     <h:outputText value="unresolved support tickets" class="wordart2"/>
                 </p:fieldset>
-                
+
                 <p:fieldset legend="Most Popular Country" toggleable="true" toggleSpeed="100" style="text-align: center;">
                     <h:outputText value="The most booked country is " class="wordart2"/> 
                     <h:outputText value="#{adminMainManagedBean.mostPopularCountry}" class="wordart"/>
                 </p:fieldset>
-                
+
                 <p:fieldset legend="Most Popular Tag" toggleable="true" toggleSpeed="100" style="text-align: center;">
                     <h:outputText value="The most popular booked tag is " class="wordart2"/>
                     <h:outputText value="#{adminMainManagedBean.mostPopularTag}" class="wordart"/>
                 </p:fieldset>
-                
 
                 <p:dashboard id="board" model="#{adminMainManagedBean.model}" style="font-size: 14; text-align: center;">
 
