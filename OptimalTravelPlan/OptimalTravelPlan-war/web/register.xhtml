@@ -27,14 +27,14 @@
                     <h:outputText value="Enter Registration Details"/>
                 </p:outputPanel>
             </f:facet>
-            
+
             <h:form id="formRegister">
 
                 <p:growl id="registerGrowl"/>
 
                 <p:panelGrid columns="2" >
 
-                    
+
 
                     <p:outputLabel for="username"><b>Username:</b></p:outputLabel>
                     <p:inputText id="username" value="#{registerPageManagedBean.username}" required="true" requiredMessage="username is required"/>
@@ -52,8 +52,19 @@
                     <p:inputText id="companyNo" value="#{registerPageManagedBean.companyNumber}" required="true" requiredMessage="company number is required"/>
 
                     <p:outputLabel for="companyAddress"><b>Company Address:</b></p:outputLabel>
-                    <p:inputText id="companyAddress" value="#{registerPageManagedBean.companyAddress}" required="true" requiredMessage="company address is required"/>
-                    
+
+                    <p:selectOneMenu id="companyAddress" value="#{registerPageManagedBean.selectedCountry}" style="width:150px" required="true" requiredMessage="company address is required">
+                        <f:selectItem itemLabel="Select Country" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{registerPageManagedBean.countries}" var="#{cou}"
+                                       itemValue="#{cou}" itemLabel="#{cou}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="city" value="City: "/>
+                    <p:inputText id="city" value="#{registerPageManagedBean.selectedCity}" required="true" requiredMessage="City is required"/>
+
+                    <p:outputLabel for="postal" value="Postal code: "/>
+                    <p:inputText id="postal" value="#{registerPageManagedBean.postalCode}" required="true" requiredMessage="Postal code is required"/>
+
                     <p:outputLabel for="businessEmail"><b>Business Email:</b></p:outputLabel>
                     <p:inputText id="businessEmail" value="#{registerPageManagedBean.businessEmail}" required="true" requiredMessage="business email is required"/>
                 </p:panelGrid>

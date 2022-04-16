@@ -6,8 +6,15 @@ package jsf.managedBean;
  * and open the template in the editor.
  */
 import ejb.session.stateless.AccountSessionBeanLocal;
+import ejb.session.stateless.CountrySessionBeanLocal;
 import entity.Business;
+import entity.Country;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -25,8 +32,13 @@ import util.exception.UsernameAlreadyExistException;
 @RequestScoped
 public class RegisterPageManagedBean {
 
+    @EJB(name = "CountrySessionBeanLocal")
+    private CountrySessionBeanLocal countrySessionBeanLocal;
+
     @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
+    
+    
 
     private String username;
     private String password;
@@ -35,8 +47,68 @@ public class RegisterPageManagedBean {
     private String companyNumber;
     private String companyAddress;
     private String businessEmail;
+    private String selectedCountry;
+    private String selectedCity;
+    private Long postalCode;
+    private List<String> countries;
 
     public RegisterPageManagedBean() {
+    }
+
+    @PostConstruct
+    public void init() {
+        countries = new ArrayList<>();
+        List<Country> l1 = countrySessionBeanLocal.retrieveAllCountries();
+        for(Country c : l1){
+            countries.add(c.getName());
+        }
+    }
+
+    public void register() throws IOException {
+        try {
+            if (this.selectedCountry != null && this.selectedCity != null && this.postalCode != null && this.postalCode < 1000000l && this.postalCode > 99999l) {
+                this.companyAddress = selectedCountry + " " + selectedCity + " " + postalCode.toString();
+                Business newBusiness = new Business(companyName, companyWebsite, companyNumber, companyAddress, username, password, businessEmail);
+                accountSessionBeanLocal.createNewAccount(newBusiness);
+
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("isLogin", true);
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loggedInAccount", newBusiness);
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration Successful!", null));
+                FacesContext.getCurrentInstance().getExternalContext().redirect("./businessPageFolder/businessMain.xhtml");
+            } else {
+                throw new Exception("Please ensure this is a valid address! (postal code 6 digits)");
+            }
+        } catch (PasswordNotAcceptedException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Password!", null));
+        } catch (UsernameAlreadyExistException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Username already exists!", null));
+        } catch (UnknownPersistenceException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Registration Failed", null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error : " + ex.getMessage(), null));
+
+        }
+    }
+
+    public List<String> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<String> countries) {
+        this.countries = countries;
+    }
+
+    public String getBusinessEmail() {
+        return businessEmail;
+    }
+
+    public void setBusinessEmail(String businessEmail) {
+        this.businessEmail = businessEmail;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getCompanyNumber() {
@@ -55,44 +127,36 @@ public class RegisterPageManagedBean {
         this.companyAddress = companyAddress;
     }
 
-    public void register() throws IOException {
-        try {
-            Business newBusiness = new Business(companyName, companyWebsite, companyNumber, companyAddress, username, password, businessEmail);
-            accountSessionBeanLocal.createNewAccount(newBusiness);
-
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("isLogin", true);
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loggedInAccount", newBusiness);
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration Successful!", null));
-            FacesContext.getCurrentInstance().getExternalContext().redirect("./businessPageFolder/businessMain.xhtml");
-
-        } catch (PasswordNotAcceptedException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid Password!", null));
-        } catch (UsernameAlreadyExistException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Username already exists!", null));
-        } catch (UnknownPersistenceException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration Failed", null));
-        }
-    }
-
-    public String getBusinessEmail() {
-        return businessEmail;
-    }
-
-    public void setBusinessEmail(String businessEmail) {
-        this.businessEmail = businessEmail;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
     public String getPassword() {
         return password;
+    }
+
+    public String getSelectedCountry() {
+        return selectedCountry;
+    }
+
+    public void setSelectedCountry(String selectedCountry) {
+        this.selectedCountry = selectedCountry;
+    }
+
+    public String getSelectedCity() {
+        return selectedCity;
+    }
+
+    public void setSelectedCity(String selectedCity) {
+        this.selectedCity = selectedCity;
+    }
+
+    public Long getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(Long postalCode) {
+        this.postalCode = postalCode;
     }
 
     public void setPassword(String password) {
