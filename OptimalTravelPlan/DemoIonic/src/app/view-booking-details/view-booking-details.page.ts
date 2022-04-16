@@ -166,4 +166,7 @@ export class ViewBookingDetailsPage implements OnInit {
     this.router.navigate(['/client/writeAReview/' + this.booking.bookingId]);
   }
 
+  viewBooking(){
+    this.router.navigate(['/serviceDetails/' + this.booking.service.serviceId]);
+  }
 }
