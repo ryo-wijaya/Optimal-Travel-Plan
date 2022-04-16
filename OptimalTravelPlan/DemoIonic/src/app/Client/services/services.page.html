@@ -17,21 +17,18 @@
       <ion-grid>
         <ion-row>
           <ion-col style="width: 100%;">
-            <ion-searchbar [(ngModel)]="filterString" style="float: right; text-align: right; " color="light" (ionChange)="filter()">
+            <ion-searchbar [(ngModel)]="filterString" style="float: right; text-align: right; " color="light" (ionChange)="filter()" >
             </ion-searchbar>
 
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
-            <p-multiSelect [options]="tags" [(ngModel)]="selTag" optionLabel="name"></p-multiSelect>
+            <p-multiSelect [options]="tags" [(ngModel)]="selTag" optionLabel="name" (onChange)="filter()" ></p-multiSelect>
           </ion-col>
           <ion-col>
-            <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name"
+            <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name" (onChange)="filter()"
               selectedItemsLabel="{0} items selected"></p-dropdown>
-          </ion-col>
-          <ion-col>
-            <ion-button (click)="filter()" style="float: right;">Filter</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
