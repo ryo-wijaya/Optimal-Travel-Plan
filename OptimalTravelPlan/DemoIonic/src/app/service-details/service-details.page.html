@@ -53,7 +53,8 @@
 
       <ion-item *ngFor="let review of reviews" (click)="viewReview(review)">
         Username: {{review.booking.travelItinerary.customer.username}} <br/>
-        Rating: {{review.rating}}/5
+        Rating: {{review.rating}}/5 <br/>
+        Comments: {{review.content.slice(0, 40)}}...
         <ion-input></ion-input>
         <ion-button ion-button block style="float: left; height: 40px;">
           <ion-icon name="search-circle-outline" style="height: 40px;"></ion-icon>
