@@ -5,8 +5,10 @@ import { Customer } from '../models/customer';
 import { Service } from '../models/service';
 import { TravelItinerary } from '../models/travel-itinerary';
 import { ServiceService } from '../services/service.service';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { CreateNewBookingPage } from '../create-new-booking/create-new-booking.page';
+import { Review } from '../models/review';
+import { ReviewService } from '../services/review.service';
 
 @Component({
   selector: 'app-service-details',
@@ -20,13 +22,17 @@ export class ServiceDetailsPage implements OnInit {
   private password: string;
   retrieveServiceError: boolean;
   booking: Booking;
+  reviews: Review[];
 
   constructor(private activatedRoute: ActivatedRoute,
     private serviceService: ServiceService,
+    private reviewService: ReviewService,
     private router: Router,
-    public modalController: ModalController) {
+    public modalController: ModalController,
+    public alertController: AlertController) {
     this.retrieveServiceError = false;
     this.booking = new Booking();
+    this.reviews = [];
   }
 
   ngOnInit() {
@@ -45,12 +51,38 @@ export class ServiceDetailsPage implements OnInit {
             this.service = s;
           }
         }
+
+        this.reviewService.retrieveReviewsByServiceId(this.customer.username, this.password, this.service.serviceId).subscribe({
+          next: (response) => {
+            this.reviews = (response);
+          },
+          error: (error) => {
+            console.log('********** retrieve reviews for service error: ' + error);
+          }
+        });
+
       },
       error: (error) => {
         this.retrieveServiceError = true;
         console.log('********** retrieve service error: ' + error);
       }
     });
+  }
+
+  async viewReview(review: Review) {
+    const alert = await this.alertController.create({
+      header: 'Review Details',
+      subHeader: '"' + review.content + '"',
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async addToTravelItinerary() {
@@ -105,8 +137,5 @@ export class ServiceDetailsPage implements OnInit {
     });
 
     await modal.present();
-
-
   }
-
 }

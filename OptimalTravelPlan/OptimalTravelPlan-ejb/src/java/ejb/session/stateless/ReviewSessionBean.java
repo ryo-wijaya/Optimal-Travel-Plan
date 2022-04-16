@@ -89,8 +89,9 @@ public class ReviewSessionBean implements ReviewSessionBeanLocal {
     
     @Override
     public List<Review> retrieveReviewsByServiceId(Long serviceId) {
-        Query query = em.createQuery("SELECT r FROM Review r JOIN r.booking b JOIN b.service s WHERE s.serviceId = :serviceId");
-        query.setParameter("serviceId", serviceId);
+        //Query query = em.createQuery("SELECT r FROM Review r JOIN r.booking b JOIN b.service s WHERE s.serviceId = :serviceId");
+        Query query = em.createQuery("SELECT r FROM Review r WHERE r.booking.service.serviceId = :inServiceId");
+        query.setParameter("inServiceId", serviceId);
         return query.getResultList();
     }
     

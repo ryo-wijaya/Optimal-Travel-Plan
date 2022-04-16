@@ -64,13 +64,15 @@
               required="true" #inpassword="ngModel"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-button (click)="clear()">
+            <ion-button (click)="clear()" style="width: 50%;">
               Clear
             </ion-button>
-            <ion-button type="submit" ion-button block>
+            <ion-button type="submit" ion-button block style="width:50%">
               Login
             </ion-button>
-            <ion-button ion-button block (click)="forgotPassword()">
+          </ion-item>
+          <ion-item>
+            <ion-button ion-button (click)="forgotPassword()" style="width: 100%;">
               Forgot Password
             </ion-button>
           </ion-item>

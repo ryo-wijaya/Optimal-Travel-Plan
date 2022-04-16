@@ -10,6 +10,7 @@ import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.ReviewSessionBeanLocal;
 import entity.Booking;
 import entity.Customer;
+import entity.PaymentTransaction;
 import entity.Review;
 import java.util.List;
 import java.util.logging.Level;
@@ -67,7 +68,7 @@ public class ReviewResource {
             try {
                 System.out.println("ws.restful.ReviewResource.createReview()");
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-                
+
                 Booking booking = bookingSessionBeanLocal.retrieveBookingById(objHandler.getBookingId());
                 if (!booking.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
@@ -97,13 +98,13 @@ public class ReviewResource {
             try {
                 System.out.println("ws.restful.ReviewResource.updateReview()");
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
-                
+
                 Review review = reviewSessionBeanLocal.retrieveReviewByReviewId(objHandler.getReviewId());
                 if (!review.getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }
                 review = objHandler.getReview();
-                if (review.getReviewId() == null){
+                if (review.getReviewId() == null) {
                     review.setReviewId(objHandler.getReviewId());
                 }
 
@@ -138,6 +139,38 @@ public class ReviewResource {
             return Response.status(Status.OK).entity(Boolean.TRUE).build();
         } catch (Exception ex) {
             return Response.status(Status.METHOD_NOT_ALLOWED).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("retrieveReviewsByServiceId")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveReviewsByServiceId(@QueryParam("username") String username,
+            @QueryParam("password") String password, @QueryParam("serviceId") Long serviceId) {
+        try {
+            Customer customer = (Customer) accountSessionBeanLocal.login(username, password);
+            List<Review> list = reviewSessionBeanLocal.retrieveReviewsByServiceId(serviceId);
+
+            for (Review review : list) {
+                review.getBooking().setSupportRequest(null);
+                review.getBooking().setService(null);
+                review.getBooking().setPaymentTransaction(null);
+                review.getBooking().getTravelItinerary().setCountry(null);
+                review.getBooking().getTravelItinerary().getCustomer().getPaymentAccounts().clear();
+                review.getBooking().getTravelItinerary().getCustomer().getFavouriteTags().clear();
+                review.getBooking().getTravelItinerary().getCustomer().getTravelItineraries().clear();
+                review.getBooking().getTravelItinerary().getBookings().clear();
+                review.getBooking().setReview(null);
+                System.out.println("Review " + review.getReviewId());
+            } 
+
+            GenericEntity<List<Review>> genericEntity = new GenericEntity<List<Review>>(list) {
+            };
+
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
 

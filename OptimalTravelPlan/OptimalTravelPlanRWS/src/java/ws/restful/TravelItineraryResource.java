@@ -8,6 +8,7 @@ package ws.restful;
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.BookingSessionBeanLocal;
 import ejb.session.stateless.CountrySessionBeanLocal;
+import ejb.session.stateless.EmailSessionBeanLocal;
 import ejb.session.stateless.PaymentAccountSessionBeanLocal;
 import ejb.session.stateless.TagSessionBeanLocal;
 import ejb.session.stateless.TravelItinerarySessionBeanLocal;
@@ -54,6 +55,8 @@ import ws.DataModel.TravelItineraryHandler;
 @Path("TravelItinerary")
 public class TravelItineraryResource {
 
+    EmailSessionBeanLocal emailSessionBeanLocal = lookupEmailSessionBeanLocal();
+
     BookingSessionBeanLocal bookingSessionBeanLocal = lookupBookingSessionBeanLocal();
 
     PaymentAccountSessionBeanLocal paymentAccountSessionBeanLocal = lookupPaymentAccountSessionBeanLocal();
@@ -66,6 +69,8 @@ public class TravelItineraryResource {
     TravelItinerarySessionBeanLocal travelItinerarySessionBeanLocal = lookupTravelItinerarySessionBeanLocal();
 
     AccountSessionBeanLocal accountSessionBeanLocal = lookupAccountSessionBeanLocal();
+    
+    
     
     
 
@@ -300,6 +305,16 @@ public class TravelItineraryResource {
             ti = travelItinerarySessionBeanLocal.payForAllBookings(travelItineraryId, paymentAccountId);
             ti = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(ti.getTravelItineraryId());
             ti.cleanRelationships();
+            
+            String message = "Dear user" + ",\n\n"
+                + "This is the confirm the payment for all bookings in the travel itinerary with ID " + travelItineraryId + " starting from "
+                    + ti.getStartDate() + " to " + ti.getEndDate() + "\n\n" + "Thank you for using Optimal Travel Plan for your travel needs!";
+            
+            try {
+                emailSessionBeanLocal.emailCheckoutNotificationAsync(message, customer.getEmail());
+            } catch (InterruptedException ex) {
+                System.out.println("Email sending failed");
+            }
 
             return Response.status(Status.OK).entity(ti).build();
         } catch (Exception ex) {
@@ -384,6 +399,16 @@ public class TravelItineraryResource {
         try {
             javax.naming.Context c = new InitialContext();
             return (BookingSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/BookingSessionBean!ejb.session.stateless.BookingSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private EmailSessionBeanLocal lookupEmailSessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (EmailSessionBeanLocal) c.lookup("java:global/OptimalTravelPlan/OptimalTravelPlan-ejb/EmailSessionBean!ejb.session.stateless.EmailSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

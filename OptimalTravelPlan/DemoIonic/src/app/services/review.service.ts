@@ -40,6 +40,14 @@ export class ReviewService {
       );
   }
 
+  retrieveReviewsByServiceId(username: string, password: string, serviceId: number): Observable<Review[]> {
+    return this.httpClient.get<Review[]>(this.baseUrl + "/retrieveReviewsByServiceId?username=" + username + "&password=" + password
+      + "&serviceId=" + serviceId).pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage: string = "";
     if (error.error instanceof ErrorEvent) {
