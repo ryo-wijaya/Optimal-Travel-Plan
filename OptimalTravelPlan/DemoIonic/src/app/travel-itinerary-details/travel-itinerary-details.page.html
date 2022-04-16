@@ -28,7 +28,7 @@
   <ion-card>
     <ion-grid *ngFor="let booking of bookings" (click)="viewBookingDetails(booking.bookingId)">
       <ion-row>
-        <ion-button (click)="viewBookingDetails(booking.bookingId)">View</ion-button>
+        <ion-button (click)="viewBookingDetails(booking.bookingId)" *ngIf="customer != null" >View</ion-button>
         <ion-col>
           {{booking.service.serviceName}}
         </ion-col>
@@ -42,7 +42,10 @@
   </ion-card>
 
   <div style="float: right; width: 95%;">
+    <ion-text *ngIf="paymentError != null" style="color: red;">{{paymentError}}</ion-text>
+    <ion-text *ngIf="message != null" style="color: green;">{{message}}</ion-text>
     <ion-button *ngIf="loggedOn && !paid && subtotal >0 " (click)="makePayment()" style="width: 95%;">Confirm Payment</ion-button>
+    
   </div>
 </ion-content>
 

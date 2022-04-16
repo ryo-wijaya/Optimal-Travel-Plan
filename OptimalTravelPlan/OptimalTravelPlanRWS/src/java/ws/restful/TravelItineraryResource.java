@@ -141,8 +141,9 @@ public class TravelItineraryResource {
 
                     System.out.println("ws.restful.TravelItineraryResource.updateTravelItinerary() setting back travel itin id " + travelItinerary.getTravelItineraryId());
                 }
+                Long ownerID = travelItinerarySessionBeanLocal.retrieveTravelItineraryById(travelItinerary.getTravelItineraryId()).getCustomer().getCustomerId();
 
-                if (!travelItinerary.getCustomer().getAccountId().equals(customer.getAccountId())) {
+                if (!customer.getAccountId().equals(ownerID)) {
                     throw new CustomerNotMatchException("Please ensure travel itinerary matches customer!");
                 }
 

@@ -93,7 +93,7 @@ export class ServiceDetailsPage implements OnInit {
 
     modal.onDidDismiss().then((event) => {
       let itin = sessionStorage['travelItinerary'];
-      if (itin != 'null') {
+      if (itin != 'null' && itin != null) {
         console.log("Adding to existing travel itin!");
         let sessionItin: TravelItinerary;
         sessionItin = JSON.parse(itin);

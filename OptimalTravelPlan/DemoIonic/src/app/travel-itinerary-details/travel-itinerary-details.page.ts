@@ -33,6 +33,8 @@ export class TravelItineraryDetailsPage implements OnInit {
   travelItinerary: TravelItinerary;
   paid: boolean;
   subtotal: number;
+  paymentError:string;
+  message:string;
 
   paymentAccounts: PaymentAccount[];
   bookings: Booking[];
@@ -70,16 +72,14 @@ export class TravelItineraryDetailsPage implements OnInit {
       selectMirror: true,
       dayMaxEvents: true
     };
-
-
-    setTimeout(function () {
-      window.dispatchEvent(new Event('resize'))
-    }, 1)
-
-    this.refreshCal();
   }
 
-  ionViewDidEnter() { this.refreshCal(); }
+  ionViewDidEnter() {
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'))
+    }, 1);
+    this.refreshCal();
+  }
   servicesPage() { this.router.navigate(['/client/services']); }
 
   async setDates() {
@@ -128,6 +128,8 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public refreshCal() {
+    this.errorMessage = null;
+    this.paymentError = null;
     let temp = sessionStorage['travelItinerary'];
     if (temp != 'null' && temp != null) {
       this.travelItinerary = JSON.parse(temp);
@@ -200,9 +202,10 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public registerBookings() {
-    console.log("registering booking");
+    console.log("attempt to register new booking");
     for (let bk of this.travelItinerary.bookings) {
       if (bk.bookingId == null) {
+        console.log("registering booking for " + bk.service.serviceName);
         let handler: BookingHandler = new BookingHandler();
         handler.booking = bk;
         handler.customer = this.customer;
@@ -278,7 +281,11 @@ export class TravelItineraryDetailsPage implements OnInit {
   }
 
   public viewBookingDetails(bookingId: number) {
-    this.router.navigate(['viewBookingDetails/' + bookingId]);
+    if (this.customer != null) {
+      this.router.navigate(['viewBookingDetails/' + bookingId]);
+    } else {
+      this.errorMessage = "Please log in to manage details!";
+    }
   }
 
 
@@ -292,7 +299,7 @@ export class TravelItineraryDetailsPage implements OnInit {
             if (this.paymentAccounts.length > 0) {
               this.popup();
             } else {
-              this.errorMessage = "Please set up a payment account first!";
+              this.paymentError = "Please set up a payment account first!";
             }
 
             console.log("changing subtotal to new " + response)
@@ -344,6 +351,7 @@ export class TravelItineraryDetailsPage implements OnInit {
     this.travelItineraryService.payForAllBookings(this.customer.username, this.password, val, this.travelItinerary.travelItineraryId).subscribe({
       next: (response) => {
         console.log("Payment successful " + response);
+        this.message = "Payment successful!";
         this.subtotal = 0;
         this.travelItinerary = response;
         sessionStorage['travelItinerary'] = JSON.stringify(this.travelItinerary);

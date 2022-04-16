@@ -54,7 +54,7 @@ export class WriteAReviewPage implements OnInit {
   }
 
   submit() {
-    console.log("Submit called! review id = " + this.booking.review.reviewId + " | ");
+    console.log("Submit called! review id = " + this.booking.bookingId + " | ");
 
     if (this.val2 == null || this.review == null || this.review.length < 1) {
       this.errorMsg = "Please ensure all fields are filled in!";
