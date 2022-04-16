@@ -95,12 +95,12 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
     public void updateCustomer(Customer customer) throws AccountNotFoundException, UpdateCustomerException {
         if (customer != null && customer.getCustomerId()!= null) {
             Customer customerToUpdate = this.retrieveCustomerById(customer.getCustomerId());
-
+            
             if (customerToUpdate.getUsername().equals(customer.getUsername())) {
                 customerToUpdate.setName(customer.getName());
                 customerToUpdate.setMobile(customer.getMobile());
                 customerToUpdate.setEmail(customer.getEmail());
-                customerToUpdate.setPaymentAccounts(customer.getPaymentAccounts());
+                //customerToUpdate.setPaymentAccounts(customer.getPaymentAccounts());
                 customerToUpdate.setVaccinationStatus(customer.getVaccinationStatus());
                 customerToUpdate.setPassportNumber(customer.getPassportNumber());
             } else {

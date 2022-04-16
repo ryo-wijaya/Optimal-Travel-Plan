@@ -189,8 +189,8 @@ public class AccountResource {
     public Response updateCustomer(CustomerHandler wrapper) {
         try {
             Customer customer = (Customer) accountSessionBeanLocal.login(wrapper.getCustomer().getUsername(), wrapper.getPassword());
-
-            customerSessionBeanLocal.updateCustomer(customer);
+            
+            customerSessionBeanLocal.updateCustomer(wrapper.getCustomer());
             System.out.println("Customer " + customer.getAccountId() + " updated remotely via web service");
             System.out.println("Customer ID " + wrapper.getCustomer().getAccountId());
 
