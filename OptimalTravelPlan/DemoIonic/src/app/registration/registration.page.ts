@@ -55,7 +55,7 @@ export class RegistrationPage implements OnInit {
             let newCustomerId: number = response;
             this.resultSuccess = true;
             this.resultError = false;
-            this.message = "Customer " + newCustomerId + " created successfully! You may attempt to log in now!";
+            this.message = "Registration successful! You may attempt to log in now!";
 
 
             this.newCustomer = new Customer();

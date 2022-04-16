@@ -103,6 +103,15 @@ public class AccountResource {
         try {
             Long id = accountSessionBeanLocal.createNewAccount(new Customer(name, mobile, passportNumber, email, vaccinationStatus, username, password));
             System.out.println("Customer Account created with ID: " + id + " remotely via web service");
+            
+            String message = "Dear user" + ",\n\n"
+                + "Thank you for registering with Optimal Travel plan! " + "\n\n";
+            
+            try {
+                emailSessionBeanLocal.emailCheckoutNotificationAsync(message, email);
+            } catch (InterruptedException ex) {
+                System.out.println("Email sending failed");
+            }
 
             return Response.status(Response.Status.OK).entity(id).build();
         } catch (PasswordNotAcceptedException | UsernameAlreadyExistException | UnknownPersistenceException ex) {
@@ -147,7 +156,7 @@ public class AccountResource {
             System.out.println("CUstomer Id: "+ customer.getAccountId());
             
             String message = "Dear user" + ",\n\n"
-                + " please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
+                + " Please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
                 + "\n\nUsername: " +  customer.getUsername() + "\n\nNew password: " + newPassword;
             
             emailSessionBeanLocal.emailCheckoutNotificationAsync(message, email);
