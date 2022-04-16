@@ -12,7 +12,7 @@ public class ReviewHandler {
     private Long reviewId;
     private Customer customer;
     private Review review;
-    private Long BookingId;
+    private Long bookingId;
     private String password;
 
     public Long getReviewId() {
@@ -40,11 +40,11 @@ public class ReviewHandler {
     }
 
     public Long getBookingId() {
-        return BookingId;
+        return bookingId;
     }
 
     public void setBookingId(Long BookingId) {
-        this.BookingId = BookingId;
+        this.bookingId = BookingId;
     }
 
     public String getPassword() {

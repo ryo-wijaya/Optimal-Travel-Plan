@@ -20,6 +20,7 @@ export class ReviewService {
   constructor(private httpClient: HttpClient) { }
 
   createReview(objHandler: ReviewHandler): Observable<number> {
+    console.log("create review with bk id : rating = " + objHandler.bookingId + " : " + objHandler.review.rating);
     return this.httpClient.put<number>(this.baseUrl + "/Create", objHandler, httpOptions).pipe
       (
         catchError(this.handleError)

@@ -66,10 +66,11 @@ public class ReviewResource {
     public Response createReview(ReviewHandler objHandler) {
         if (objHandler != null) {
             try {
-                System.out.println("ws.restful.ReviewResource.createReview()");
+                System.out.println("ws.restful.ReviewResource.createReview() bk id = " + objHandler.getBookingId());
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
 
                 Booking booking = bookingSessionBeanLocal.retrieveBookingById(objHandler.getBookingId());
+                
                 if (!booking.getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }

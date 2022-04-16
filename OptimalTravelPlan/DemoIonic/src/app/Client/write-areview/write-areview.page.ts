@@ -54,7 +54,7 @@ export class WriteAReviewPage implements OnInit {
   }
 
   submit() {
-    console.log("Submit called! review id = " + this.booking.bookingId + " | ");
+    console.log("Submit called! booking id = " + this.booking.bookingId + " | ");
 
     if (this.val2 == null || this.review == null || this.review.length < 1) {
       this.errorMsg = "Please ensure all fields are filled in!";
@@ -65,7 +65,7 @@ export class WriteAReviewPage implements OnInit {
 
       let handler: ReviewHandler;
       handler = new ReviewHandler();
-      handler.BookingId = this.booking.bookingId;
+      handler.bookingId = this.booking.bookingId;
       handler.review = this.booking.review;
       handler.customer = this.customer;
       handler.password = this.password;
@@ -85,7 +85,6 @@ export class WriteAReviewPage implements OnInit {
               }
             }
           }
-
           this.message = "Successfully Updated!";
           this.errorMsg = null;
         },
@@ -105,7 +104,7 @@ export class WriteAReviewPage implements OnInit {
 
       let handler: ReviewHandler;
       handler = new ReviewHandler();
-      handler.BookingId = this.booking.bookingId;
+      handler.bookingId = this.booking.bookingId;
       handler.review = this.booking.review;
       handler.customer = this.customer;
       handler.password = this.password;
@@ -132,9 +131,6 @@ export class WriteAReviewPage implements OnInit {
           console.log('********** retrieve service error: ' + error);
         }
       });
-
-
-
     }
   }
 
