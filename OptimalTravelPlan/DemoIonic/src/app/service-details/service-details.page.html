@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>Service Details</ion-title>
     <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
-    src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
   </ion-toolbar>
 </ion-header>
 
@@ -41,19 +41,22 @@
         <ion-label><b>Company</b></ion-label>
         {{service.business.companyName}}
       </ion-item>
-      <ion-item>
+      <ion-item *ngIf="service.tags.length>0">
         <ion-label><b>Tags</b></ion-label>
-        {{service.serviceName}}
+        <ion-text *ngFor="let t of service.tags">{{t.name}}&nbsp;&nbsp;</ion-text>
       </ion-item>
-
+      <ion-item>
+        <ion-label><b>Payment Type</b></ion-label>
+        {{getPaymentType(service)}}
+      </ion-item>
     </ion-list>
 
     <ion-card>
       <div style="text-align: center;"><b>Reviews</b></div>
 
       <ion-item *ngFor="let review of reviews" (click)="viewReview(review)">
-        Username: {{review.booking.travelItinerary.customer.username}} <br/>
-        Rating: {{review.rating}}/5 <br/>
+        Username: {{review.booking.travelItinerary.customer.username}} <br />
+        Rating: {{review.rating}}/5 <br />
         Comments: {{review.content.slice(0, 40)}}...
         <ion-input></ion-input>
         <ion-button ion-button block style="float: left; height: 40px;">

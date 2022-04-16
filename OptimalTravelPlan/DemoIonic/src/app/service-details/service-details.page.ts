@@ -9,6 +9,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { CreateNewBookingPage } from '../create-new-booking/create-new-booking.page';
 import { Review } from '../models/review';
 import { ReviewService } from '../services/review.service';
+import { ServiceRate } from '../models/service-rate';
 
 @Component({
   selector: 'app-service-details',
@@ -78,7 +79,7 @@ export class ServiceDetailsPage implements OnInit {
           text: 'Dismiss',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: () => {}
+          handler: () => { }
         }
       ]
     });
@@ -137,5 +138,16 @@ export class ServiceDetailsPage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  getPaymentType(ser: Service) {
+    let rates: ServiceRate[];
+    rates = ser.rates;
+    if (rates.length > 0) {
+      return JSON.stringify(rates[0].chargeType);
+    } else {
+      return "Free of charge!";
+    }
+    
   }
 }
