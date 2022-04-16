@@ -23,7 +23,8 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Travel Itinerary Detail', url: 'travelItineraryDetails', icon: 'airplane' },
-    { title: 'View services', url: '/client/services', icon: 'people-circle' }
+    { title: 'View services', url: '/client/services', icon: 'people-circle' },
+    { title: 'FAQ', url: '/faq', icon: 'alert-circle-outline'}
   ]
 
   constructor(private router:Router) { }

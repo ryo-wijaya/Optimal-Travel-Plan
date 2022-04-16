@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>Login</ion-title>
     <img style="right: 0px; top: 0px; height: 50px; width: 70px; position: absolute;"
-    src="/assets/pictures/OTP_Logo-Cropped.jpg" />
+      src="/assets/pictures/OTP_Logo-Cropped.jpg" />
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -16,15 +16,22 @@
       Services
       <ion-grid>
         <ion-row>
-          <ion-col>
-            <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name"
-              selectedItemsLabel="{0} items selected"></p-dropdown>
-            <ion-button (click)="filter()" style="float: right;">Filter</ion-button>
+          <ion-col style="width: 100%;">
+            <ion-searchbar [(ngModel)]="filterString" style="float: right; text-align: right; ">
+            </ion-searchbar>
+
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
             <p-multiSelect [options]="tags" [(ngModel)]="selTag" optionLabel="name"></p-multiSelect>
+          </ion-col>
+          <ion-col>
+            <p-dropdown [options]="countries" [(ngModel)]="country" optionLabel="Country" optionLabel="name"
+              selectedItemsLabel="{0} items selected"></p-dropdown>
+          </ion-col>
+          <ion-col>
+            <ion-button (click)="filter()" style="float: right;">Filter</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -33,7 +40,7 @@
 
       <div style="float: right;">Service Type</div>
       <div>Service Name </div>
-      
+
       <ion-grid *ngFor="let service of filteredServices" (click)="viewServiceDetails($event, service)">
         <ion-row>
           <ion-button (click)="viewServiceDetails($event, service)">View</ion-button>
@@ -44,7 +51,7 @@
             {{service.serviceType}}
           </ion-col>
         </ion-row>
-        <hr/>
+        <hr />
       </ion-grid>
 
     </ion-list>

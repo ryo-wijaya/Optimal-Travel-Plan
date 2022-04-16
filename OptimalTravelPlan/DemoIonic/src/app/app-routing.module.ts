@@ -84,6 +84,10 @@ const routes: Routes = [
     path: 'client/writeAReview/:bookingId',
     loadChildren: () => import('./Client/write-areview/write-areview.module').then( m => m.WriteAReviewPageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'faq',
+    loadChildren: () => import('./faq/faq.module').then( m => m.FAQPageModule)
   }
 
 

@@ -22,11 +22,12 @@ export class ServicesPage implements OnInit {
   countries: Country[];
   tags: Tag[];
   selTag: Tag[];
-  private password:string;
+  private password: string;
+  filterString: string;
 
   constructor(private router: Router,
     private serviceService: ServiceService,
-    private travelItineraryService: TravelItineraryService) { }
+    private travelItineraryService: TravelItineraryService) { this.filterString = ""; }
 
   ngOnInit() {
     console.log("init travel itin details page");
@@ -66,41 +67,56 @@ export class ServicesPage implements OnInit {
   }
 
   filter() {
-    let filter = false;
     this.filteredServices = [];
-    for (let s of this.services) {
-      let willAdd: boolean = false;
+    let temp:Service[] = [];
+    let temp2:Service[] = [];
+    if (this.country != null && this.country.name != "No filter") {
+      console.log(JSON.stringify(this.country.name));
 
-      if (this.country != null && this.country.name != null) {
-        filter = true;
+      for (let s of this.services) {
         if (s.country.countryId == this.country.countryId) {
-          willAdd = true;
+          temp.push(s);
         }
       }
+    } else {
+      console.log("no country selected");
+      temp = this.services;
+    }
+    if (this.selTag != null && this.selTag.length > 0) {
 
-      if (!willAdd && this.selTag != null) {
+      for (let s of temp) {
+        let toAdd: boolean = false;
         for (let t of this.selTag) {
-          if (t != null && t.name != null) {
-            filter = true;
-            console.log(s.tags);
-            for (let t2 of s.tags) {
-              if (t.tagId == t2.tagId) {
-                willAdd = true;
-                break;
-              }
+          for (let t2 of s.tags) {
+            if (t.tagId == t2.tagId) {
+              toAdd = true;
             }
           }
         }
+        if (toAdd) {
+          temp2.push(s);
+        }
       }
-      if (willAdd) {
-        this.filteredServices.push(s);
-      }
+    } else {
+      console.log("no tags selected");
+      temp2 = temp;
     }
+    if (this.filterString != null && this.filterString.length > 0) {
 
-    if (!filter) {
-      this.filteredServices = this.services;
+      console.log(this.filterString);
+      for (let s of temp2) {
+        if(s.serviceName.toLocaleLowerCase().includes(this.filterString.toLocaleLowerCase())){
+          this.filteredServices.push(s);
+        }
+      }
+    } else {
+      console.log("no filter name");
+      this.filteredServices = temp2;
     }
   }
+
+
+
 
   viewServiceDetails(event, service: Service) {
     console.log("attempting to view serivce ID = " + service.serviceId);
