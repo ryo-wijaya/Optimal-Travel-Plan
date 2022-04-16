@@ -21,7 +21,7 @@
 
     <ion-item>
       <div style="float: right;">
-        <b>Booking Id {{booking.bookingId}}: &nbsp;&nbsp;&nbsp;&nbsp;</b><br />
+        <b>Booking Id {{booking.bookingId}} &nbsp;&nbsp;&nbsp;&nbsp;</b><br />
       </div>
       <ion-input disabled="true"></ion-input>
       <ion-avatar item-end>
@@ -39,7 +39,7 @@
       <ion-button style="width: 100%; height: 40px; font-size: medium;" (click)="submit()" color="success" >Confirm / Edit</ion-button>
     </ion-item>
 
-    <ion-card style="height: 300px;" *ngIf="booking.review != null">
+    <ion-card style="height: 300px;" *ngIf="booking.review != null && booking.review.businessReply !=''">
       <br/>
       <div style="text-align: center;">
         <b>Business Reply: </b><br />
