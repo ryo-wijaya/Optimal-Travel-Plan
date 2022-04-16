@@ -16,7 +16,7 @@
                     <p:menuitem value="View Bookings" ajax="false" icon="pi pi-folder-open" outcome="businessMain.xhtml"/>
                 </p:menubar>
             </h:form>
-            
+
             <h3>Service Management</h3>
 
             <p:messages id="messages" redisplay="false" closable="true" />
@@ -76,7 +76,11 @@
                             <f:attribute name="serviceRateEditSelected" value="#{service}" />
                         </p:commandButton>
                         <p:commandButton actionListener="#{serviceManagementManagedBean.doUpdateService}" icon="ui-icon-pencil" title="Update Service" value ="Update Service"
-                                         update="formUpdateService" style="float: right;" oncomplete="PF('dialogUpdateService').show()" >
+                                         update="updateServiceDetailsForm" style="float: right;" oncomplete="PF('dialogUpdateService').show()" >
+                            <f:attribute name="serviceToUpdate" value="#{service}" />
+                        </p:commandButton>
+                        <p:commandButton actionListener="#{serviceManagementManagedBean.doUpdateService}" icon="ui-icon-pencil" title="Update Service Image" value ="Update Service Image"
+                                         update="formUpdateServiceImage" style="float: right;" oncomplete="PF('dialogUpdateServiceImage').show()" >
                             <f:attribute name="serviceToUpdate" value="#{service}" />
                         </p:commandButton>
                     </p:column>
@@ -183,13 +187,14 @@
                     </p:panelGrid>
                 </p:dialog>
             </h:form>
-            
-            
-            
-            <h:form id="formUpdateService">
+
+
+
+            <h:form id="updateServiceDetailsForm">
                 <p:dialog id="dialogUpdateService" widgetVar="dialogUpdateService" header="Update Service" closable="true">
                     <p:messages id="messagesUpdateService" redisplay="false" />
                     <p:panelGrid>
+
                         <p:row>
                             <p:column>
                                 <p:outputLabel for="name" value="Service Name: " style="font-weight: bold;" />
@@ -273,6 +278,9 @@
                             </p:column>
                         </p:row>
 
+
+
+
                         <p:row>
                             <p:column colspan="3">
                                 <p:commandButton type="reset" value="Clear" />&nbsp;
@@ -281,9 +289,46 @@
                                                   oncomplete="PF('dialogUpdateService').show();" />
                             </p:column>
                         </p:row>
+
+
                     </p:panelGrid>
                 </p:dialog>
             </h:form>
+
+
+            <p:dialog id="dialogUpdateServiceImage" widgetVar="dialogUpdateServiceImage" header="Update Service Image" closable="true">
+                <h:form id="formUpdateServiceImage" enctype="multipart/form-data">
+
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:messages id="messagesUploadImage" redisplay="false" />
+                                <h:outputText value="Current Image: #{serviceManagementManagedBean.localFile}" rendered="#{serviceManagementManagedBean.localFile!= null and 
+                                                                      serviceManagementManagedBean.localFile.length() > 0}" ><br/></h:outputText>
+                                <h:graphicImage value='/Images/#{serviceManagementManagedBean.localFile}' rendered="#{serviceManagementManagedBean.localFile.length() > 0}"></h:graphicImage>
+                                
+                            </p:column>
+                        </p:row>
+                        <p:row rendered="#{serviceManagementManagedBean.isBusiness()}">
+                            <p:column>
+                                <p:outputLabel for="serviceImage" value="Service Image " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <h:inputFile id="serviceImage" value="#{serviceManagementManagedBean.uploadedImage}">
+                                </h:inputFile>
+
+                            </p:column>
+                            <p:column>
+                                <p:message for="serviceImage" />
+                                <h:commandButton value="Upload Image" actionListener="#{serviceManagementManagedBean.updateImage}" >
+                                    <f:ajax execute="@form" render="@form formUpdateServiceImage" />
+                                </h:commandButton>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
         </div>
     </ui:define>
 
