@@ -205,7 +205,7 @@ public class serviceManagementManagedBean implements Serializable {
     public void updateService(ActionEvent event) {
         try {
             selectedService.setServiceType(selectedServiceType);
-            Service s = serviceSessionBeanLocal.updateService(selectedService, tagsSelected, selectedCountry, requireVac);
+            Service s = serviceSessionBeanLocal.updateService(selectedService, tagsSelected, selectedCountry, selectedService.getRequireVaccination());
             selectedService.setRequireVaccination(s.getRequireVaccination());
             selectedService.setTags(s.getTags());
             selectedService.setCountry(s.getCountry());
