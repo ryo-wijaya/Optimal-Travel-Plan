@@ -33,13 +33,13 @@ import util.exception.UpdateStaffException;
 @ViewScoped
 public class loginManagedBean implements Serializable {
 
-    @EJB(name = "AccountSessionBeanLocal")
+    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
 
-    @EJB(name = "BusinessSessionBeanLocal")
+    @EJB
     private BusinessSessionBeanLocal businessSessionBeanLocal;
 
-    @EJB(name = "StaffSessionBeanLocal")
+    @EJB
     private StaffSessionBeanLocal staffSessionBeanLocal;
 
     private Business business;

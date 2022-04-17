@@ -17,12 +17,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
-import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.BarChartSeries;
-import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
 /**
@@ -33,7 +30,7 @@ import org.primefaces.model.chart.PieChartModel;
 @ViewScoped
 public class businessDashBoardManagedBean implements Serializable {
 
-    @EJB(name = "BookingSessionBeanLocal")
+    @EJB
     private BookingSessionBeanLocal bookingSessionBeanLocal;
 
     @EJB

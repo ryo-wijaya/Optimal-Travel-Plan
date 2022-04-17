@@ -44,13 +44,13 @@ public class serviceManagementManagedBean implements Serializable {
     private String localFile;
     private String GLASSFISH_PATH = "C:\\glassfish-5.1.0\\glassfish\\domains\\domain1\\generated\\jsp\\OptimalTravelPlan\\OptimalTravelPlan-war_war\\";
 
-    @EJB(name = "CountrySessionBeanLocal")
+    @EJB
     private CountrySessionBeanLocal countrySessionBeanLocal;
 
-    @EJB(name = "TagSessionBeanLocal")
+    @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
 
-    @EJB(name = "ServiceSessionBeanLocal")
+    @EJB
     private ServiceSessionBeanLocal serviceSessionBeanLocal;
 
     private List<Service> services;

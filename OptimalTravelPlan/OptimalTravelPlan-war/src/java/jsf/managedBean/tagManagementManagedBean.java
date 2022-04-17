@@ -11,7 +11,6 @@ import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -22,10 +21,6 @@ import org.primefaces.PrimeFaces;
 import util.exception.DeleteTagException;
 import util.exception.TagAlreadyExistException;
 
-/**
- *
- * @author sucram
- */
 @Named(value = "tagManagementManagedBean")
 @ViewScoped
 public class tagManagementManagedBean implements Serializable {

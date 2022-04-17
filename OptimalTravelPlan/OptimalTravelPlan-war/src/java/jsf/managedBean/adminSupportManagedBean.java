@@ -31,7 +31,7 @@ import util.exception.SupportRequestNotFoundException;
 @ViewScoped
 public class adminSupportManagedBean implements Serializable {
 
-    @EJB(name = "BookingSessionBeanLocal")
+    @EJB
     private BookingSessionBeanLocal bookingSessionBeanLocal;
 
     @EJB

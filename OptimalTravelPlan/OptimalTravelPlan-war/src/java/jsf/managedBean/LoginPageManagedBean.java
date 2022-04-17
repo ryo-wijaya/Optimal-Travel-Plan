@@ -40,9 +40,6 @@ public class LoginPageManagedBean implements Serializable {
 
     @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
-    
-    
-    
 
     private String username;
     private String password;
@@ -117,11 +114,11 @@ public class LoginPageManagedBean implements Serializable {
         try {
             Business business = businessSessionBeanLocal.retrieveBusinessByEmail(recoveryEmail);
             String newPassword = accountSessionBeanLocal.forgetPasswordChange(business.getAccountId());
-            
+
             String message = "Dear user" + ",\n\n"
-                + " please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
-                + "\n\nUsername: " +  business.getUsername() + "\n\nNew password: " + newPassword;
-            
+                    + " please login with your username and the provided password below. Do proceed to change your password after. Thank you. " + "\n\n"
+                    + "\n\nUsername: " + business.getUsername() + "\n\nNew password: " + newPassword;
+
             emailSessionBeanLocal.emailCheckoutNotificationAsync(message, recoveryEmail);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Recovery Email Sent!", null));
         } catch (AccountNotFoundException ex) {
