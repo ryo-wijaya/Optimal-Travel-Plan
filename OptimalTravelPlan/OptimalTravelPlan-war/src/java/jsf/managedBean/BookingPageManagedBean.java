@@ -45,7 +45,7 @@ import util.exception.ReviewNotFoundException;
 @ViewScoped
 public class BookingPageManagedBean implements Serializable {
 
-    @Resource
+    @Resource(name = "optimalTravelPlanDataSource")
     private DataSource optimalTravelPlanDataSource;
 
     @EJB
