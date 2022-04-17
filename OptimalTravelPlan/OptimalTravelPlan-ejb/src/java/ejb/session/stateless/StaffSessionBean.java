@@ -63,7 +63,6 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
         if (staff != null && staff.getStaffId() != null) {
             Staff staffToUpdate = this.retrieveStaffById(staff.getStaffId());
             staffToUpdate.setName(staff.getName());
-            staffToUpdate.setEmployeeRole(staff.getEmployeeRole());
             staffToUpdate.setUsername(staff.getUsername());
             em.flush();
         } else {
