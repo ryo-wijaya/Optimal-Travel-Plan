@@ -96,6 +96,7 @@ public class loginManagedBean implements Serializable {
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Account Updated!", null));
             password = "";
+            this.oldPassword2 = "";
         } catch (AccountNotFoundException | ChangePasswordException | PasswordNotAcceptedException | UpdateBusinessException | UpdateStaffException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to update account : " + e.getMessage(), null));
         }
