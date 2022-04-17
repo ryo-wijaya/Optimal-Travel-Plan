@@ -4,15 +4,12 @@ import ejb.session.stateless.ServiceRateSessionBeanLocal;
 import entity.Account;
 import entity.Service;
 import entity.ServiceRate;
-import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -27,7 +24,7 @@ import util.exception.ServiceNotFoundException;
 @ViewScoped
 public class serviceRateManagementManagedBean implements Serializable {
 
-    @EJB(name = "ServiceRateSessionBeanLocal")
+    @EJB
     private ServiceRateSessionBeanLocal serviceRateSessionBeanLocal;
 
     private Account loggedInAccount;

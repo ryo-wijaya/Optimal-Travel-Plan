@@ -8,12 +8,9 @@ package jsf.managedBean;
 import ejb.session.stateless.AccountSessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import entity.Customer;
-import entity.PaymentAccount;
-import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -21,10 +18,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.PrimeFaces;
-import sun.security.krb5.internal.PaPacOptions;
 import util.exception.AccountNotFoundException;
 import util.exception.DeleteCustomerException;
-import util.exception.CustomerAlreadyExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateCustomerException;
 import util.exception.UsernameAlreadyExistException;
@@ -39,6 +34,7 @@ public class customerManagementManagedBean implements Serializable {
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
+    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
 
     private List<Customer> customers;

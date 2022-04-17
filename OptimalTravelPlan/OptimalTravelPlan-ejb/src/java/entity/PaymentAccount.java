@@ -48,6 +48,10 @@ public class PaymentAccount implements Serializable {
     public Long getPaymenetAccountId() {
         return paymenetAccountId;
     }
+    
+    public void cleanSelf(){
+        //does nothing no relationship to void
+    }
 
     @Override
     public int hashCode() {

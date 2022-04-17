@@ -13,16 +13,13 @@ public class Staff extends Account implements Serializable {
     
     private String name;
     
-    private EmployeeRole employeeRole;
 
     public Staff() {
-        employeeRole = EmployeeRole.ADMINISTRATOR;
     }
 
     public Staff(String username, String password, String name) throws PasswordNotAcceptedException {
         super(username, password);
         this.name = name;
-        employeeRole = EmployeeRole.ADMINISTRATOR;
     }
 
     public Long getStaffId() {
@@ -60,14 +57,6 @@ public class Staff extends Account implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public EmployeeRole getEmployeeRole() {
-        return employeeRole;
-    }
-
-    public void setEmployeeRole(EmployeeRole employeeRole) {
-        this.employeeRole = employeeRole;
     }
     
 }

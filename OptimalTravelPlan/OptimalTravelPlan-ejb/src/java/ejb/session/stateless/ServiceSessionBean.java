@@ -12,6 +12,8 @@ import entity.ServiceRate;
 import entity.Tag;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -161,7 +163,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
         return query.getResultList();
     }
-    
+
     @Override
     public List<Service> retrieveAllActiveServiceByCountry(Long countryId) {
         Country country = em.find(Country.class, countryId);
@@ -170,12 +172,12 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
         return query.getResultList();
     }
-    
+
     @Override
     public List<Service> retrieveAllActiveServiceByTags(List<Long> tagIds) {
-        
+
         List<Service> services = new ArrayList<>();
-        
+
         if (tagIds == null || tagIds.isEmpty()) {
             return services;
         } else {
@@ -184,7 +186,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             return query.getResultList();
         }
     }
-    
+
     @Override
     public List<Service> retrieveAllServiceByBusinessId(Long businessId) {
         Query query = em.createQuery("SELECT s FROM Service s WHERE s.business.accountId = :inBusiness");
@@ -199,7 +201,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
         }
         return services;
     }
-    
+
     @Override
     public List<Service> retrieveAllActiveServiceByBusinessId(Long businessId) {
         Query query = em.createQuery("SELECT s FROM Service s WHERE s.active = true AND s.business.accountId = :inBusiness");
@@ -217,6 +219,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
 
     @Override
     public void updateService(Service newService) throws ServiceNotFoundException, UpdateServiceException, AccountNotFoundException {
+        System.out.println("ejb.session.stateless.ServiceSessionBean.updateService()");
         if (newService != null && newService.getServiceId() != null) {
             Service serviceToUpdate = this.retrieveServiceById(newService.getServiceId());
 
@@ -227,7 +230,7 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
             serviceToUpdate.setRequireVaccination(newService.getRequireVaccination());
             serviceToUpdate.setTags(newService.getTags());
             serviceToUpdate.setServiceName(newService.getServiceName());
-
+            em.flush();
         } else {
             throw new AccountNotFoundException("Service ID not provided for service to be updated");
         }
@@ -246,7 +249,8 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
     }
 
     @Override
-    public Service updateService(Service selectedService, List<Long> tagsSelected, Long selectedCountry, Boolean requireVac) throws TagNotFoundException, ServiceNotFoundException, CountryNotFoundException {
+    public Service updateService(Service selectedService, List<Long> tagsSelected, Long selectedCountry, Boolean requireVac) throws UpdateServiceException, AccountNotFoundException, TagNotFoundException, ServiceNotFoundException, CountryNotFoundException {
+        System.out.println("ejb.session.stateless.ServiceSessionBean.updateService()");
         Service serviceToUpdate = retrieveServiceById(selectedService.getServiceId());
         serviceToUpdate.setServiceType(selectedService.getServiceType());
         List<Tag> tags = new ArrayList<>();
@@ -256,6 +260,9 @@ public class ServiceSessionBean implements ServiceSessionBeanLocal {
         serviceToUpdate.setTags(tags);
         serviceToUpdate.setCountry(countrySessionBeanLocal.retrieveCountryByCountryId(selectedCountry));
         serviceToUpdate.setRequireVaccination(requireVac);
-        return serviceToUpdate;
+
+        updateService(selectedService);
+        return retrieveServiceById(serviceToUpdate.getServiceId());
+
     }
 }

@@ -11,9 +11,7 @@ import entity.Business;
 import entity.Country;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -32,7 +30,7 @@ import util.exception.UsernameAlreadyExistException;
 @RequestScoped
 public class RegisterPageManagedBean {
 
-    @EJB(name = "CountrySessionBeanLocal")
+    @EJB
     private CountrySessionBeanLocal countrySessionBeanLocal;
 
     @EJB
