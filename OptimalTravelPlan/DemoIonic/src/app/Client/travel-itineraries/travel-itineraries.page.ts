@@ -21,7 +21,9 @@ export class TravelItinerariesPage implements OnInit {
     private travelItineraryService: TravelItineraryService,
     public alertController: AlertController) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+  
+  ionViewDidEnter(){
     this.customer = JSON.parse(sessionStorage['customer']);
     this.password = sessionStorage['password'];
     this.travelItineraryService.retrieveAllTravelItinerary(this.customer.username, this.password).subscribe({
@@ -33,6 +35,8 @@ export class TravelItinerariesPage implements OnInit {
       }
     });
   }
+
+  
 
   async viewItiDetails(event, iti: TravelItinerary) {
     if (iti == null) {

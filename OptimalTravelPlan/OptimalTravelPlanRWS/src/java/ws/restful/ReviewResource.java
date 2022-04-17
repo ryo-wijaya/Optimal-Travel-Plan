@@ -101,14 +101,18 @@ public class ReviewResource {
                 Customer customer = (Customer) accountSessionBeanLocal.login(objHandler.getCustomer().getUsername(), objHandler.getPassword());
 
                 Review review = reviewSessionBeanLocal.retrieveReviewByReviewId(objHandler.getReviewId());
+                
                 if (!review.getBooking().getTravelItinerary().getCustomer().getCustomerId().equals(customer.getCustomerId())) {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }
+                
+                objHandler.getReview().setBusinessReply(review.getBusinessReply());
+                
                 review = objHandler.getReview();
                 if (review.getReviewId() == null) {
                     review.setReviewId(objHandler.getReviewId());
                 }
-
+                
                 reviewSessionBeanLocal.updateReview(review);
                 review = reviewSessionBeanLocal.retrieveReviewByReviewId(objHandler.getReviewId());
                 review.cleanRelationships();

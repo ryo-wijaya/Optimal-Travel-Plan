@@ -108,6 +108,7 @@ public class serviceRateManagementManagedBean implements Serializable {
     }
 
     public void doUpdateServiceRate(ActionEvent event) {
+        System.out.println("jsf.managedBean.serviceRateManagementManagedBean.doUpdateServiceRate()");
         serviceRateToUpdate = (ServiceRate) event.getComponent().getAttributes().get("serviceRateToUpdate");
         selectedRateType = serviceRateToUpdate.getRateType();
         selectedChargeType = serviceRateToUpdate.getChargeType();
@@ -137,6 +138,7 @@ public class serviceRateManagementManagedBean implements Serializable {
     }
 
     private void updateInvalidDates() {
+        System.out.println("jsf.managedBean.serviceRateManagementManagedBean.updateInvalidDates()");
         this.invalidDays = new ArrayList<>();
         if ((serviceRateToUpdate.getEndDate().getTime() - serviceRateToUpdate.getStartDate().getTime()) < 315360000000l) {
             this.invalidDays = new ArrayList<>();

@@ -152,7 +152,7 @@ public class BookingResource {
                     throw new CustomerNotMatchException("Please ensure booking matches customer!");
                 }
                 System.out.println("ws.restful.BookingResource.updateBooking()");
-                objHandler.getBooking().getReview().setBusinessReply(bk.getReview().getBusinessReply());
+               
                 bookingSessionBeanLocal.updateBooking(objHandler.getBooking());
 
                 Booking bkupdated = bookingSessionBeanLocal.retrieveBookingById(objHandler.getBooking().getBookingId());
@@ -167,6 +167,7 @@ public class BookingResource {
                 return Response.status(Response.Status.OK).entity(handler).build();
 
             } catch (Exception ex) {
+                ex.printStackTrace();
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
         } else {
