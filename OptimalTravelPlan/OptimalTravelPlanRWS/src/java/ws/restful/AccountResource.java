@@ -108,8 +108,10 @@ public class AccountResource {
                 + "Thank you for registering with Optimal Travel plan! " + "\n\n";
             
             try {
+                System.out.println("ws.restful.AccountResource.createCustomerAccount()Send email to" + email);
                 emailSessionBeanLocal.emailCheckoutNotificationAsync(message, email);
             } catch (InterruptedException ex) {
+                ex.printStackTrace();
                 System.out.println("Email sending failed");
             }
 
