@@ -21,6 +21,7 @@ A0216465A
 e0540022@u.nus.edu
 
 Demo YouTube link:
+https://youtu.be/9WPhSKnRJ2o
 
 Instructions for deploying and running the prototype:
 For Ionic install: 
