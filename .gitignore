@@ -27,20 +27,20 @@ nbproject/private/
 build/
 dist/
 
-/OptimalTravelPlan/dist/
-/OptimalTravelPlan/build/
-/OptimalTravelPlan/nbproject/private/
+source/OptimalTravelPlan/dist/
+source/OptimalTravelPlan/build/
+source/OptimalTravelPlan/nbproject/private/
 
-/OptimalTravelPlan/OptimalTravelPlan-war/dist/
-/OptimalTravelPlan/OptimalTravelPlan-war/build/
-/OptimalTravelPlan/OptimalTravelPlan-war/nbproject/private/
+source/OptimalTravelPlan/OptimalTravelPlan-war/dist/
+source/OptimalTravelPlan/OptimalTravelPlan-war/build/
+source/OptimalTravelPlan/OptimalTravelPlan-war/nbproject/private/
 
-/OptimalTravelPlan/OptimalTravelPlan-ejb/dist/
-/OptimalTravelPlan/OptimalTravelPlan-ejb/build/
-/OptimalTravelPlan/OptimalTravelPlan-ejb/nbproject/private/
+source/OptimalTravelPlan/OptimalTravelPlan-ejb/dist/
+source/OptimalTravelPlan/OptimalTravelPlan-ejb/build/
+source/OptimalTravelPlan/OptimalTravelPlan-ejb/nbproject/private/
 
-/OptimalTravelPlan/OptimalTravelPlanRWS/dist/
-/OptimalTravelPlan/OptimalTravelPlanRWS/build/
-/OptimalTravelPlan/OptimalTravelPlanRWS/nbproject/private/
+source/OptimalTravelPlan/OptimalTravelPlanRWS/dist/
+source/OptimalTravelPlan/OptimalTravelPlanRWS/build/
+source/OptimalTravelPlan/OptimalTravelPlanRWS/nbproject/private/
 
 
