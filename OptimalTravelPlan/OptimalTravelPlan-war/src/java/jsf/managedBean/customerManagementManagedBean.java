@@ -96,9 +96,23 @@ public class customerManagementManagedBean implements Serializable {
     public void deleteCustomer(ActionEvent event) throws AccountNotFoundException {
         try {
             Customer customerToDelete = (Customer) event.getComponent().getAttributes().get("customerToDelete");
+            Boolean new1 = customerToDelete.getEnabled()? false: true;
+            customerToDelete.setEnabled(new1);
+            String ms = "";
+            if(new1){
+                ms = "Active";
+            } else{
+                ms = "Disabled";
+            }
+            System.out.println("jsf.managedBean.customerManagementManagedBean.deleteCustomer() Customer id =" + customerToDelete.getCustomerId());
             customerSessionBeanLocal.deleteCustomer(customerToDelete.getCustomerId());
-            customers.remove(customerToDelete);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Customer deleted successfully", null));
+//            for( Customer c: this.customers){
+//                if(c.getCustomerId().equals(customerToDelete.getAccountId())){
+//                    System.out.println("jsf.managedBean.customerManagementManagedBean.deleteCustomer() found customer to update updated to " + customerToDelete.getEnabled());
+//                    c.setEnabled(customerToDelete.getEnabled());
+//                }
+//            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Customer account has be set to " + ms, null));
         } catch (DeleteCustomerException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Unable to delete:" + ex.getMessage(), null));
         }

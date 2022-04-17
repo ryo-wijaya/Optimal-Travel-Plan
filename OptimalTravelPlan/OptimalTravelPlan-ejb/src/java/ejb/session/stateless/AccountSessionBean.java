@@ -56,18 +56,23 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
 
     @Override
     public Account retrieveAccountById(Long accountId) throws AccountNotFoundException {
+        System.out.println("ejb.session.stateless.AccountSessionBean.retrieveAccountById() account id = " + accountId);
         Account account = em.find(Account.class, accountId);
+        System.out.println("ejb.session.stateless.AccountSessionBean.retrieveAccountById() account = " + account);
         if (account != null) {
             return account;
         } else {
-            throw new AccountNotFoundException();
+            throw new AccountNotFoundException("Account id " + accountId + " is not found!");
         }
     }
 
     @Override
     public void toggleAccountStatus(Long accountId) throws AccountNotFoundException {
+        
+        System.out.println("ejb.session.stateless.AccountSessionBean.toggleAccountStatus() account id = " + accountId);
         Account account = retrieveAccountById(accountId);
-
+        System.out.println("ejb.session.stateless.AccountSessionBean.toggleAccountStatus() account id = " + account);
+        
         if (account != null && account.getAccountId() != null) {
             Boolean newStatus = account.getEnabled() ? false : true; // not redundant
             account.setEnabled(newStatus);
@@ -113,12 +118,12 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             throw new ChangePasswordException("Password does not match!");
         }
     }
-    
+
     @Override
     public String forgetPasswordChange(Long accountId) {
         try {
             Account account = this.retrieveAccountById(accountId);
-            
+
             Double d = Math.random() * 9999999999999999l;
             d = Math.floor(d);
             if (d < 10000000000l) {
@@ -134,10 +139,10 @@ public class AccountSessionBean implements AccountSessionBeanLocal {
             while (code.length() < 10) {
                 code = "0" + code;
             }
-            
+
             account.setPassword(code);
             return code;
-            
+
         } catch (AccountNotFoundException | PasswordNotAcceptedException ex) {
             // Do nothing as account is guaranteed to be found and password is guaranteed to be accepted
             return null;

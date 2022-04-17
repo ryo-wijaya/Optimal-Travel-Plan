@@ -76,24 +76,22 @@
                             <f:setPropertyActionListener value="#{customer}" target="#{customerManagementManagedBean.selectedCustomer}"/>
                         </p:commandButton>
                     </p:column> 
-                    <p:column headerText="Action" >
-                        <p:commandButton actionListener="#{customerManagementManagedBean.doUpdateCustomer}" update="formUpdateCustomer dataTableAllCustomers" oncomplete="PF('dialogUpdateCustomer').show()" 
-                                         value="Update Customer Name" icon="ui-icon-pencil" title="Update">
-                            <f:attribute name="customerToUpdate" value="#{customer}" />
-                        </p:commandButton>
-                        <p:commandButton icon="ui-icon-trash" actionListener="#{customerManagementManagedBean.deleteCustomer}" update="formAllCustomers"
-                                         rendered="#{customer.paymentAccounts.size() eq 0}" value="Delete Unused Customer">
+                    <p:column headerText="Enabled" >
+                        <h:outputText value="#{customer.enabled}" />
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{customerManagementManagedBean.deleteCustomer}" update="@form formAllCustomers dataTableAllCustomers formAllCustomers:dataTableAllCustomers"
+                                         value="Toggle customer active">
                             <f:attribute name="customerToDelete" value="#{customer}" />
                             <p:confirm header="Confirmation" message="Are you sure you want to delete #{customer.name} (Customer ID: #{customer.customerId})?" icon="ui-icon-alert"  />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update="@form formAllCustomers" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" update="@form formAllCustomers" />
                 </p:confirmDialog>
             </h:form>
 
+            
             <h:form id="paymentBoxForm">
                 <p:dialog widgetVar="dialogViewPaymentAccounts" header="View Payment Accounts" closable="true">
                     <p:dataTable id="paymentAccDataTable" value="#{customerManagementManagedBean.selectedCustomer.paymentAccounts}" var="paymentAccount" >
@@ -146,40 +144,6 @@
                 </p:dialog>
             </h:form>
 
-            <h:form id="formUpdateCustomer">
-                <p:dialog id="dialogUpdateCustomer" widgetVar="dialogUpdateCustomer" header="Update Customer" closable="true">
-                    <p:messages id="messagesUpdateCustomer" redisplay="false" />
-                    <p:panelGrid>
-                        <p:row>
-                            <p:column>
-                                <h:outputLabel value="Customer ID: " />
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{customerManagementManagedBean.customerToUpdate.customerId}" />
-                            </p:column>
-                            <p:column>
-                                &nbsp;
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel for="name" value="Customer Name: " />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="name" value="#{customerManagementManagedBean.customerToUpdate.name}" placeholder="Movie" required="true" requiredMessage="Customer Name is required" />
-                            </p:column>
-                            <p:column>
-                                <p:message for="name" />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column colspan="3">
-                                <p:commandButton value="Update Customer" update="@form formAllCustomers:dataTableAllCustomers" actionListener="#{customerManagementManagedBean.updateCustomer}" oncomplete="PF('dialogUpdateCustomer').show();" />
-                            </p:column>
-                        </p:row>
-                    </p:panelGrid>
-                </p:dialog>
-            </h:form>
 
         </div>
     </ui:define>

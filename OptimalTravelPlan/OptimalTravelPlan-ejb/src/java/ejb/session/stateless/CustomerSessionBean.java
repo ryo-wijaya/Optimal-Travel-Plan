@@ -9,7 +9,7 @@ import entity.Customer;
 import entity.Tag;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Stateless;;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -29,6 +29,8 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
 
     @EJB
     private TagSessionBeanLocal tagSessionBeanLocal;
+    
+    @EJB
     private AccountSessionBeanLocal accountSessionBeanLocal;
 
     @PersistenceContext(unitName = "OptimalTravelPlan-ejbPU")
@@ -113,7 +115,10 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal {
     
     @Override
     public void deleteCustomer(Long customerId) throws AccountNotFoundException, DeleteCustomerException{
+        
         Customer customerToDelete = em.find(Customer.class, customerId);
+        System.out.println("ejb.session.stateless.CustomerSessionBean.deleteCustomer() customer ID = " + customerToDelete);
+        
         accountSessionBeanLocal.toggleAccountStatus(customerToDelete.getAccountId());
     }
 }

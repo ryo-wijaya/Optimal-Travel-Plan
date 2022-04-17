@@ -62,6 +62,8 @@ public class countryManagementManagedBean implements Serializable {
 
     public void doUpdateCountry(ActionEvent event) {
         setSelectedCountryToUpdate((Country) event.getComponent().getAttributes().get("countryEntityToUpdate"));
+        System.out.println("jsf.managedBean.countryManagementManagedBean.doUpdateCountry() country to update id = " + this.selectedCountryToUpdate.getCountryId());
+        
     }
 
     public void updateCountry(ActionEvent event) {
